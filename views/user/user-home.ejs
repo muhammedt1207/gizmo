@@ -1,0 +1,117 @@
+<%- include('./partial/header') -%>
+
+<nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded">
+    <div class="container">
+      <a class="navbar-brand" href="#"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;" alt="logo"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      
+      <!-- Centered search bar -->
+      <form class="d-flex mx-auto">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #4f4f4f;"></i></button>
+      </form>
+      <!-- Right-aligned list items -->
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
+        </li>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+              Profile
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <li><button class="dropdown-item" type="button">Profile</button></li>
+              <li><button class="dropdown-item" type="button">Signin</button></li>
+              <li><button class="dropdown-item" type="button">Logout</button></li>
+            </ul>
+          </div>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="/image/mac.png" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item">
+        <img src="/image/1`.jpg" class="d-block w-100" alt="...">
+      </div>
+      <div class="carousel-item">
+        <img src="/image/dekstop-banner.jpg" class="d-block w-100" alt="...">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  <div class="popular-product">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="product-item-sm d-flex">
+                    <div class="thumbnail">
+                        <img src="/image/24x7.png" alt="Image" class="img-fluid">
+                    </div>
+                    <div class="pt-3">
+                        <h3>24 X 7  Support</h3>
+                        <br>
+                        <p><a href="#">Online Support 23/ 7</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="product-item-sm d-flex">
+                    <div class="thumbnail">
+                        <img src="/image/—Pngtree—black free shipping_6523936.png" alt="Image" class="img-fluid">
+                    </div>
+                    <div class="pt-3">
+                        <h3>Free Shipping</h3>
+                        <br>
+                        <!-- <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p> -->
+                        <p><a href="#">On Order Over 50000</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
+                <div class="product-item-sm d-flex">
+                    <div class="thumbnail">
+                        <img src="/image/4588410-200-removebg-preview.png" alt="Image" class="img-fluid">
+                    </div>
+                    <div class="pt-3">
+                        <h3>Safe Transaction</h3>
+                        <br>
+                        <!-- <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p> -->
+                        <p><a href="#">Safe transaction Rezo Pay</a></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div
+<%- include('../partial/footer') -%>

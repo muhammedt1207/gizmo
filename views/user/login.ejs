@@ -1,0 +1,57 @@
+<%- include ('partial/header') -%>
+
+
+
+<div class="text-center center-div d-flex align-items-center boarder-2 justify-content-center" id="LoginPage">
+  <div class="wrapper text-center center-div align-items-center justify-content-center">
+      <div class="title-one">
+          Login Page
+      </div>
+      <form action="/user/log" method="POST">
+          <div class="field">
+              <input type="text" name="name" required>
+              <label>Full Name</label>
+          </div>
+          <div class="field">
+              <input type="text" name="email" required>
+              <label>Email Address</label>
+          </div>
+          <div class="field">
+              <input type="password" name="password" id="password" required>
+              <label>Password</label>
+          </div>
+          <div class="signup-link">
+            <a href="/user/forget-pass">Forget password</a>
+        </div>
+        <br>
+          <!-- <div class="field">
+              <input type="password" name="confirmPassword" id="confirmPassword" required>
+              <label>Confirm Password</label>
+          </div> -->
+          <br>
+          <div class="field">
+              <input type="submit" value="Sign Up">
+          </div>
+          <div class="signup-link">
+              You Don't have Account? <a href="/user/tosignup">Signup</a>
+          </div>
+          <br>
+      </form>
+  </div>
+</div>
+
+
+<!-- 
+<script>
+  function validateForm() {
+      var password = document.getElementById("password").value;
+      var confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (password !== confirmPassword) {
+          alert("Passwords do not match. Please check.");
+          return false;
+      }
+      return true;
+  }
+</script> -->
+<%- include('./partial/footer')%>
