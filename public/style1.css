@@ -23,31 +23,29 @@
       a, a:hover{
         color:#333
       }
-      /* .home-pagin{
-        z-index: 600px;
+      .home-pagin{
+        z-index: 800px;
         background-color: rgba(0, 0, 0, 0);
-      } */
-      /* .imgin{
+      } 
+      .imgin{
         /* Set the background image URL */
-        /* background-image: url('/image/Slider1.jpg'); */
+        background-image: url('/image/Slider1.jpg');
         /* Set background size, position, and repeat properties */
-        /* background-size: cover; Adjust as needed */
-        /* background-position: center center; */
-        /* background-repeat: no-repeat; */
+        background-size: cover; 
+        background-position: center center;
+        background-repeat: no-repeat;
         /* Set the height of the container (adjust as needed) */
-        /* height: 400px; */
-      /* } */
+        height: 400px;
+      } 
       #navbar {
         background-color: rgba(0, 0, 0, 0); /* Transparent background color */
-      }
+      } */
       
       #navdiv {
         background-color: rgba(0, 0, 0, 0); /* Transparent background color */
       }
       
-      body{
-        background-color: transparent;
-      }
+/*24 hour support*/
       .popular-product {
         padding: 5rem 0 7rem 0;
         height: 70%;
@@ -193,7 +191,7 @@
               }
               /* side bar */
 body {
-  background-color: #fbfbfb;
+  background-color: #ffffff;
 }
 @media (min-width: 991.98px) {
   main {
@@ -232,5 +230,4 @@ body {
   overflow-x: hidden;
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
-
 

@@ -112,7 +112,7 @@ const userLogin = async (req, res) => {
             req.session.name = check.name;
             req.session.logged = true;
             console.log("Login success");
-            res.redirect("/user/user-home");
+            res.redirect("/user/home");
         }
         else {
             req.flash("errmsg","*invalid password")

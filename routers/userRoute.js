@@ -15,7 +15,7 @@ const Users = require("../models/users");
 //user login 
 user.get('/',(req,res)=>{
     if(req.session.logged){
-        res.redirect('/user/user-home');
+        res.redirect('/user/home');
     }else{
         res.render("./user/signup",{title:"Login",errmsg:("errmsg")});
     }
@@ -54,7 +54,7 @@ user.post("/user/forget-pass",userControl.forgotPass)
 user.get("/user/home",(req,res)=>{
     if(req.session.logged||req.user){
         console.log(req.session.logged);
-        res.render("./user/home",{title:"Home"})
+        res.render("./user/user-home",{title:"Home"})
     }
     else{
         console.log(req.session.logged);
