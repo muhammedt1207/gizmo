@@ -8,7 +8,9 @@ const UsersSchema = new Schema({
   password: { type: String, },
   email: { type: String, required: true },
   phone: { type: String },
-  status: { type: String },
+  status: { type: Boolean,
+            default:true
+   },
   address: [{
      addressLine: { type: String },
      country: { type: String },

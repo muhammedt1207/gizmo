@@ -25,7 +25,7 @@
       }
       .home-pagin{
         z-index: 800px;
-        background-color: rgba(0, 0, 0, 0);
+        background-color: rgba(255, 255, 255, 0);
       } 
       .imgin{
         /* Set the background image URL */
@@ -87,12 +87,18 @@
             transform: translate(-50%, -50%);
             z-index: -1; }
             body{
+              width: 100%;
               height: 100vh;
+              /* margin-left: 252px; */
+             
+              background-color: #610000;
             }
+           
             .wrapper{
                 width: 380px;
-                background: #fff;
+                background: #ffffff;
                 border-radius: 15px;
+                box-shadow: #000000;
               }
               .wrapper .title{
                 font-size: 35px;
@@ -174,7 +180,7 @@
                 font-size: 20px;
                 font-weight: 500;
                 cursor: pointer;
-                background-color: #16de30;
+                background-color: #15ff00;
               }
               form .field input[type="submit"]:active{
                 transform: scale(0.95);
@@ -189,15 +195,21 @@
                 color: #4158d0;
                 text-decoration: none;
               }
+              #LoginPage{
+                background-color: #e8e8e8;
+                height: 100vh;
+                padding-top: -5px;
+
+              }
               /* side bar */
-body {
+/* body {
   background-color: #ffffff;
 }
 @media (min-width: 991.98px) {
   main {
     padding-left: 240px;
   }
-}
+} */
 
 /* Sidebar */
 
@@ -231,3 +243,6 @@ body {
   overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
 
+#carouselExampleIndicators{
+  z-index: -500;
+}

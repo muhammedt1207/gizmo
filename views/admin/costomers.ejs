@@ -1,67 +1,45 @@
-<%- include('./partial/header') -%>
-
-
-<!-- //oder details list -->
+    <%- include('./partial/header') -%>
+    <div class="container-fluid">
+        <h1>Costomers</h1>
+        <br>
+    <table class="table table-striped w-75">
+        <thead>
+        <tr>
+            <th scope="col">No</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Orders</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
             
-            <div class="details">
-                <div class="recentOrders">
-                    <div class="cardHeader">
-                        <h1>Customers</h1>
-                        <!-- <a href="#" class="btn">View All</a> -->
-                    </div>
-
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>Name</td>
-                                <td>Email</td>
-                                <td>Join Date</td>
-                                <td>Status</td>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>Clint</td>
-                                <td>Andfui@gmail.com</td>
-                                <td>03/10/2023</td>
-                                <td><span class="status delivered">Active</span></td>
-                            </tr>
-
-                           
-                            <tr>
-                                <td>Yadhu</td>
-                                <td>yadhu@gmail.com</td>
-                                <td>02.08.2023</td>
-                                <td><span class="status return">Block</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Clint</td>
-                                <td>Andfui@gmail.com</td>
-                                <td>03/10/2023</td>
-                                <td><span class="status delivered">Active</span></td>
-                            </tr>
-
-                            <tr>
-                                <td>Yadhu</td>
-                                <td>yadhu@gmail.com</td>
-                                <td>02.08.2023</td>
-                                <td><span class="status return">Block</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-               
-                
-            </div>
-
-
+    <% if (Array.isArray(userData)) { %>
+        <% userData.forEach((x, i) => { %>
+        <tr>
+            <th scope="row"><%=++i%></th>
+            <td><%=x.userName%></td>
+            <td><%=x.email%></td>
+            <td>Orders</td>
+            <td style="background-color: <%= x.status ? 'green' : 'red' %>;" >
+                <% if (x.status) { %>
+                    Active 
+                <% } else { %>
+                    Blocked
+                <% } %>
+            </td>
+            <td><a href="/admin/block/<%= x._id %>" class="text-white"
+                onclick="return confirm('Do you want block  <%= x.username %> ?')">
+                <i class="fa-solid fa-xmark" style="color: #ff0000;"></i>
+            </a></td>
+        </tr>
         </div>
+        <% }); %>
+    <% } else { %>
+        <p>No user data available.</p>
+    <% } %>
+        </tbody>
+    </table>
     </div>
-
-
-
-
-  <%- include('partial/footer') -%>
+    <%- include('partial/footer') -%>

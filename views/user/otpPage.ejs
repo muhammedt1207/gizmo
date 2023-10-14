@@ -19,6 +19,9 @@
   <!-- Email OTP Form -->
   <form class="email-otp" action="/user/otp" method="post">
       <h2>Email OTP</h2>
+      <% if (err) { %>
+        <p style="color: rgb(207, 0, 0);"><%= err%></p>
+      <% } %>
       <div class="email-otp-container">
         
           <!-- Six input fields for OTP digits -->

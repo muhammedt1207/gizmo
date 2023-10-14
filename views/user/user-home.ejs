@@ -33,7 +33,7 @@
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
               <li><button class="dropdown-item" type="button">Profile</button></li>
               <li><button class="dropdown-item" type="button">Signin</button></li>
-              <li><button class="dropdown-item" type="button">Logout</button></li>
+              <li><a href="/user/logout"><button class="dropdown-item" type="button">Logout</button></a></li>
             </ul>
           </div>
       </ul>
@@ -69,10 +69,24 @@
   <br><br>
   <br>
   <br>
-<div class="container">
-    <h1 style="text-align:center">NEW ARRIVALS</h1>
+  <h1 style="text-align:center">NEW ARRIVALS</h1>
+  <div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+        <% data.forEach((x) => { %>
+        <div class="col">
+            <div class="card h-100 border-0; ">
+              <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                <img src="/product-image/<%= x.images[0] %>" class="card-img-top" style="height: 100px; width: 40%;" alt="image">
+              </div>
+                <div class="card-body text-center">
+                    <h5 class="card-title"><%= x.ProductName %></h5>
+                </div>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+</div>
 
-</div>  
   <div class="popular-product">
     <div class="container">
         <div class="row">

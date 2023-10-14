@@ -6,6 +6,11 @@
         <div class="title-one">
             Sign up
         </div>
+        <%if(err){%>
+            <span id="err" class="alert-danger">
+              <%=err%>
+            </span>
+          <%}%>
         <form action="/user/signup" method="POST" onsubmit="return validateForm()">
             <div class="field">
                 <input type="text" name="name" required>

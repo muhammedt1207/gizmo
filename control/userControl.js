@@ -4,7 +4,7 @@ const sendOTP = require("./otpController");
 const { use } = require("../routers/adminRoute");
 require("../util/otpindex")
 const OTP = require("../models/otpModel");
-
+const productUpload = require('../models/model');
 
 const userSignup = async (req,res) => {
     console.log("user sign up");
@@ -24,15 +24,15 @@ const userSignup = async (req,res) => {
             req.session.signotp=true;
             res.redirect("/user/otp-senting");
         } else {
-            req.flash("errmsg","*User with this email Already exist")
+            req.flash("err","*User with this email Already exist")
             req.session.errmsg = "user already exist"
-            res.redirect('/user/signup')
+            res.render('./user/signup',{ title:"signup" ,err:"User with this email already exist"})
             console.log("user already exist");
         }
     } catch (e) {
         console.log(e);
         console.log("signup error");
-        req.flash("errmsg","Sorry!!Something went wrong please try again after some times!!")
+        req.flash("err","Sorry!!Something went wrong please try again after some times!!")
         req.session.errmsg = "something went wrong"
         res.redirect('/user/signup')
         console.log("user already exist");
@@ -98,37 +98,43 @@ const forgotPass = async (req, res) => {
 
 
 
-const userLogin = async (req, res) => {
-    try {
-        const check = await user.findOne({ email: req.body.email })
-        console.log(check);
-        if(check){
-        console.log(req.body);
-        let isMatch = await bcrypt.compare(
-            req.body.password,
-            check.password
+    const userLogin = async (req, res) => {
+        try {
+            const check = await user.findOne({ email: req.body.email })
+            console.log(check);
+            
+            if(check){
+            console.log(req.body);
+            let isMatch = await bcrypt.compare(
+                req.body.password,
+                check.password
         );
         if (isMatch) {
+            if(check.status==true){
             req.session.name = check.name;
             req.session.logged = true;
             console.log("Login success");
             res.redirect("/user/home");
+            }else{
+                console.log('user is blocked')
+                res.render("./user/login",{title:"user login" ,err:"Access Denide"})
+            }
         }
         else {
-            req.flash("errmsg","*invalid password")
+            req.flash("err","*invalid password")
 
             req.session.errmsg = "invalid password"
             res.redirect('/')
             console.log("invalid password");
         }}else{
-            req.flash("errmsg","*User not found")
+            req.flash("err","*User not found")
             res.redirect('/')
             req.session.errmsg = "User not found"
             console.log("User not found");
 
         }
     } catch {
-        req.flash("errmsg","*invalid user name or password")
+        req.flash("err","*invalid user name or password")
         req.session.errmsg = "invalid user name or password"
         res.redirect('/')
         console.log("user not found");
@@ -153,12 +159,13 @@ const OtpConfirmation = async (req,res) => {
             if(match){
                 req.session.logged=true;
                 req.session.forgot=false;
-                res.redirect("/user/user-home");
+                res.redirect("./user/user-home");
             }
             else{
                 console.log("no match");
                 req.session.userdata="";
                 req.session.errmsg="Invalid OTP"
+                console.log("error 3");
                 res.redirect("/user/otpPage")
             }
         }
@@ -183,19 +190,21 @@ const OtpConfirmation = async (req,res) => {
                     const result=await user.insertMany([data])
                     req.session.logged=true;
                     req.session.signotp=false
-                    res.redirect("/user/user-home")
+                    res.redirect("./user/user-home")
     
                 }
                 else{
                     req.session.errmsg="Invalid OTP"
-                    res.redirect("/user/otpPage")
+                    console.log("erro 1");
+                    res.render("/user/otpPage",{err:"Invalid OTP"})
                 }
             }
             
             
         }catch(err){
             console.log(err);
-            res.redirect("/user/otpPage")
+            console.log("error 2"+err);
+            res.redirect("./user/otpPage")
         }
     }
 }
@@ -210,6 +219,19 @@ const logout = (req,res) => {
         }
     });
 }
+const userlog= async (req,res)=>{
+    if(req.session.logged||req.user){
+        console.log(req.session.logged);
+        const data= await productUpload.find()
+        res.render("./user/user-home",{title:"Home", data})
+    }
+    else{
+        console.log(req.session.logged);
+        res.redirect("/")
+    }
+}
+
+
 
 module.exports = {
     userLogin,
@@ -217,6 +239,7 @@ module.exports = {
     forgotPass,
     otpSender,
     logout,
-    OtpConfirmation
+    OtpConfirmation,
+    userlog
 
 }

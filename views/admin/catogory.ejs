@@ -1,0 +1,37 @@
+<%-include('./partial/header') %>
+
+<a href="/admin/toAdd-category" class="btn-outline-primary  p-2 rounded">
+    <i class="fa-solid fa-user-plus fa-xl " style="color: #000000;"></i>
+</a>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Catogory</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <% if (Array.isArray(categoryData)) { %>
+        <% categoryData.forEach((x, i) => { %>
+        <tr>
+            <th scope="row"><%=++i%></th>
+            <td><%=x.CategoryName%></td>
+            <td> 
+                <a href="/admin/edit-catogory/<%-x._id%>" class="text-white">
+                  <i class="fa-solid fa-pen-to-square fa-xl" style="color: #393939;"></i>
+                </a>
+            </td>
+           
+            <td><a href="/admin/delete-catogory/<%= x._id %>" class="text-white"
+                onclick="return confirm('Do you want delete  <%= x.CategoryName %> ?')">
+                <i class="fa-solid fa-trash" style="color: #5b5b5b;"></i>
+            </a></td>
+        </tr>
+        </div>
+        <% }); %>
+    <% } else { %>
+        <p>No user data available.</p>
+    <% } %>
+        </tbody>
+  </table>

@@ -41,9 +41,10 @@ app.use('/', userRouter);
 
 const adminRouter = require('./routers/adminRoute');
 app.use('/admin', adminRouter);
-
+ 
 const OTProutes=require("./util/otpindex")
 app.use('/otp',OTProutes)
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
