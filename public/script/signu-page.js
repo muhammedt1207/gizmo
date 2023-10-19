@@ -1,52 +1,4 @@
 
- <%- include ('partial/header') -%>
-
-<div class="text-center center-div d-flex align-items-center boarder-2 justify-content-center" id="LoginPage">
-    <div class="wrapper text-center center-div align-items-center justify-content-center">
-        <div class="title-one">
-            Sign up
-        </div>
-        <%if(err){%>
-            <span id="err" class="alert-danger">
-              <%=err%>
-            </span>
-          <%}%>
-        <form action="/user/signup" method="POST" onsubmit="return validateForm() " id="signupform">
-            <div class="field">
-                <input type="text" id="name" name="name" required  onchange="validateUserName()">
-                <label>Full Name</label>
-            </div>
-            <p class="msg" id="nameError"></p>
-            <div class="field">
-                <input type="text" id="email" name="email" required onchange="validateUserEmail()">
-                <label>Email Address</label>
-            </div>
-            <p class="msg" id="emailError"></p>
-            <div class="field">
-                <input type="password"  name="password" id="password" required onchange="validatePassword();" >
-                <label>Password</label>
-            </div>
-            <p class="msg" id="passwordError"></p>
-            <div class="field">
-                <input type="password" name="confirmPassword" id="confirmPassword" required onkeyup="checkPasswordMatch();">
-                <label>Confirm Password</label>
-            </div>
-            <p class="message" id="confirmError"></p>
-            <br>
-            <div class="field">
-                <input type="submit" value="Sign Up">
-            </div>
-            <div class="signup-link">
-                Already have an account? <a href="/user/tologin">Login</a>
-            </div>
-            <br>
-        </form>
-    </div>
-</div>
-
-
-
-<script>
 function validateUserName() {
     var usernamePattern = /^[a-zA-Z0-9_.\s]{3,16}$/;
     var name = document.getElementById("name").value;
@@ -91,6 +43,8 @@ function validateUserName() {
         signupButton.disabled = true; // Disable the button
     }
   }
+  
+  // JavaScript function to check password match
   function checkPasswordMatch() {
     var password = document.getElementById("password").value;
     var confirmPassword = document.getElementById("confirm-password").value;
@@ -130,7 +84,3 @@ function validateUserName() {
       togglePassword.classList.add("fa-eye");
     }
   });
-</script>
-
- <%- include('partial/footer') -%>
- 

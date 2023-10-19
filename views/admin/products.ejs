@@ -1,10 +1,12 @@
 <%-include('./partial/header')%>
-
-<table class="table">
+<h1>Products</h1>
+<table class="table w-75">
     <thead>
       <tr>
         <th scope="col">NO</th>
+        <th scope="col">Image</th> 
         <th scope="col">NAME</th>
+        <th scope="col">Catagory</th>
         <th scope="col">STOCK</th>
         <th scope="col">EDIT</th>
         <th scope="col">DELETE</th>
@@ -12,10 +14,12 @@
     </thead>
     <tbody>
     <% if (Array.isArray(data)) { %>
-        <% data.forEach((x, i) => { %>
+        <% data.filter(product => product.status === true).forEach((x, i) => { %>
         <tr>
             <th scope="row"><%=++i%></th>
+            <td><img src="/product-image/<%=x.images[0]%>" alt="product image" style="height: 40px;width: 50px;"></td>
             <td><%=x.ProductName%></td>
+            <td><%=x.Category%></td>
             <td><%=x.AvailableQuantity%></td>
             <td> 
                 <a href="/admin/edit-product/<%-x._id%>" class="text-white">
@@ -36,6 +40,5 @@
           
     </tbody>
   </table>
-
 
 <%-include('./partial/footer')%>

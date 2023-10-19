@@ -6,6 +6,42 @@ require("../util/otpindex")
 const OTP = require("../models/otpModel");
 const productUpload = require('../models/model');
 
+
+
+const tohome = async (req,res)=>{
+    if(req.session.logged){
+        res.redirect('/user/home');
+    }else{
+        const data= await productUpload.find()
+        res.render("./user/index",{title:"Login",err:false, data});
+    }
+}
+
+const tosignup = (req,res)=>{
+    if(req.session.logged){
+        res.redirect('/user/home')
+    }else{
+    res.render("user/signup",{title:"Signup",err:req.flash("err")})
+    }
+}
+
+const toOtp=(req,res)=>{
+    if(req.session.signotp || req.session.forgot){
+        res.render("./user/otpPage",{title: "OTP ", err:false });
+    }else{
+        res.redirect('/user/logout')
+    }
+}
+
+const toforgetPage= (req,res)=>{
+    if (req.session.logged) {
+        res.redirect('/user/home');
+    } else {
+        req.session.forgot = true
+        res.render("./user/forgot-pass", { err: req.flash("errmsg") })
+    }
+}
+
 const userSignup = async (req,res) => {
     console.log("user sign up");
     console.log(req.body+"hi");
@@ -25,7 +61,7 @@ const userSignup = async (req,res) => {
             res.redirect("/user/otp-senting");
         } else {
             req.flash("err","*User with this email Already exist")
-            req.session.errmsg = "user already exist"
+            req.session.err = "user already exist"
             res.render('./user/signup',{ title:"signup" ,err:"User with this email already exist"})
             console.log("user already exist");
         }
@@ -33,7 +69,7 @@ const userSignup = async (req,res) => {
         console.log(e);
         console.log("signup error");
         req.flash("err","Sorry!!Something went wrong please try again after some times!!")
-        req.session.errmsg = "something went wrong"
+        req.session.err = "something went wrong"
         res.redirect('/user/signup')
         console.log("user already exist");
     }
@@ -53,7 +89,7 @@ const otpSender = async(req,res)=>{
             res.status(200).redirect("/user/otp")
         }catch(err){
             console.log(err);
-            req.session.errmsg="Sorry at this momment we can't sent otp";
+            req.session.err="Sorry at this momment we can't sent otp";
             console.log(req.session.errmsg);
             if(req.session.forgot){
                 res.redirect("/user/forget-pass")
@@ -81,16 +117,16 @@ const forgotPass = async (req, res) => {
             req.session.userdata=userdata;
             req.session.email=email.toString();
             console.log("Sessiosiiii: ",req.session.email)
-           res.redirect("/user/otp-sent") 
+           res.redirect("/user/otp-senter") 
         }
         else{
             console.log(check);
-            req.session.errmsg="no email found"
+            req.session.err="no email found"
             res.redirect("/user/forget-pass");
         }
     }catch(err){
         console.log(err);
-        req.session.errmsg="no email found"
+        req.session.err="no email found"
         res.redirect("/user/forget-pass")
     }
 
@@ -111,7 +147,8 @@ const forgotPass = async (req, res) => {
         );
         if (isMatch) {
             if(check.status==true){
-            req.session.name = check.name;
+            req.session.user = check.userName;
+            console.log(req.session.user)
             req.session.logged = true;
             console.log("Login success");
             res.redirect("/user/home");
@@ -157,14 +194,15 @@ const OtpConfirmation = async (req,res) => {
             const hashed=Otp.otp
             const match=await bcrypt.compare(req.body.code,hashed);
             if(match){
-                req.session.logged=true;
+              
                 req.session.forgot=false;
+                req.seesion.pass_reset=true
                 res.redirect("./user/user-home");
             }
             else{
                 console.log("no match");
                 req.session.userdata="";
-                req.session.errmsg="Invalid OTP"
+                req.session.err="Invalid OTP"
                 console.log("error 3");
                 res.redirect("/user/otpPage")
             }
@@ -190,13 +228,14 @@ const OtpConfirmation = async (req,res) => {
                     const result=await user.insertMany([data])
                     req.session.logged=true;
                     req.session.signotp=false
-                    res.redirect("./user/user-home")
+                    const user= await user.findOne()
+                    res.redirect("/user/user-home")
     
                 }
                 else{
-                    req.session.errmsg="Invalid OTP"
+                    req.session.err="Invalid OTP"
                     console.log("erro 1");
-                    res.render("/user/otpPage",{err:"Invalid OTP"})
+                    res.redirect("/otpPage")
                 }
             }
             
@@ -221,12 +260,14 @@ const logout = (req,res) => {
 }
 const userlog= async (req,res)=>{
     if(req.session.logged||req.user){
+        const user=req.session.user
+        console.log(user);
         console.log(req.session.logged);
         const data= await productUpload.find()
-        res.render("./user/user-home",{title:"Home", data})
+        res.render("./user/user-home",{title:"Home", data,user})
     }
     else{
-        console.log(req.session.logged);
+        console.log("login");
         res.redirect("/")
     }
 }
@@ -240,6 +281,9 @@ module.exports = {
     otpSender,
     logout,
     OtpConfirmation,
-    userlog
+    userlog,
+    tohome,
+    tosignup,
+    toOtp,
 
 }

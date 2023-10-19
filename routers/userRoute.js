@@ -10,38 +10,30 @@ const USER=require("../models/users")
 const {sendOTP}=require("../control/userControl");
 const OTP = require("../models/otpModel");
 const Users = require("../models/users");
+const model=require('../models/model')
 
 
-//user login 
-user.get('/',(req,res)=>{
-    if(req.session.logged){
-        res.redirect('/user/home');
-    }else{
-        res.render("./user/login",{title:"Login",err:false});
-    }
+
+//index to login
+user.get('/user/indexToLogin',(req,res)=>{
+  res.render('user/login',{title : 'hello' , err: false});
 })
+//user login 
+user.get('/',userControl.tohome)            
 user.post("/user/log",userControl.userLogin);
 //signup to login
 user.get("/user/tologin",(req,res)=>{
-    res.render('./user/login',{title : 'hello'});
+    res.render('./user/login',{title : 'hello' , err: false});
 })
-user.get('/logout',(req,res)=>{
-  res.redirect("/")
-})
+user.get('/logout',userControl.logout)
 //logi to sign up
-user.get("/user/tosignup",(req,res)=>{
-    res.render("user/signup",{title:"Signup",err:false})
-})
+user.get("/user/tosignup",userControl.tosignup)
 //signup
 user.post("/user/signup",userControl.userSignup)
-
 //otp
 user.get("/user/otp-senting",userControl.otpSender)
-
 //otp page
-user.get("/user/otp",(req,res)=>{
-    res.render("./user/otpPage",{title: "OTP ", err:false });
-})
+user.get("/user/otp",userControl.toOtp)
 // user.post("/user/forgot/otp",userControl.forgotPassOTPConfirmation)
 user.post("/user/otp",userControl.OtpConfirmation)
 
@@ -51,21 +43,24 @@ user.get("/user/forget-pass",(req,res)=>{
     res.render("./user/forget-pass")
 })
 user.post("/user/forget-pass",userControl.forgotPass)
-
-
 //user logged home page
 user.get("/user/home",userControl.userlog)
  
 //user logout
 user.get("/user/logout",userControl.logout)
-
-
 //get wish list
 user.get("/user/wishlist",(req,res)=>{
   res.render("./user/user-wishlist")
 })
 
-
+//to product view
+user.get('/user/toProduct-view',async(req,res)=>{
+  console.log("dxfgg");
+  const id = req.params.id;
+  const data= await model.findOne({_id:id})
+  console.log("to product view");
+  res.render("/user/product-view",{data})
+})
 
 
 

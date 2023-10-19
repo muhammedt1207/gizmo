@@ -19,6 +19,10 @@ const productUploadSchema = new Schema({
       type: String,
       required: true,
     },
+    status :{
+      type:Boolean,
+      default:true
+    },
     Tags: {
       type: Array,
     },

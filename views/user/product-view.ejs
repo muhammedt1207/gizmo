@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptop Product - Your E-commerce Website</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        /* Custom CSS to adjust the size of small images */
+        .small-image {
+            max-width: 100px; /* Adjust the max-width as needed */
+        }
+    </style>
+</head>
+<body>
+    
+<nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded">
+    <div class="container">
+      <a class="navbar-brand" href="#"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;" alt="logo"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      
+      <!-- Centered search bar -->
+      <form class="d-flex mx-auto">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #4f4f4f;"></i></button>
+      </form>
+      <!-- Right-aligned list items -->
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
+        </li>
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+              Profile
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <li><button class="dropdown-item" type="button">Profile</button></li>
+              <li><button class="dropdown-item" type="button">Signin</button></li>
+              <li><a href="/user/logout"><button class="dropdown-item" type="button">Logout</button></a></li>
+            </ul>
+          </div>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <main class="container mt-4">
+        <div class="row">
+            <!-- Main Big Image Column -->
+            <div class="col-md-6" id="img-show ">
+                <img src="/product-image/<%=data.images[0]%>" alt="Laptop" class="img-fluid">
+            </div>
+
+            <!-- Product Details Column -->
+            <div class="col-md-6">
+                <h2><%=data.ProductName%></h2>
+                <p>Specifications:</p>
+                <ul>
+                    <li><%=data.Specification1%></li>
+                    <li><%=data.Specification2%></li>
+                    <li><%=data.Specification3%></li>
+                    <li><%=data.Specification4%></li>
+                </ul>
+                <p>Description:</p>
+                <p>
+                    <%=data.Description%>
+                 </p>
+                <div class="price">
+                    <span class="text-muted">Original Price: <%=data.Price%></span>
+                    <h4 class="text-success">Discounted Price: <%=data.DiscountAmount%></h4>
+                </div>
+                <button class="btn btn-primary" id="addToCart">Add to Cart</button>
+                <button class="btn btn-success" id="addToWishlist">Add to Wishlist</button>
+            </div>
+        </div>
+
+        <!-- Small Images in a Separate Div -->
+        <div class="row mt-4">
+            <div class="col-md-12 ">
+                <div class="small-images">
+                    <img src="/product-image/<%=data.images[1]%>" alt="Small Image 1" class="img-thumbnail small-image mx-2">
+                    <img src="/product-image/<%=data.images[2]%>" alt="Small Image 2" class="img-thumbnail small-image mx-2">
+                    <img src="/product-image/<%=data.images[3]%>" alt="Small Image 3" class="img-thumbnail small-image mx-2">
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        const addToWishlistButton = document.getElementById('addToWishlist');
+        addToWishlistButton.addEventListener('click', () => {
+            alert('Product added to your Wishlist!');
+        }); 
+        var options = {
+            width: 280,
+            zoomWidth: 200,
+            offset: { vertical: 50, horizontal: 90 }
+        };
+        new ImageZoom(document.getElementById("img-show"), options);
+    </script>
+</body>
+</html>

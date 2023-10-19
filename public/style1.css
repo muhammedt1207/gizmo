@@ -246,3 +246,6 @@
 #carouselExampleIndicators{
   z-index: -500;
 }
+#dropbar{
+  z-index: 600;
+}

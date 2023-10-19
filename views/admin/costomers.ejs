@@ -1,6 +1,6 @@
     <%- include('./partial/header') -%>
     <div class="container-fluid">
-        <h1>Costomers</h1>
+        <h1>Customers</h1>
         <br>
     <table class="table table-striped w-75">
         <thead>
@@ -22,11 +22,12 @@
             <td><%=x.userName%></td>
             <td><%=x.email%></td>
             <td>Orders</td>
-            <td style="background-color: <%= x.status ? 'green' : 'red' %>;" >
+            <td >
                 <% if (x.status) { %>
-                    Active 
+                    <button style="background-color: #1bbd2b; color: white; border-radius: 10px;  border-color: transparent;"><i class="fa-solid fa-address-book" style="color: #1bbd2b;"></i> Active <i class="fa-solid fa-address-book" style="color: #1bbd2b;"></i></button>
+
                 <% } else { %>
-                    Blocked
+                    <button style="background-color: #ff0000; color: white;  border-radius: 10px; border-color: transparent;" > <i class="fa-solid fa-ban" style="color: #ff0000;"></i> Block <i class="fa-solid fa-ban" style="color: #ff0000;"></i> </button>
                 <% } %>
             </td>
             <td><a href="/admin/block/<%= x._id %>" class="text-white"
