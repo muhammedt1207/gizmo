@@ -3,51 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>hello</title>
+    <title>Email OTP</title>
     <link rel="stylesheet" href="/style1.css">
     <link rel="stylesheet" href="/otp.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <style>
+        /* Style for countdown timer */
+        .countdown {
+            font-size: 18px;
+            color: #333;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 
 <body>
-    
-
 <div class="otp-form">
-
-  <!-- Email OTP Form -->
   <form class="email-otp" action="/user/otp" method="post">
-      <h2>Email OTP</h2>
-      <% if (err) { %>
-        <p style="color: rgb(207, 0, 0);"><%= err%></p>
-      <% } %>
-      <div class="email-otp-container">
-        
-          <!-- Six input fields for OTP digits -->
-          <input type="text" class="email-otp-input" pattern="\d" maxlength="1">
-          <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
-          <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
-          <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
-          <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
-          <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
-
-     </div>
-      
-      <!-- Field to display entered OTP -->
-      <input type="text" id="emailverificationCode" name="code" placeholder="Enter verification code" value="dsjhgfahcbhjasdb" style="display: none;">
-      <!-- Button to verify OTP -->
-      <br>
-      <button type="submit" id="verifyEmailOTP" class="btn btn-info">VERIFY</button>
-    </form>
+    <h2>Email OTP</h2>
+    <% if (err) { %>
+      <p style="color: rgb(207, 0, 0);"><%= err %></p>
+    <% } %>
+    <div id="resendMessage"></div>
+    <!-- Countdown timer -->
+    <div id="countdown" class="countdown"></div>
+    <div class="email-otp-container">
+      <!-- Six input fields for OTP digits -->
+      <input type="text" class="email-otp-input" pattern="\d" maxlength="1">
+      <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
+      <input type="text" class= "email-otp-input" pattern="\d" maxlength="1" disabled>
+      <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
+      <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
+      <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
+    </div>
+    <input type="text" id="emailverificationCode" name="code" placeholder="Enter verification code" value="dsjhgfahcbhjasdb" style="display: none;">
     <br>
-    <a href="/user/otp-sent">Resent OTP</a>
-  
+    <button type="submit" id="verifyEmailOTP" class="btn btn-info">VERIFY</button>
+  </form>
+  <br>
+  <a href="/user/resend-otp" id="resendOTPButton">Resend OTP</a>
 </div>
-<!-- <form action="/user/otp" method="post">
-  <input type="text" name="sample">
-  <input type="submit" class="btn btn-info">
-</form> -->
 
-<script  src="/script/otp.js"></script>
+<script>
+  const countdownTime = 180; // 3 minutes in seconds
+  let countdown = countdownTime;
+
+  function updateCountdown() {
+    const minutes = Math.floor(countdown / 60);
+    const seconds = countdown % 60;
+    const countdownElement = document.getElementById("countdown");
+    countdownElement.textContent = `Time left: ${minutes} minutes ${seconds} seconds`;
+
+    if (countdown === 0) {
+      document.querySelector(".email-otp").classList.add("disabled");
+      document.getElementById("verifyEmailOTP").disabled = true;
+    } else {
+      countdown--;
+      setTimeout(updateCountdown, 1000);
+    }
+  }
+
+  updateCountdown();
+  // JavaScript code to send an AJAX request for OTP resending
+document.getElementById("resendOTPButton").addEventListener("click", function () {
+  // Send an AJAX request to the server
+  fetch("/user/resend-otp", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Handle the response from the server
+      if (data.success) {
+        alert("OTP resent successfully!");
+      } else {
+        alert("Failed to resend OTP. Please try again later.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("An error occurred while resending OTP.");
+    });
+});
+
+</script>
+<script src="/script/otp.js"></script>
+<!-- Add the rest of your script tags, styles, and footer include here -->
 <%-include('./partial/footer')-%>
+</body>
+</html>

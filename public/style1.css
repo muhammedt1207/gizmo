@@ -249,3 +249,6 @@
 #dropbar{
   z-index: 600;
 }
+a#special-link {
+  text-decoration: none;
+}

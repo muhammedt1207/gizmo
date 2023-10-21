@@ -13,7 +13,7 @@
           <%}%>
         <form action="/user/signup" method="POST" onsubmit="return validateForm() " id="signupform">
             <div class="field">
-                <input type="text" id="name" name="name" required  onchange="validateUserName()">
+                <input type="text" id="name" name="name" required onchange="validateUserName()">
                 <label>Full Name</label>
             </div>
             <p class="msg" id="nameError"></p>
@@ -77,17 +77,17 @@ function validateUserName() {
     }
   }
   function validatePassword() {
-    var passwordPattern = /^.{8,}$/;
+    var passwordPattern = /^.{4,}$/;
     var msg = document.getElementById("passwordError");
     var password = document.getElementById("password").value;
     var isValid = passwordPattern.test(password);
     var signupButton = document.getElementById("signupButton");
   
-    if (isValid && password.trim().length >=8) {
+    if (isValid && password.trim().length >=4) {
         msg.innerHTML = "";
         signupButton.disabled = false; // Enable the button
     } else {
-        msg.innerHTML = "Password must be at least 8 characters";
+        msg.innerHTML = "Password must be at least 4 characters";
         signupButton.disabled = true; // Disable the button
     }
   }

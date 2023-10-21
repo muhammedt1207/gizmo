@@ -12,7 +12,7 @@ const sendOTP=async (email)=>{
         
         //clear old otp
         await OTP.deleteOne({email})
-        console.log("error ividayano");
+        console.log("delete OTP and new OTP sended");
         //generate new otp
         const generatedOTP=await generateOTP();
 
@@ -28,7 +28,8 @@ const sendOTP=async (email)=>{
 
         //save otp record
         
-        const hashedData=await bcrypt.hash(generatedOTP,10);
+        // const hashedData=await bcrypt.hash(generatedOTP,10);
+        // console.log('hashed data'+hashedData);
         function addMinutesToDate(date, minutes) {
             return new Date(date.getTime() + minutes * 60000); // 60000 milliseconds in a minute
           }
@@ -36,7 +37,7 @@ const sendOTP=async (email)=>{
         const newDate = addMinutesToDate(currentDate, 10);
         const newOTP= await new OTP({
             email,
-            otp:hashedData,
+            otp:generatedOTP,
             createdAt:Date.now(),
             expireAt:newDate,
         })

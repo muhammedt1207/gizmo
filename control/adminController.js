@@ -14,12 +14,30 @@ const loginadmin = async (req, res) => {
     const Password = req.body.password;
     if (Email === credential.email && Password === credential.password) {
         console.log('Admin logged');
+        req.session.adminlogged=true;
         res.render('./admin/dashboard', { title: 'dashboard', err: false });
     } else {
         console.log('Admin logging failed');
         res.render('./admin/login', { err: 'Invalid password or email' });
     }
 };
+
+
+const toLogin=(req,res)=>{
+    res.render('admin/login',{title:"admin Login"})
+}
+
+const toEditcategory=(req,res)=>{
+    res.redirect('./admin/edit-cotogory')
+}
+
+const toDashBoard=(req,res)=>{
+    res.render('./admin/home',{title:"dash board"})
+}
+
+const toProduct=(req,res)=>{
+    res.render('/admin/products',{title:"products"})
+}
 
 const signout = async (req, res) => {
     console.log('Signout');
@@ -113,27 +131,27 @@ const addProduct = async (req, res) => {
     const productDetails = req.body;
     try {
         const files = req?.files;
+        const images=req.files; 
+        let allImage=[];
+        for(let i=0;i<images.length;i++){
+            allImage[i]=images[i].filename
+        }
 
-        if (files && files.main && files.main[0] && files.image1 && files.image1[0] && files.image2 && files.image2[0] && files.image3 && files.image3[0]) {
-            const ret = [
-                files.main[0].filename,
-                files.image1[0].filename,
-                files.image2[0].filename,
-                files.image3[0].filename,
-            ];
+        images.forEach((value,index)=>{
+            console.log("images"+index,value);
+        })
+
+       
 
             const uploaded = await productUpload.create({
                 ...productDetails,
-                images: ret,
+                images: allImage,
             });
 
             if (uploaded) {
                 console.log('Product added');
                 res.redirect('/admin/catogory');
             }
-        } else {
-            console.log('One or more files are missing.');
-        }
     } catch (error) {
         console.log('An error happened');
         throw error;
@@ -274,4 +292,8 @@ module.exports = {
     deleteProduct,
     toEditProduct,
     EditProduct,
+    toLogin,
+    toEditcategory,
+    toDashBoard,
+    toProduct,
 };

@@ -24,7 +24,12 @@ const tosignup = (req,res)=>{
     res.render("user/signup",{title:"Signup",err:req.flash("err")})
     }
 }
-
+const signupToLog=(req,res)=>{
+    res.render('./user/login',{title : 'hello' , err: false});
+}
+const IndexToLogin=(req,res)=>{
+    res.render('user/login',{title : 'hello' , err: false});
+  } 
 const toOtp=(req,res)=>{
     if(req.session.signotp || req.session.forgot){
         res.render("./user/otpPage",{title: "OTP ", err:false });
@@ -70,7 +75,7 @@ const userSignup = async (req,res) => {
         console.log("signup error");
         req.flash("err","Sorry!!Something went wrong please try again after some times!!")
         req.session.err = "something went wrong"
-        res.redirect('/user/signup')
+        res.render('/user/signup',{err: "Sorry.. Something went wrong please try again after some times"})
         console.log("user already exist");
     }
 }
@@ -99,8 +104,22 @@ const otpSender = async(req,res)=>{
     }
 }
 
-
-
+const resendOTP = async (req, res) => {
+    if (req.session.signotp || req.session.forgot) {
+      try {
+        const email = req.session.email;
+        const createdOTP = await sendOTP(email);
+        req.session.email = email;
+        res.status(200).json({ success: true })
+      } catch (err) {
+        console.log(err);
+        req.session.err = "Sorry, at this moment we can't send OTP";
+        res.status(500).json({ success: false });
+      }
+    } else {
+      res.status(400).json({ success: false});
+    }
+}
 const forgotPass = async (req, res) => {
     try{
         console.log(req.body);
@@ -117,7 +136,7 @@ const forgotPass = async (req, res) => {
             req.session.userdata=userdata;
             req.session.email=email.toString();
             console.log("Sessiosiiii: ",req.session.email)
-           res.redirect("/user/otp-senter") 
+           res.redirect("/user/otp-senting") 
         }
         else{
             console.log(check);
@@ -134,8 +153,8 @@ const forgotPass = async (req, res) => {
 
 
 
-    const userLogin = async (req, res) => {
-        try {
+const userLogin = async (req, res) => {
+      try {
             const check = await user.findOne({ email: req.body.email })
             console.log(check);
             
@@ -150,6 +169,8 @@ const forgotPass = async (req, res) => {
             req.session.user = check.userName;
             console.log(req.session.user)
             req.session.logged = true;
+            req.session.email=req.body.email
+            console.log(req.session.email);
             console.log("Login success");
             res.redirect("/user/home");
             }else{
@@ -160,21 +181,21 @@ const forgotPass = async (req, res) => {
         else {
             req.flash("err","*invalid password")
 
-            req.session.errmsg = "invalid password"
-            res.redirect('/')
+            req.session.err = "invalid password"
+            res.render('./user/login',{ title:"login page", err: "Invalid Password"})
             console.log("invalid password");
         }}else{
             req.flash("err","*User not found")
-            res.redirect('/')
-            req.session.errmsg = "User not found"
-            console.log("User not found");
+            res.render('./user/login',{title:"login", err:"User Not Found"})
+            req.session.err = "User not found"
+            console.log("User not found-1");
 
         }
     } catch {
         req.flash("err","*invalid user name or password")
         req.session.errmsg = "invalid user name or password"
-        res.redirect('/')
-        console.log("user not found");
+        res.render('./user/login',{title:"login page",err: "invalid user name  or password"})
+        console.log("user not found-2");
     }
 }
 
@@ -188,23 +209,27 @@ const OtpConfirmation = async (req,res) => {
         const Otp= await OTP.findOne({email:email})
 
         if(Date.now()>Otp.expireAt){
-            await OTP.deleteOne({data});
+            await OTP.deleteOne({});
 
         }else{
             const hashed=Otp.otp
-            const match=await bcrypt.compare(req.body.code,hashed);
-            if(match){
+            console.log("hashed......"+hashed);
+            console.log("body"+req.body)
+            const { code, email} = req.body
+            console.log("code otp ....."+code);
+            // console.log('match'+match);
+            if(hashed==code){
               
                 req.session.forgot=false;
-                req.seesion.pass_reset=true
-                res.redirect("./user/user-home");
+                // req.seesion.pass_reset=true;
+                res.render("user/new-password",{title:"Password Reset"});
             }
             else{
                 console.log("no match");
                 req.session.userdata="";
                 req.session.err="Invalid OTP"
                 console.log("error 3");
-                res.redirect("/user/otpPage")
+                res.render("user/otpPage",{err:"Invalid OTP"})
             }
         }
     }catch(err){
@@ -223,19 +248,25 @@ const OtpConfirmation = async (req,res) => {
                 await OTP.deleteOne({email});
             }else{
                 const hashed=Otp.otp
-                const match=await bcrypt.compare(req.body.code,hashed);
-                if(match){
+                console.log("hashed......"+hashed);
+                console.log("body"+req.body)
+                const { code, email} = req.body
+                console.log("code otp ....."+code);
+                req.session.email=data.email;
+                console.log(req.session.email)
+                if(hashed==code){
                     const result=await user.insertMany([data])
                     req.session.logged=true;
+                    console.log(result);
                     req.session.signotp=false
-                    const user= await user.findOne()
-                    res.redirect("/user/user-home")
+                    // const user= await user.findOne()
+                    res.redirect("/user/home")
     
                 }
                 else{
                     req.session.err="Invalid OTP"
                     console.log("erro 1");
-                    res.redirect("/otpPage")
+                    res.render("./user/otpPage",{err:"invalid OTP"})
                 }
             }
             
@@ -245,6 +276,34 @@ const OtpConfirmation = async (req,res) => {
             console.log("error 2"+err);
             res.redirect("./user/otpPage")
         }
+    }
+}
+ const toForgotPass=(req,res)=>{
+    req.session.forgot=true
+    res.render("./user/forget-pass")
+}
+const get_password_reset = (req, res) => {
+    if (req.session.pass_reset) {
+        res.render("userView/resetPass",{title:"Reset password"});
+
+    } else {
+        res.redirect("/user/login-page")
+    }
+}
+
+const passwordReset = async (req, res) => {
+    try {
+        console.log(req.body);
+        const pass = await bcrypt.hash(req.body.password, 10);
+        const email = req.session.email
+        console.log(email);
+        const update = await user.updateOne({ email: email }, { $set: { password: pass } })
+        req.session.logged = true;
+        // req.session.pass_reset = false
+        res.redirect("/user/indexToLogin")
+    } catch (err) {
+        req.flash("errmsg", "something went wrong")
+        console.log(err);
     }
 }
 
@@ -264,7 +323,7 @@ const userlog= async (req,res)=>{
         console.log(user);
         console.log(req.session.logged);
         const data= await productUpload.find()
-        res.render("./user/user-home",{title:"Home", data,user})
+        res.render("user/user-home",{title:"Home", data,user})
     }
     else{
         console.log("login");
@@ -272,6 +331,13 @@ const userlog= async (req,res)=>{
     }
 }
 
+const productView=async(req,res)=>{
+    console.log("dxfgg");
+    const id = req.params.id;
+    const data= await  productUpload.findOne({_id:id})
+    console.log("to product view");
+    res.render("user/product-view",{data})
+  }
 
 
 module.exports = {
@@ -285,5 +351,10 @@ module.exports = {
     tohome,
     tosignup,
     toOtp,
-
+    resendOTP,
+    passwordReset,
+    productView,
+    toForgotPass,
+    IndexToLogin,
+    signupToLog,
 }

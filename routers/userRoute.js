@@ -11,56 +11,36 @@ const {sendOTP}=require("../control/userControl");
 const OTP = require("../models/otpModel");
 const Users = require("../models/users");
 const model=require('../models/model')
+const userAuth=require('../middlewares/UserAuth')
+const userBlock=require('../middlewares/userblock')
 
+// login
+user.get('/user/indexToLogin',userAuth.userExist,userControl.IndexToLogin)
+user.post("/user/log",userAuth.userExist,userControl.userLogin);
+user.get('/',userAuth.userExist,userControl.tohome)  
 
+//signup 
+user.get("/user/tologin",userAuth.userExist,userControl.signupToLog)
+// user.get('/logout',userAuth.userExist,userControl.logout)
+user.get("/user/logout",userControl.logout)
+user.get("/user/tosignup",userAuth.userExist,userControl.tosignup)
+user.post("/user/signup",userAuth.userExist,userControl.userSignup)
 
-//index to login
-user.get('/user/indexToLogin',(req,res)=>{
-  res.render('user/login',{title : 'hello' , err: false});
-})
-//user login 
-user.get('/',userControl.tohome)            
-user.post("/user/log",userControl.userLogin);
-//signup to login
-user.get("/user/tologin",(req,res)=>{
-    res.render('./user/login',{title : 'hello' , err: false});
-})
-user.get('/logout',userControl.logout)
-//logi to sign up
-user.get("/user/tosignup",userControl.tosignup)
-//signup
-user.post("/user/signup",userControl.userSignup)
 //otp
-user.get("/user/otp-senting",userControl.otpSender)
-//otp page
-user.get("/user/otp",userControl.toOtp)
-// user.post("/user/forgot/otp",userControl.forgotPassOTPConfirmation)
-user.post("/user/otp",userControl.OtpConfirmation)
+user.get("/user/otp-senting",userAuth.userExist,userControl.otpSender)
+user.get("/user/otp",userAuth.userExist,userControl.toOtp)
+user.post("/user/otp",userAuth.userExist,userControl.OtpConfirmation)
+user.get("/user/resend-otp",userAuth.userExist,userControl.resendOTP);
 
 //forgot password
-user.get("/user/forget-pass",(req,res)=>{
-    req.session.forgot=true
-    res.render("./user/forget-pass")
-})
-user.post("/user/forget-pass",userControl.forgotPass)
-//user logged home page
-user.get("/user/home",userControl.userlog)
- 
-//user logout
-user.get("/user/logout",userControl.logout)
-//get wish list
-user.get("/user/wishlist",(req,res)=>{
-  res.render("./user/user-wishlist")
-})
+user.get("/user/forget-pass",userAuth.userExist,userControl.toForgotPass)
+user.post("/user/forget-pass",userAuth.userExist,userControl.forgotPass)
+user.post('/user/pass-change',userAuth.userExist,userControl.passwordReset)
 
+//user logged home page
+user.get("/user/home",userAuth.verifyUser,userBlock,userControl.userlog)
 //to product view
-user.get('/user/toProduct-view',async(req,res)=>{
-  console.log("dxfgg");
-  const id = req.params.id;
-  const data= await model.findOne({_id:id})
-  console.log("to product view");
-  res.render("/user/product-view",{data})
-})
+user.get('/user/toProductView/:id',userAuth.verifyUser,userControl.productView)
 
 
 

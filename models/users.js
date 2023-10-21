@@ -17,9 +17,6 @@ const UsersSchema = new Schema({
      pincode: { type: String },
      state: { type: String },
   }],
-  orders: [{
-     orderId: { type: Schema.Types.ObjectId },
-  }],
   dob: { type: Date },
   gender: { type: String },
   joined:{type:Date},
