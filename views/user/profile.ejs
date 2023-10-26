@@ -1,0 +1,131 @@
+
+<%-include('./partial/header')%>
+
+
+<div class="container">
+    <div class="row gutters-sm">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                        <div class="mt-3">
+                            <h4><%=userData.userName%></h4>
+                            <p class="text-secondary mb-1"><%=userData.email%></p>
+                            <p class="text-muted font-size-sm"></p>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <button class="btn btn-outline-secondary mb-2">Account Setting</button>
+                            <button class="btn btn-outline-secondary mb-2">Cart</button>
+                            <button class="btn btn-outline-secondary mb-2">Wishlist</button>
+                            <button class="btn btn-outline-secondary">ifae</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Full Name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            <%=userData.userName%>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Email</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            <%=userData.email%>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Mobile</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            (320) 380-4539
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Address</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            
+                            <%=userData.address[0].addressLine%>
+                            <br>
+                            <%=userData.address[0].city%>
+                            <br>
+                            <%=userData.address[0].pincode%>
+                            <br>
+                            <%=userData.address[0].state%>
+                            <br>
+                            <%=userData.address[0].mobileNumber%>
+                            
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Add</button>
+                        </div>
+                    </div>
+                    
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="/user/addAddress" method="post" >
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Address:</label>
+              <input type="text" name="address" class="form-control" id="recipient-name">
+            </div>
+            <div class="form-group">
+                <label for="recipient-name" class="col-form-label">City:</label>
+                <input type="text" name="city" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Pincode:</label>
+                <input type="text" name="pincode" class="form-control" id="recipient-name" oninput= "this.value = this.value.replace(/[^0-9]/g, '');"  pattern="[0-9]*" maxlength="6">
+                <div id="pincode-validation-message" class="text-danger"></div>
+            </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">State:</label>
+                <input type="text" name="state" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="col-form-label">Mobile Number:</label>
+                <input type="number" name="number" class="form-control" id="recipient-name">
+              </div> 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" id="submit-button" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/script/address.js"></script>
+<%-include('./partial/footer')%>

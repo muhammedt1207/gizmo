@@ -14,99 +14,120 @@
     </style>
 </head>
 <body>
-    
-<nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded">
+
+<nav class="home-pagin navbar navbar-expand-lg position-sticky shadow-lg bg-body rounded">
     <div class="container">
-      <a class="navbar-brand" href="#"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;" alt="logo"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      
-      <!-- Centered search bar -->
-      <form class="d-flex mx-auto">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #4f4f4f;"></i></button>
-      </form>
-      <!-- Right-aligned list items -->
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
-        </li>
-      </ul>
-      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
-        </li>
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
-              Profile
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-              <li><button class="dropdown-item" type="button">Profile</button></li>
-              <li><button class="dropdown-item" type="button">Signin</button></li>
-              <li><a href="/user/logout"><button class="dropdown-item" type="button">Logout</button></a></li>
+        <a class="navbar-brand" href="#"><img src="/image/logo-no-background-balck.png" style="height: 2; width: 100px;" alt="logo"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Centered search bar -->
+            <form class="d-flex mx-auto">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #4f4f4f;"></i></button>
+            </form>
+            <!-- Right-aligned list items -->
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
             </ul>
-          </div>
-      </ul>
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
+                </li>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                        Profile
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                        <li><button class="dropdown-item" type="button">Profile</button></li>
+                        <li><button class="dropdown-item" type="button">Signin</button></li>
+                        <li><a href="/user/logout"><button class="dropdown-item" type="button">Logout</button></a></li>
+                    </ul>
+                </div>
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>
-    <main class="container mt-5">
-        <div class="row">
-            <!-- Main Big Image Column -->
-            <div class="col-md-6 pt-5" id="img-show">
-                <img src="/product-image/<%=data.images[0]%>" id="img-show" alt="Laptop" class="img-fluid">
-            </div>
 
-            <!-- Product Details Column -->
-            <div class="col-md-6">
-                <h2><%=data.ProductName%></h2>
-                <p>Specifications:</p>
-                <ul>
-                    <li><%=data.Specification1%></li>
-                    <li><%=data.Specification2%></li>
-                    <li><%=data.Specification3%></li>
-                    <li><%=data.Specification4%></li>
-                </ul>
-                <p class="font-weight-bold">Description:</p>
-                <p>
-                    <%=data.Description%>
-                 </p>
-                <div class="price">
-                    <span class="text-muted">Original price :<del>₹<%=data.Price%></del> </span>
-                    <h4 class="text-success">Price:₹ <%=data.DiscountAmount%></h4>
-                </div>
-                <button class="btn btn-primary" id="addToCart">Add to Cart</button>
-                <button class="btn btn-success" id="addToWishlist">Add to Wishlist</button>
-            </div>
-        </div> 
+<main class="container mt-5">
+    <div class="row">
+        <!-- Main Big Image Column -->
+        <div class="col-md-6 col-sm-12 pt-5" id="img-show" >
+            <img src="/product-image/<%=data.images[0]%>" alt="Laptop" class="img-fluid">
+        </div>
 
-        <!-- Small Images in a Separate Div -->
-        <div class="row mt-4 pb-5" >
-            <div class="col-md-12 ">
-                <div class="small-images">
-                    <img src="/product-image/<%=data.images[1]%>" alt="Small Image 1" class="img-thumbnail small-image mx-2">
-                    <img src="/product-image/<%=data.images[2]%>" alt="Small Image 2" class="img-thumbnail small-image mx-2">
-                    <img src="/product-image/<%=data.images[3]%>" alt="Small Image 3" class="img-thumbnail small-image mx-2">
-                </div>
+        <!-- Product Details Column -->
+        <div class="col-md-6 col-sm-12 mt-4">
+            <h2><%=data.ProductName%></h2>
+            <p>Specifications:</p>
+            <ul>
+                <li><%=data.Specification1%></li>
+                <li><%=data.Specification2%></li>
+                <li><%=data.Specification3%></li>
+                <li><%=data.Specification4%></li>
+            </ul>
+            <p class="font-weight-bold">Description:</p>
+            <p><%=data.Description%></p>
+            <div class="price">
+                <span class="text-muted">Original price: <del>₹<%=data.Price%></del></span>
+                <h4 class="text-success">Price: ₹<%=data.DiscountAmount%></h4>
+            </div>
+            <button id="addToCartButton" data-item-id="<%= data._id %>">Add to Cart</button>
+            <button class="btn" style="background-color: #078505;" id="addToWishlist">Add to Wishlist</button>
+        </div>
+    </div>
+
+    <!-- Small Images in a Separate Div -->
+    <div class="row mt-4 pb-5">
+        <div class="col-md-12">
+            <div class="small-images">
+                <img src="/product-image/<%=data.images[1]%>" alt="Small Image 1" class="img-thumbnail small-image mx-2">
+                <img src="/product-image/<%=data.images[2]%>" alt="Small Image 2" class="img-thumbnail small-image mx-2">
+                <img src="/product-image/<%=data.images[3]%>" alt="Small Image 3" class="img-thumbnail small-image mx-2">
             </div>
         </div>
-    </main>
-    <script>
-        var options = {
-            width: 400,
-            zoomWidth: 150,
-            offset: { vertical: 30, horizontal: 50 }
-        };
-        console.log("Before ImageZoom initialization");
-        new ImageZoom(document.getElementById("img-show"), options);
-        console.log("After ImageZoom initialization");
-    </script>
-    <script src="/script/js-ImageZoom.js"></script>
+    </div>
+</main>
 
+<script>
+    var options = {
+        width: 400,
+        zoomWidth: 150,
+        offset: { vertical: 30, horizontal: 50 }
+    };
+    new ImageZoom(document.getElementById("img-show"), options);
+</script>
+<script src="/script/js-ImageZoom.js"></script>
+<script>
+    document.getElementById("addToCartButton").addEventListener("click", function () {
+        const itemId = this.dataset.itemId;
+
+        fetch("/user/addToCart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ itemId: itemId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Item added to cart!");
+            } else {
+                alert("Failed to add item to cart.");
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    });
+</script>
 </body>
 </html>

@@ -20,6 +20,7 @@ const sendEmail=async (mailOptions)=>{
     try{
         await mailTransporter.sendMail(mailOptions)
         console.log("email sended");
+        
         return;
     }catch(err){
         throw err;

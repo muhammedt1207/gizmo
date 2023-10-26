@@ -2,6 +2,24 @@
     <div class="container-fluid">
         <h1>Customers</h1>
         <br>
+        <form action="/admin/userSearch" method="post" name="name">
+            <div class="input-group">
+              <div class="form-outline d-flex p-3">
+                <input type="search" class="form-control " name="search" placeholder="Search" required>
+                    <button id="search-button" type="submit" class="btn btn-primary mx-2">
+                      
+          <lord-icon
+          class="fa-solid fa-magnifying-glass" style="color: #eeeff2;"
+          trigger="hover"
+          colors="primary:#fff"
+          style="width:25px;height:25px"
+          >
+          </lord-icon>
+                    </button>
+              </div>
+              
+            </div>
+          </form>
     <table class="table table-striped w-75">
         <thead>
         <tr>
@@ -42,4 +60,24 @@
         </tbody>
     </table>
     </div>
+    <nav aria-label="Page navigation example" class="d-flex  mt-3">
+        <ul class="pagination">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item active"><a class="page-link" href="/products?page=1">1</a></li>
+          <li class="page-item"><a class="page-link" href="/products?page=2">2</a></li>
+          <li class="page-item"><a class="page-link" href="/products?page=3">3</a></li>
+          <li class="page-item"><a class="page-link" href="/products?page=4">4</a></li>
+          <li class="page-item"><a class="page-link" href="/products?page=5">5</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    
     <%- include('partial/footer') -%>

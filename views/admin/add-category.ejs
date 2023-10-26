@@ -24,6 +24,11 @@
                     <div class="card-body p-5 text-center" style="background-color: aliceblue;">
           
                       <h3 class="mb-5">Add Category</h3>
+                      <%if(err){%>
+                        <span id="err" class="alert-danger">
+                          <%=err%>
+                        </span>
+                      <%}%>
                       <form action="/admin/add-category" method="POST">
                       <div class="form-outline mb-4">
                         <input type="text" name="CategoryName" placeholder="catogory name" style="height: 40px; width: 80%;" required>

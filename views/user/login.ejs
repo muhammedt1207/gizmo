@@ -10,7 +10,9 @@
       <% if (err) { %>
         <p style="color: rgb(207, 0, 0);"><%= err%></p>
       <% } %>
-      <form action="/user/log" method="POST">
+      <div id="errorMessage" style="color: rgb(207, 0, 0);"></div>
+
+      <form id="loginForm">
           <div class="field">
               <input type="text" name="email" required>
               <label>Email Address</label>
@@ -18,7 +20,7 @@
           <div class="field">
               <input type="password" name="password" id="password" required>
               <label>Password</label>
-          </div>
+          </div>    
           <div class="signup-link">
             <a href="/user/forget-pass">Forget password</a>
         </div>
@@ -53,4 +55,48 @@
       return true;
   }
 </script> -->
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+
+<script>
+    $(document).ready(function () {
+  // Submit the login form using Ajax
+  document.getElementById("loginForm").addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const email = document.querySelector("input[name='email']").value;
+    const password = document.querySelector("input[name='password']").value;
+
+    // Create a data object to send via Fetch
+    const data = {
+        email: email,
+        password: password
+    };
+
+    fetch("/user/log", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("responseee", data);
+        // Handle the success response here (e.g., redirection)
+        if (data.success) {
+            window.location.href = "/user/home"; // Redirect to the home page
+        } else {
+            console.log("inside elsee");
+            document.getElementById("errorMessage").textContent = data.error; // Display the error message
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+});
+
+});
+
+</script>
 <%- include('./partial/footer')%>

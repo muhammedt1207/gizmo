@@ -51,7 +51,7 @@ const toAddProduct = (req, res) => {
 };
 
 const tocategory = async (req, res) => {
-    res.render('./admin/add-category', { title: 'category' });
+    res.render('./admin/add-category', { title: 'category', err:false});
 };
 
 const toproducts = async (req, res) => {
@@ -113,15 +113,22 @@ const categoryData = async (req, res) => {
 const addCategory = async (req, res) => {
     try {
         const { CategoryName } = req.body;
+
         console.log('Name is ' + CategoryName);
 
         const data = {
             CategoryName: CategoryName,
         };
-
+        const check=await Category.find({CategoryName: CategoryName})
+        if(check.length==0){
         const insert = await Category.create(data);
+        
         console.log('Category added');
         res.redirect('/admin/catogory');
+        }else{
+            res.render('./admin/add-category',{ err:"Catagory Already Exit"})
+
+        }
     } catch (err) {
         console.log('Error found', err);
     }
@@ -130,7 +137,7 @@ const addCategory = async (req, res) => {
 const addProduct = async (req, res) => {
     const productDetails = req.body;
     try {
-        const files = req?.files;
+        const allfiles = req?.files;
         const images=req.files; 
         let allImage=[];
         for(let i=0;i<images.length;i++){

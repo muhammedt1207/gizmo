@@ -24,7 +24,7 @@
       </ul>
       <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
+          <a class="nav-link " href="/user/toCart" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
         </li>
        <div class="dropdown" id="dropbar">
                         <%if(user){%>
@@ -37,7 +37,7 @@
                                   </button>
                                 <%}%>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="#">Profile</a>
+                          <a class="dropdown-item" href="/user/profile/<%=user%>">Profile</a>
                           <a class="dropdown-item" href="/user/logout">Logout</a>
       </ul>
     </div>
@@ -72,14 +72,14 @@
   <br><br>
   <br>
   <br>
-  <h1 style="text-align:center">NEW ARRIVALS</h1>
+  <h1 style="text-align:center ">NEW ARRIVALS</h1>
   <div class="container">
     
     <div class="row row-cols-1 row-cols-md-4 g-3 justify-content-center ">
         <% data.filter(x => x.status === true && x.AvailableQuantity > 0).forEach((x) => { %>
           <a id="special-link" href="/user/toProductView/<%= x._id %>">
         <div class="col">
-            <div class="card h-100 border-0 ">
+            <div class="card h-100 border-0 Newproduct">
               <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
                 <img src="/product-image/<%= x.images[0] %>" class="card-img-top" style="height: 90px; width: 40%;" alt="image">
               </div>
@@ -94,54 +94,48 @@
   </a>
 </div>
 <div class="text-center pt-3">
-  <a href="/user/toProduct-view"><button type="button" class="btn btn-primary btn-lg">Product View</button></a>
+  <a href="/user/toProduct-list"><button type="button" class="btn btn-primary btn-lg">Product View</button></a>
 </div>
-<div class="popular-product d-flex justify-content-center align-items-center">
-  <div class="container" >
-        <div class="row">
-
-            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0 justify-content-center">
-                <div class="product-item-sm d-flex">
-                    <div class="thumbnail">
-                        <img src="/image/24x7.png" alt="Image" class="img-fluid" style="height: 100px;">
-                    </div>
-                    <div class="pt-3">
-                        <h3>24 X 7  Support</h3>
-                        <br>
-                        <p><a href="#">Online Support 23/ 7</a></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-                <div class="product-item-sm d-flex">
-                    <div class="thumbnail">
-                        <img src="/image/—Pngtree—black free shipping_6523936.png" alt="Image" class="img-fluid" style="height: 120px;">
-                    </div>
-                    <div class="pt-3">
-                        <h3>Free Shipping</h3>
-                        <br>
-                        <!-- <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p> -->
-                        <p><a href="#">On Order Over 50000</a></p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-4 mb-4 mb-lg-0">
-                <div class="product-item-sm d-flex">
-                    <div class="thumbnail">
-                        <img src="/image/4588410-200-removebg-preview.png" alt="Image" class="img-fluid" style="height: 100px;">
-                    </div>
-                    <div class="pt-3">
-                        <h3>Safe Transaction</h3>
-                        <br>
-                        <!-- <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio </p> -->
-                        <p><a href="#">Safe transaction Rezo Pay</a></p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+<div class="benefit">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="benefit_item">
+      <div class="benefit_icon"><i class="fa-solid fa-truck-fast" aria-hidden="true"></i></div>
+      <div class="benefit_content">
+        <h6>free shipping</h6>
+        <p>Suffered Alteration in Some Form</p>
+      </div>
     </div>
+  </div>
+  <div class="col-lg-3 benefit_col">
+    <div class="benefit_item d-flex flex-row align-items-center">
+      <div class="benefit_icon"><i class="fa-solid fa-coins" aria-hidden="true"></i></div>
+      <div class="benefit_content">
+        <h6>cach on delivery</h6>
+        <p>The Internet Tend To Repeat</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 benefit_col">
+    <div class="benefit_item d-flex flex-row align-items-center">
+      <div class="benefit_icon"><i class="fa fa-undo" aria-hidden="true"></i></div>
+      <div class="benefit_content">
+        <h6>45 days return</h6>
+        <p>Making it Look Like Readable</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 benefit_col">
+    <div class="benefit_item d-flex flex-row align-items-center">
+      <div class="benefit_icon"><i class="fa-regular fa-clock"  aria-hidden="true"></i></div>
+      <div class="benefit_content">
+        <h6>opening all week</h6>
+        <p>8AM - 09PM</p>
+      </div>
+    </div>
+  </div>
 </div>
-<%- include('./partial/footer')-%>
+</div>
+</div>
+<%- include('./partial/contentFooter')-%>

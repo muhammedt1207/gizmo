@@ -5,7 +5,8 @@ const { use } = require("../routers/adminRoute");
 require("../util/otpindex")
 const OTP = require("../models/otpModel");
 const productUpload = require('../models/model');
-
+const cart=require('../models/cart');
+const Users = require("../models/users");
 
 
 const tohome = async (req,res)=>{
@@ -152,52 +153,33 @@ const forgotPass = async (req, res) => {
 }
 
 
-
 const userLogin = async (req, res) => {
-      try {
-            const check = await user.findOne({ email: req.body.email })
-            console.log(check);
-            
-            if(check){
-            console.log(req.body);
-            let isMatch = await bcrypt.compare(
-                req.body.password,
-                check.password
-        );
+    try {
+      const check = await user.findOne({ email: req.body.email });
+  
+      if (check) {
+        const isMatch = await bcrypt.compare(req.body.password, check.password);
+  
         if (isMatch) {
-            if(check.status==true){
+          if (check.status == true) {
             req.session.user = check.userName;
-            console.log(req.session.user)
             req.session.logged = true;
-            req.session.email=req.body.email
-            console.log(req.session.email);
-            console.log("Login success");
-            res.redirect("/user/home");
-            }else{
-                console.log('user is blocked')
-                res.render("./user/login",{title:"user login" ,err:"Access Denide"})
-            }
+            req.session.email = req.body.email;
+            return res.json({ success: true });
+          } else {
+            return res.json({ success: false, error: "User is blocked" });
+          }
+        } else {
+          return res.json({ error: "Invalid password" });
         }
-        else {
-            req.flash("err","*invalid password")
-
-            req.session.err = "invalid password"
-            res.render('./user/login',{ title:"login page", err: "Invalid Password"})
-            console.log("invalid password");
-        }}else{
-            req.flash("err","*User not found")
-            res.render('./user/login',{title:"login", err:"User Not Found"})
-            req.session.err = "User not found"
-            console.log("User not found-1");
-
-        }
-    } catch {
-        req.flash("err","*invalid user name or password")
-        req.session.errmsg = "invalid user name or password"
-        res.render('./user/login',{title:"login page",err: "invalid user name  or password"})
-        console.log("user not found-2");
+      } else {
+        return res.json({ success: false, error: "User not found" });
+      }
+    } catch (error) {
+      return res.json({ success: false, error: "Invalid username or password" });
     }
-}
+  };
+  
 
 // otp verification
 const OtpConfirmation = async (req,res) => {
@@ -222,6 +204,7 @@ const OtpConfirmation = async (req,res) => {
               
                 req.session.forgot=false;
                 // req.seesion.pass_reset=true;
+                req.session.email=email
                 res.render("user/new-password",{title:"Password Reset"});
             }
             else{
@@ -340,6 +323,39 @@ const productView=async(req,res)=>{
   }
 
 
+const toProductList=async (req,res)=>{
+    try{
+    let data= await productUpload.find()
+    res.render('user/product-list',{title:"Products", data})
+    }catch{
+        console.error(error);
+        res.status(500).send("Internet Server Error")
+    }
+}
+
+
+
+const addAddress=async (req,res)=>{
+    try{
+        let email=req.session.email
+        let newaddress={
+            addressLine:req.body.address,
+            city:req.body.city,
+            pincode:req.body.pincode,
+            state:req.body.state,
+            mobileNumber:req.body.number
+        }
+        console.log(newaddress);
+        const user=await Users.findOne({email:email})
+        user.address.push(newaddress)
+        await  user.save()
+            res.redirect('/user/profile')
+    }catch(error){
+        console.log("can't add Address");
+
+    }
+}
+
 module.exports = {
     userLogin,
     userSignup,
@@ -357,4 +373,6 @@ module.exports = {
     toForgotPass,
     IndexToLogin,
     signupToLog,
+    toProductList,
+    addAddress
 }

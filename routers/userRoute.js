@@ -13,6 +13,10 @@ const Users = require("../models/users");
 const model=require('../models/model')
 const userAuth=require('../middlewares/UserAuth')
 const userBlock=require('../middlewares/userblock')
+const cartController=require('../control/cartController')
+
+
+
 
 // login
 user.get('/user/indexToLogin',userAuth.userExist,userControl.IndexToLogin)
@@ -41,10 +45,23 @@ user.post('/user/pass-change',userAuth.userExist,userControl.passwordReset)
 user.get("/user/home",userAuth.verifyUser,userBlock,userControl.userlog)
 //to product view
 user.get('/user/toProductView/:id',userAuth.verifyUser,userControl.productView)
+//to product list
+user.get('/user/toProduct-list',userControl.toProductList)
+// to cart
+user.get("/user/toCart",cartController.toCart)
+//to profile
+user.get("/user/profile/:user",async(req,res)=>{
 
+    const userData=await Users.findOne({email:req.session.email})
+    console.log(userData);
+    // const adress=userData.address;
+    res.render('user/profile',{title:"profile",userData})
+})
+//add Address
+user.post('/user/addAddress',userControl.addAddress)
 
-
-
+//item add to cart
+user.get('/user/addToCart/:id',cartController.addTocart)
 
 
 

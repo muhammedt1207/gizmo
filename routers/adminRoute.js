@@ -4,7 +4,7 @@ const users=require('../models/users')
 const adminController=require('../control/adminController')
 const multer=require('multer')
 const upload = require("../middlewares/multer");
-const UserSchema = require("../models/model");
+const Products = require("../models/model");
 const category=require("../models/category")
 const adminAuth=require('../middlewares/AdminAuth')
 
@@ -38,6 +38,37 @@ admin.get('edit-catogory',adminAuth.verifyAdmin,adminController.toEditcategory)
 admin.get('/edit-catogory/:id',adminAuth.verifyAdmin,adminController.editCatagory)
 admin.post('/DoneEdit-category/:id',adminAuth.verifyAdmin,adminController.afterEditCatagory)
 admin.get('/delete-catogory/:id',adminAuth.verifyAdmin,adminController.deleteCatagory)
+admin.post("/search", async (req, res) => {
+  var i = 0;
+  const getdata = req.body;
+  console.log(getdata);
+  let data = await Products.find({
+    ProductName: { $regex: "^" + getdata.search, $options: "i" },
+  });
+  console.log(`Search Data ${data} `);
+  res.render("./admin/products", { title: "Home", data, i });
+});
+
+admin.post("/userSearch", async (req, res) => {
+  var i = 0;
+  const getdata = req.body;
+  console.log(getdata);
+  let userData = await users.find({
+    userName: { $regex: "^" + getdata.search, $options: "i" },
+  });
+
+  res.render("./admin/costomers", { title: "Home", userData, i });
+});
+
+
+
+
+
+
+
+
+
+
 
 module.exports=admin;
 

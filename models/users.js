@@ -13,14 +13,11 @@ const UsersSchema = new Schema({
    },
   address: [{
      addressLine: { type: String },
-     country: { type: String },
+     city: { type: String },
      pincode: { type: String },
      state: { type: String },
+     mobileNumber:{type:Number}
   }],
-  dob: { type: Date },
-  gender: { type: String },
-  joined:{type:Date},
-  profile:{type:String}
 });
 
 const Users = mongoose.model('Users', UsersSchema);
