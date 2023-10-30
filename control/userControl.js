@@ -51,6 +51,7 @@ const toforgetPage= (req,res)=>{
 const userSignup = async (req,res) => {
     console.log("user sign up");
     console.log(req.body+"hi");
+    
     try {
         const check = await user.find({ email: req.body.email })
         console.log(typeof (check));
@@ -97,10 +98,12 @@ const otpSender = async(req,res)=>{
             console.log(err);
             req.session.err="Sorry at this momment we can't sent otp";
             console.log(req.session.errmsg);
+
             if(req.session.forgot){
                 res.redirect("/user/forget-pass")
             }
             res.redirect("/user/signup");
+
         }
     }
 }
@@ -125,6 +128,8 @@ const forgotPass = async (req, res) => {
     try{
         console.log(req.body);
         const check=await user.findOne({email:req.body.email})
+        req.session.email=check.email
+        
         if(check){
             console.log("good to go:",check);
             const userdata={
@@ -135,7 +140,7 @@ const forgotPass = async (req, res) => {
             const email=req.body.email
             console.log("Email::: ",email);
             req.session.userdata=userdata;
-            req.session.email=email.toString();
+            req.session.email=email
             console.log("Sessiosiiii: ",req.session.email)
            res.redirect("/user/otp-senting") 
         }
@@ -204,7 +209,7 @@ const OtpConfirmation = async (req,res) => {
               
                 req.session.forgot=false;
                 // req.seesion.pass_reset=true;
-                req.session.email=email
+               
                 res.render("user/new-password",{title:"Password Reset"});
             }
             else{
@@ -216,7 +221,8 @@ const OtpConfirmation = async (req,res) => {
             }
         }
     }catch(err){
-        console.log(err);
+        console.log(err)
+        
         req.session.errmsg="Email not found";
     }
     }
@@ -276,7 +282,9 @@ const get_password_reset = (req, res) => {
 
 const passwordReset = async (req, res) => {
     try {
+        console.log("this is forget pass reset");
         console.log(req.body);
+        console.log("session........",req.session.email);
         const pass = await bcrypt.hash(req.body.password, 10);
         const email = req.session.email
         console.log(email);
@@ -349,12 +357,86 @@ const addAddress=async (req,res)=>{
         const user=await Users.findOne({email:email})
         user.address.push(newaddress)
         await  user.save()
-            res.redirect('/user/profile')
+            res.redirect('/user/toManageAddress')
     }catch(error){
         console.log("can't add Address");
 
     }
 }
+
+
+
+// Add a route for deleting an address
+const deleteAddress = async (req, res) => {
+    try {
+        console.log("this is delete address");
+        const email = req.session.email;
+        const addressId = req.params.id;  
+        const user = await Users.findOne({ email: email })   
+        if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }   
+        const addressIndex = user.address.findIndex(
+          (address) => address._id.toString() === addressId
+        );  
+        if (addressIndex === -1) {
+          return res.status(404).json({ message: 'Address not found' });
+        }
+        user.address.splice(addressIndex, 1);
+        await user.save();
+    
+        res.status(200).json({ message: 'Address deleted successfully' });
+      } catch (error) {
+        console.error('Error deleting address:', error);
+        res.status(500).json({ message: 'Unable to delete address' });
+      }
+    }
+  
+
+
+const toManageAddress=async (req,res)=>{
+    try {
+        console.log("to Address Manage");
+        const email= req.session.email
+        const userData= await Users.findOne({email:email})
+        res.render("user/addressManage",{title:"Address  page",userData})
+    } catch (error) {
+        
+    }
+}
+
+const editAddress=async (req, res) => {
+    try {
+
+      const addressId = req.params.id;
+      
+
+      const updatedAddress = {
+        addressLine: req.body.address,
+        city: req.body.city,
+        pincode: req.body.pincode,
+        state: req.body.state,
+        mobileNumber: req.body.number,
+      };
+  
+
+      const user = await Users.findOneAndUpdate(
+        { 'address._id': addressId },
+        { $set: { 'address.$': updatedAddress } },
+        { new: true }
+      );
+  
+   
+      if (user) {
+        res.redirect('/user/toManageAddress');
+      }
+    } catch (error) {
+      console.error('Error updating address:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
+  
+
 
 module.exports = {
     userLogin,
@@ -374,5 +456,8 @@ module.exports = {
     IndexToLogin,
     signupToLog,
     toProductList,
-    addAddress
+    addAddress,
+    deleteAddress,
+    toManageAddress,
+    editAddress
 }

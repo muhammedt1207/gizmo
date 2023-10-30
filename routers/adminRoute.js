@@ -60,7 +60,7 @@ admin.post("/userSearch", async (req, res) => {
   res.render("./admin/costomers", { title: "Home", userData, i });
 });
 
-
+admin.get('/orders',adminAuth.verifyAdmin,adminController.toOrders)
 
 
 

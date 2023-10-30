@@ -37,7 +37,7 @@
                                   </button>
                                 <%}%>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="/user/profile/<%=user%>">Profile</a>
+                          <a class="dropdown-item" href="/user/profile">Profile</a>
                           <a class="dropdown-item" href="/user/logout">Logout</a>
       </ul>
     </div>
@@ -81,7 +81,7 @@
         <div class="col">
             <div class="card h-100 border-0 Newproduct">
               <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
-                <img src="/product-image/<%= x.images[0] %>" class="card-img-top" style="height: 90px; width: 40%;" alt="image">
+                <img src="/product-image/<%= x.images[0] %>" class="card-img-top" style="height: 85px; width: 40%;" alt="image">
               </div>
                 <div class="card-body text-center">
                     <h5 class="card-title"><%= x.ProductName %></h5>

@@ -2,7 +2,7 @@ const users = require('../models/users');
 const Category = require('../models/category');
 const { ObjectId } = require('mongodb');
 const productUpload = require('../models/model');
-
+const orders = require ('../models/orders')
 // Admin login credentials
 const credential = {
     email: 'admin1@gmail.com',
@@ -45,27 +45,13 @@ const signout = async (req, res) => {
     res.redirect('/');
 };
 
-// Route functions
-const toAddProduct = (req, res) => {
-    res.render('./admin/add-product', { title: 'Add Products' });
-};
 
-const tocategory = async (req, res) => {
-    res.render('./admin/add-category', { title: 'category', err:false});
-};
 
-const toproducts = async (req, res) => {
-    try {
-        const data = await productUpload.find();
-        res.render('admin/products', { title: 'category', data});
-    } catch (error) {
-        console.log('An error occurred', error);
-        res.status(500).send('Internal Server Error');
-    }
-};
 
-//------------------------------------user status----------------------------------------------
 
+
+
+//------------------------------------------<<<<<<<<<<<USER MANEGEMENT>>>>>>>>>>>>>>>>>-----------------------------------
 const UserStatus = async (req, res) => {
     console.log('This is userstatus');
     const id = req.params.id;
@@ -85,16 +71,6 @@ const UserStatus = async (req, res) => {
     console.log(`User ${user.userName} is ${newStatus ? 'unblocked' : 'blocked'}`);
     res.redirect('/admin/costomers');
 };
-//------------------------------------------------data sharing-----------------------------------
-const productData = async (req, res) => {
-    try {
-        const data = await productUpload.find();
-        res.render('admin/products', { title: 'category', data});
-    } catch (error) {
-        console.log('An error occurred', error);
-        res.status(500).send('Internal Server Error');
-    }
-};
 
 const userDataSharing = async (req, res) => {
     const data = await users.find();
@@ -109,28 +85,33 @@ const categoryData = async (req, res) => {
 };
 
 
-//---------------------------------------------------add data-----------------------------------
-const addCategory = async (req, res) => {
+
+
+
+
+//---------------------------------------------------PRODUCT ---------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+const toproducts = async (req, res) => {
     try {
-        const { CategoryName } = req.body;
+        const data = await productUpload.find();
+        res.render('admin/products', { title: 'category', data});
+    } catch (error) {
+        console.log('An error occurred', error);
+        res.status(500).send('Internal Server Error');
+    }
+};
 
-        console.log('Name is ' + CategoryName);
+const toAddProduct = (req, res) => {
+    res.render('./admin/add-product', { title: 'Add Products' });
+};
 
-        const data = {
-            CategoryName: CategoryName,
-        };
-        const check=await Category.find({CategoryName: CategoryName})
-        if(check.length==0){
-        const insert = await Category.create(data);
-        
-        console.log('Category added');
-        res.redirect('/admin/catogory');
-        }else{
-            res.render('./admin/add-category',{ err:"Catagory Already Exit"})
-
-        }
-    } catch (err) {
-        console.log('Error found', err);
+const productData = async (req, res) => {
+    try {
+        const data = await productUpload.find();
+        res.render('admin/products', { title: 'category', data});
+    } catch (error) {
+        console.log('An error occurred', error);
+        res.status(500).send('Internal Server Error');
     }
 };
 
@@ -166,7 +147,109 @@ const addProduct = async (req, res) => {
 };
 
 
-//---------------------------------------------------delete and edit----------------------------
+
+const toEditProduct= async (req, res) => {
+    const id = req.params.id;
+    console.log("to edit product");
+    const data = await productUpload.findOne({ _id: id });
+    console.log(data);
+    res.render("admin/edit-product", { data });
+  }
+  
+  
+  
+  const EditProduct = async (req, res) => {
+      try {
+          const productDetails = req.body;
+          console.log('tt'+req.body);
+          console.log(productDetails);
+          let id = req.params.id  
+          let allImages_filename=[]
+          let noImage;
+          const allImages = req.files;
+          
+          
+          const uploaded = await productUpload.updateOne({_id:id},{
+              $set:{
+                  ProductName:req.body.ProductName,
+                  Description:req.body.Description,
+                  Specification1:req.body.Specification1,
+                  Specification2:req.body.Specification2,
+                  Specification3:req.body.Specification3,
+                  Specification4:req.body.Specification4,
+                  Price:req.body.Price,
+                  DiscountAmount:req.body.DiscountAmount,
+                  AvailableQuantity:req.body.AvailableQuantity,
+                  Category:req.body.Category,
+                  images: allImages_filename.length > 0 ? allImages_filename : req.body.image,
+                  
+                }
+            });
+            
+            if (uploaded) {
+                console.log('Product updated');
+                console.log('update image : ---------------',req.files);
+                res.redirect('/admin/products');
+            }
+    } catch (error) {
+        console.log('An error happened');
+        throw error;
+  }
+};
+
+
+const deleteProduct=async (req,res)=>{
+console.log('This is delete Product');
+const id = req.params.id;
+console.log('Receive request ' + id);
+
+const data = await productUpload .findOne({ _id: id });
+
+if (!data) {
+    return res.status(404).send('Product not found');
+}
+const newStatus = !data.status;
+await productUpload.updateOne(
+    { _id: id },
+    { $set: { status: newStatus } }
+);
+
+console.log(`product ${data.ProductName} is ${newStatus ? 'unBanned' : 'Banned'}`);
+res.redirect('/admin/products');
+};
+       
+
+//------------------------------------------------CATEGARY----------------------------------------------------------
+
+const tocategory = async (req, res) => {
+    res.render('./admin/add-category', { title: 'category', err:false});
+};
+
+
+const addCategory = async (req, res) => {
+    try {
+        const { CategoryName } = req.body;
+        
+        console.log('Name is ' + CategoryName);
+        
+        const data = {
+            CategoryName: CategoryName,
+        };
+        const check=await Category.find({CategoryName: CategoryName})
+        if(check.length==0){
+            const insert = await Category.create(data);
+            
+            console.log('Category added');
+        res.redirect('/admin/catogory');
+    }else{
+        res.render('./admin/add-category',{ err:"Catagory Already Exit"})
+        
+    }
+    } catch (err) {
+        console.log('Error found', err);
+    }
+};
+
 
 const deleteCatagory = async (req, res) => {
     try {
@@ -177,51 +260,6 @@ const deleteCatagory = async (req, res) => {
     } catch (error) {
         console.log('Error occurred while deleting category');
     }
-};
-
-
-const toEditProduct= async (req, res) => {
-    const id = req.params.id;
-    console.log("to edit product");
-    const data = await productUpload.findOne({ _id: id });
-console.log(data);
-    res.render("admin/edit-product", { data });
-  }
-
-
-  const EditProduct = async (req, res) => {
-    try {
-        const productDetails = req.body;
-        console.log('tt'+req.body);
-        console.log(productDetails);
-        let id = req.params.id  
-
-       
-      
-            const uploaded = await productUpload.updateOne({_id:id},{
-                $set:{
-                    ProductName:req.body.ProductName,
-                    Description:req.body.Description,
-                    Specification1:req.body.Specification1,
-                    Specification2:req.body.Specification2,
-                    Specification3:req.body.Specification3,
-                    Specification4:req.body.Specification4,
-                    Price:req.body.Price,
-                    DiscountAmount:req.body.DiscountAmount,
-                    AvailableQuantity:req.body.AvailableQuantity,
-                    Category:req.body.Category,
-                 
-                }
-            });
-
-            if (uploaded) {
-                console.log('Product updated');
-                res.redirect('/admin/products');
-            }
-    } catch (error) {
-        console.log('An error happened');
-        throw error;
-  }
 };
 
 
@@ -258,28 +296,14 @@ const editCatagory = async (req, res) => {
         }
       }
 
-
-    const deleteProduct=async (req,res)=>{
-    console.log('This is delete Product');
-    const id = req.params.id;
-    console.log('Receive request ' + id);
-
-    const data = await productUpload .findOne({ _id: id });
-
-    if (!data) {
-        return res.status(404).send('Product not found');
-    }
-    const newStatus = !data.status;
-    await productUpload.updateOne(
-        { _id: id },
-        { $set: { status: newStatus } }
-    );
-
-    console.log(`product ${data.ProductName} is ${newStatus ? 'unBanned' : 'Banned'}`);
-    res.redirect('/admin/products');
-};
-           
+//------------------------------------<<<<<<<<<<<<<<<<< ORDER MANEGEMENT   >>>>>>>>>>>>>>>>>>>>>>>-------------------
     
+const toOrders = async (req,res)=>{
+    const orderData = await  orders.find()
+    res.render('admin/orders',{orderData})
+
+}
+
 
 module.exports = {
     loginadmin,
@@ -303,4 +327,6 @@ module.exports = {
     toEditcategory,
     toDashBoard,
     toProduct,
+    toOrders,
+    
 };

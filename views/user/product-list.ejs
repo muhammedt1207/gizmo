@@ -43,37 +43,56 @@
                     <div>
                       <!-- Checked checkbox -->
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked1" checked />
-                        <label class="form-check-label" for="flexCheckChecked1">Apple</label>
+                        <input class="form-check-input" type="checkbox" value="APPLE" id="flexCheckChecked1" checked />
+                        <label class="form-check-label" for="flexCheckChecked1">APPLE</label>
                         <span class="badge badge-secondary float-end">120</span>
                       </div>
                       <!-- Checked checkbox -->
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked2" checked />
+                        <input class="form-check-input" type="checkbox" value="SAMSUNG" id="flexCheckChecked2" checked />
                         <label class="form-check-label" for="flexCheckChecked2">Samsung</label>
                         <span class="badge badge-secondary float-end">15</span>
                       </div>
                       <!-- Checked checkbox -->
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked3" checked />
+                        <input class="form-check-input" type="checkbox" value="HP" id="flexCheckChecked3" checked />
                         <label class="form-check-label" for="flexCheckChecked3">HP</label>
                         <span class="badge badge-secondary float-end">35</span>
                       </div>
                       <!-- Checked checkbox -->
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked4" checked />
+                        <input class="form-check-input" type="checkbox" value="ASUS" id="flexCheckChecked4" checked />
                         <label class="form-check-label" for="flexCheckChecked4">Asus</label>
                         <span class="badge badge-secondary float-end">89</span>
                       </div>
+                       <!-- Checked checkbox -->
+                       <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="ACER" id="flexCheckChecked4" checked />
+                        <label class="form-check-label" for="flexCheckChecked4">Acer</label>
+                        <span class="badge badge-secondary float-end">89</span>
+                      </div>
+
                       <!-- Default checkbox -->
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <input class="form-check-input" type="checkbox" value="XIOMI" id="flexCheckDefault" />
                         <label class="form-check-label" for="flexCheckDefault">Xiomi</label>
+                        <span class="badge badge-secondary float-end">30</span>
+                      </div>
+                       <!-- Default checkbox -->
+                       <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="LENOVO" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">LENOVO</label>
+                        <span class="badge badge-secondary float-end">30</span>
+                      </div>
+                       <!-- Default checkbox -->
+                       <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="MSI" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">MSI</label>
                         <span class="badge badge-secondary float-end">30</span>
                       </div>
                       <!-- Default checkbox -->
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <input class="form-check-input" type="checkbox" value="DELL" id="flexCheckDefault" />
                         <label class="form-check-label" for="flexCheckDefault">Dell</label>
                         <span class="badge badge-secondary float-end">30</span>
                       </div>
@@ -122,6 +141,37 @@
                     <button type="button" class="btn btn-white w-100 border border-secondary">apply</button>
                   </div>
                 </div>
+              </div><div class="accordion-item">
+                <h2 class="accordion-header" id="headingRAM">
+                  <button
+                    class="accordion-button text-dark bg-light"
+                    type="button"
+                    data-mdb-toggle="collapse"
+                    data-mdb-target="#panelsStayOpen-collapseRAM"
+                    aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseRAM"
+                  >
+                    RAM Size
+                  </button>
+                </h2>
+                <form id="productFilters">
+                <div id="panelsStayOpen-collapseRAM" class="accordion-collapse collapse show" aria-labelledby="headingRAM">
+                  <div class="accordion-body">
+                    <div class="form-check">
+                      <input class="form-check-input ram-checkbox" type="checkbox" value="4GB RAM"  id="ramFilter4GB" />
+                      <label class="form-check-label" for="ram4GB">4GB</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input ram-checkbox" type="checkbox" value="8GB RAM" id="ramFilter8GB" />
+                      <label class="form-check-label" for="ram8GB">8GB</label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input ram-checkbox" type="checkbox" value="16GB RAM" id="ramFilter16GB" />
+                      <label class="form-check-label" for="ram16GB">16GB</label>
+                    </div>
+                  </div>
+                </div>
+              </form>
               </div>
               <div class="accordion-item">
                 <h2 class="accordion-header" id="headingThree">
@@ -133,19 +183,19 @@
                           aria-expanded="false"
                           aria-controls="panelsStayOpen-collapseFour"
                           >
-                    Size
+                    Storage
                   </button>
                 </h2>
                 <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingThree">
                   <div class="accordion-body">
                     <input type="checkbox" class="btn-check border justify-content-center" id="btn-check1" checked autocomplete="off" />
-                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check1">XS</label>
+                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check1">128</label>
                     <input type="checkbox" class="btn-check border justify-content-center" id="btn-check2" checked autocomplete="off" />
-                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check2">SM</label>
+                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check2">256</label>
                     <input type="checkbox" class="btn-check border justify-content-center" id="btn-check3" checked autocomplete="off" />
-                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check3">LG</label>
+                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check3">512</label>
                     <input type="checkbox" class="btn-check border justify-content-center" id="btn-check4" checked autocomplete="off" />
-                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check4">XXL</label>
+                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check4">1TB</label>
                   </div>
                 </div>
               </div>
@@ -230,4 +280,45 @@
       </div>
     </div>
   </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const productFilters = document.getElementById('productFilters');
+    const productsContainer = document.getElementById('productsContainer');
+
+    const fetchProducts = () => {
+        const formData = new FormData(productFilters);
+
+        const selectedFilters = Object.fromEntries(formData.entries());
+
+        // Construct the URL for filtering products
+        const url = `/products?${new URLSearchParams(selectedFilters).toString()}`;
+
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                productsContainer.innerHTML = '';
+
+                data.forEach((product) => {
+                    const productCard = document.createElement('div');
+                    productCard.innerHTML = `<div class="product-card">
+                        <h2>${product.name}</h2>
+                        <p>Price: $${product.price}</p>
+                        <!-- Add other product details -->
+                    </div>`;
+                    productsContainer.appendChild(productCard);
+                });
+            })
+            .catch((error) => {
+                console.error('Error fetching products:', error);
+            });
+    };
+
+    productFilters.addEventListener('change', fetchProducts);
+
+    fetchProducts();
+});
+
+</script>
+
+
   <%-include('./partial/contentFooter')%>

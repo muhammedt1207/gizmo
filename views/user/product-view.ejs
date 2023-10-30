@@ -79,7 +79,7 @@
                 <span class="text-muted">Original price: <del>₹<%=data.Price%></del></span>
                 <h4 class="text-success">Price: ₹<%=data.DiscountAmount%></h4>
             </div>
-            <button id="addToCartButton" data-item-id="<%= data._id %>">Add to Cart</button>
+            <button class="btn" style="background-color: #4196f7;" id="addToCartButton" data-item-id="<%= data._id %>" onclick="addEventListener">Add to Cart</button>
             <button class="btn" style="background-color: #078505;" id="addToWishlist">Add to Wishlist</button>
         </div>
     </div>
@@ -95,7 +95,7 @@
         </div>
     </div>
 </main>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     var options = {
         width: 400,
@@ -108,7 +108,7 @@
 <script>
     document.getElementById("addToCartButton").addEventListener("click", function () {
         const itemId = this.dataset.itemId;
-
+        console.log(itemId,"ihgdooahgh");
         fetch("/user/addToCart", {
             method: "POST",
             headers: {
@@ -119,9 +119,18 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert("Item added to cart!");
+                Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Item added to cart!',
+                showConfirmButton: false,
+                timer: 1500
+            });
             } else {
-                alert("Failed to add item to cart.");
+                Swal.fire({
+                icon: 'error',
+                title: 'Failed to add item to cart',
+            });
             }
         })
         .catch(error => {

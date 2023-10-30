@@ -14,7 +14,7 @@ const model=require('../models/model')
 const userAuth=require('../middlewares/UserAuth')
 const userBlock=require('../middlewares/userblock')
 const cartController=require('../control/cartController')
-
+const orderController=require('../control/order')
 
 
 
@@ -46,11 +46,11 @@ user.get("/user/home",userAuth.verifyUser,userBlock,userControl.userlog)
 //to product view
 user.get('/user/toProductView/:id',userAuth.verifyUser,userControl.productView)
 //to product list
-user.get('/user/toProduct-list',userControl.toProductList)
+user.get('/user/toProduct-list',userAuth.verifyUser,userControl.toProductList)
 // to cart
-user.get("/user/toCart",cartController.toCart)
+user.get("/user/toCart",userAuth.verifyUser,cartController.toCart)
 //to profile
-user.get("/user/profile/:user",async(req,res)=>{
+user.get("/user/profile",async(req,res)=>{
 
     const userData=await Users.findOne({email:req.session.email})
     console.log(userData);
@@ -58,19 +58,20 @@ user.get("/user/profile/:user",async(req,res)=>{
     res.render('user/profile',{title:"profile",userData})
 })
 //add Address
-user.post('/user/addAddress',userControl.addAddress)
+user.post('/user/addAddress',userAuth.verifyUser,userControl.addAddress)
+user.get('/user/toManageAddress',userAuth.verifyUser,userControl.toManageAddress)
+user.post('/user/deleteAddress/:id',userControl.deleteAddress)
+user.post('/user/editAddress/:id',userControl.editAddress)
 
 //item add to cart
-user.get('/user/addToCart/:id',cartController.addTocart)
+user.post('/user/addToCart',userAuth.verifyUser,cartController.addToCart)
+user.post('/user/removeFromCart/:id',userAuth.verifyUser,cartController.removeCart)
+user.post('/updatequantity',userAuth.verifyUser,cartController.updateQuantity)
+user.get('/user/toCheckout',userAuth.verifyUser,orderController.toCheckout)
 
+//order
 
-
-
-
-
-
-
-
+user.post('/user/placeOrder',orderController.placeOrder)
 
 
 

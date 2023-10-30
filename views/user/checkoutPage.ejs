@@ -1,0 +1,84 @@
+<%- include('./partial/header') %>
+
+<section class="bg-white my-5">
+  <div class="container">
+    <div class="row">
+      <!-- cart -->
+      <div class="col-lg-9">
+        <div class="card border rounded shadow">
+          <div class="m-4 rounded shadow-5">
+            <h4 class="card-title mb-4">Select Address</h4>
+
+            <% userData.address.forEach((x) => { %>
+            <div class="form-check">
+              <hr>
+              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault<%= x._id %>" value="<%= x._id %>">
+              <label class="form-check-label" for="flexRadioDefault<%= x._id %>">
+                <h6>Select Address</h6>
+              </label>
+              <hr>
+              <P><%= x.addressLine %></P>
+              <P><%= x.pincode %></P>
+              <P><%= x.city %></P>
+              <P><%= x.state %></P>
+              <P><%= x.mobileNumber %></P>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+      <!-- cart -->
+      <!-- summary -->
+
+      <div class="col-lg-3">
+        <div class="card shadow border">
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <form action="/user/placeOrder" method="post">
+                <div class="form-check" aria-required="true">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Cash On Delivery
+                  </label>
+                </div>
+                <br>
+                <br>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled>
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Online Payment
+                  </label>
+                </div>
+      
+                <!-- Add a hidden input field to store the selected address ID -->
+                <input type="hidden" id="selectedAddressId" name="selectedAddressId" value="">
+      
+                <div class="mt-3">
+                  <button class="btn btn-success w-100 border mt-2" type="submit" onclick="setSelectedAddressId()"> Place Order</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- summary -->
+    </div>
+  </div>
+</section>
+
+<script>
+  function setSelectedAddressId() {
+    const selectedAddressRadio = document.querySelector('input[name="flexRadioDefault"]:checked');
+    if (selectedAddressRadio) {
+      const selectedAddressId = selectedAddressRadio.value;
+      document.querySelector('#selectedAddressId').value = selectedAddressId;
+      // Manually submit the form to send the selectedAddressId to the server
+      document.querySelector('form').submit();
+    } else {
+      alert('Please select an address.');
+    }
+  }
+</script>
+
+<%- include('./partial/footer') %>
