@@ -10,6 +10,7 @@ body {
 }
 
 
+
 .avatar-upload {
     position: relative;
     max-width: 205px;
@@ -27,15 +28,15 @@ body {
                 height: 34px;
                 margin-bottom: 0;
                 border-radius: 100%;
-                background: #FFFFFF;
+                background: #000000;
                 border: 1px solid transparent;
                 box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
                 cursor: pointer;
                 font-weight: normal;
                 transition: all .2s ease-in-out;
                 &:hover {
-                    background: #f1f1f1;
-                    border-color: #d6d6d6;
+                    background: #7a0000;
+                    border-color: #410000;
                 }
                 &:after {
                     content: "\f040";

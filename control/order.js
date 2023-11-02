@@ -10,6 +10,13 @@ const Users = require("../models/users");
 const order = require ('../models/orders');
 const { ObjectId } = require("mongodb");
 const { model } = require("mongoose");
+const moment=require('moment');
+
+
+
+
+
+
 
 const toCheckout= async (req,res)=>{
     console.log("to checkout page");
@@ -33,12 +40,13 @@ const placeOrder = async (req, res) => {
         UserID: userId,
         paymentMethod:"COD",
         Address: selectedAddressId,
-        TotalPrice: cartDetails.TotalAmount,
-        OrderDate: new Date(),
+        TotalPrice: req.session.totalPrice,
+        OrderDate: moment(new Date()).format("llll"),
       });
-  
+      console.log("!!!!!!!!!!!!!!!!!!!",newOrder.Items);
       const savedOrder = await newOrder.save();
-      console.log("<<<<>>>>><><><><><><><><><><><>",savedOrder);
+
+      console.log("<<<<>>>>><><><><><><><><><><><>",savedOrder.Items.productId);
       if(savedOrder){
       
         await cart.findOneAndDelete({ userId : userId});
@@ -51,7 +59,6 @@ const placeOrder = async (req, res) => {
                 { _id: productId },
                 { $inc: { AvailableQuantity: -purchasedQuantity } }
               );
-              console.log("quantity updated.................<<<<<<<<<>>>>>>>>>>");
           }
         res.render("user/orderSuccess",{order: savedOrder });
       }else{
@@ -66,10 +73,49 @@ const placeOrder = async (req, res) => {
     }
   }
 
+  const toOrderPage = async (req, res) => {
+    try {
+      const userData = await Users.findOne({ email: req.session.email });
+      const userId = userData._id;
+      console.log(userId, '.............');
+      const orderData = await order.find({ UserID: userId }).populate('Items.productId');
+      
+      console.log(orderData, '..................................');
   
+      
+  
+      res.render('user/Orders', { title: 'Orders', orderData });
+    } catch (error) {
+      console.error(error);
+      res.render('user/404Page');
+    }
+  };
+  
+
+const orderDetails= async (req,res)=>{
+  try {
+    const user=req.session.user
+    const orderId=req.params.id;
+    console.log(orderId);
+    const orderData= await order.find({_id:orderId}).populate('Items.productId');
+    console.log(orderData,"*****************************");
+
+    
+  
+
+
+     res.render('user/orderDetails',{orderData,user})
+    
+  } catch (error) {
+    console.error(error)
+    res.render('user/404Page')
+  }
+}
 
 module.exports={
     toCheckout,
-    placeOrder
+    placeOrder,
+    toOrderPage,
+    orderDetails
 
 }

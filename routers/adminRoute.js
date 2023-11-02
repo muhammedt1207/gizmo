@@ -62,8 +62,9 @@ admin.post("/userSearch", async (req, res) => {
 
 admin.get('/orders',adminAuth.verifyAdmin,adminController.toOrders)
 
+admin.put('/updateStatus/:orderId',adminController.orderStatus)
 
-
+admin.get('/orderView/:id',adminController.orderview)
 
 
 

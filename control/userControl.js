@@ -200,6 +200,7 @@ const OtpConfirmation = async (req,res) => {
 
         }else{
             const hashed=Otp.otp
+            
             console.log("hashed......"+hashed);
             console.log("body"+req.body)
             const { code, email} = req.body
@@ -436,7 +437,13 @@ const editAddress=async (req, res) => {
     }
   }
   
-
+const toAccountSettings= (req,res)=>{
+    try {
+        res.render('user/account-setting',{title:"account Settings"})
+    } catch (error) {
+        res.render('user/404Page')
+    }
+}
 
 module.exports = {
     userLogin,
@@ -459,5 +466,7 @@ module.exports = {
     addAddress,
     deleteAddress,
     toManageAddress,
-    editAddress
+    editAddress,
+    toAccountSettings,
+    
 }

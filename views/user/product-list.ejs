@@ -1,324 +1,240 @@
 <%-include('./partial/header')%>
 <section class="p-3">
-    <div class="container">
+  <div class="container">
       <div class="row">
-        <!-- sidebar -->
-        <div class="col-lg-3">
-          <!-- Toggle button -->
-          <button
-                  class="btn btn-outline-secondary mb-3 w-100 d-lg-none"
-                  type="button"
-                  data-mdb-toggle="collapse"
-                  data-mdb-target="#navbarSupportedContent"
-                  aria-controls="navbarSupportedContent"
-                  aria-expanded="false"
-                  aria-label="Toggle navigation"
-                  >
-            <span>Show filter</span>
-          </button>
-          <!-- Collapsible wrapper -->
-          <div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
-            <div class="accordion" id="accordionPanelsStayOpenExample">
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                </h2>
-                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne">
-                </div>
-              </div>
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="headingTwo">
-                  <button
-                          class="accordion-button text-dark bg-light"
-                          type="button"
-                          data-mdb-toggle="collapse"
-                          data-mdb-target="#panelsStayOpen-collapseTwo"
-                          aria-expanded="true"
-                          aria-controls="panelsStayOpen-collapseTwo"
-                          >
-                    Brands
-                  </button>
-                </h2>
-                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show" aria-labelledby="headingTwo">
-                  <div class="accordion-body">
-                    <div>
-                      <!-- Checked checkbox -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="APPLE" id="flexCheckChecked1" checked />
-                        <label class="form-check-label" for="flexCheckChecked1">APPLE</label>
-                        <span class="badge badge-secondary float-end">120</span>
+          <!-- sidebar -->
+          <div class="col-lg-3">
+              <!-- Toggle button -->
+              <button class="btn btn-outline-secondary mb-3 w-100 d-lg-none" type="button" data-mdb-toggle="collapse"
+                  data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                  aria-label="Toggle navigation">
+                  <span>Show filter</span>
+              </button>
+              <!-- Collapsible wrapper -->
+              <div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
+                  <div class="accordion" id="accordionPanelsStayOpenExample">
+                      <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingOne">
+                          </h2>
+                          <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                              aria-labelledby="headingOne">
+                          </div>
                       </div>
-                      <!-- Checked checkbox -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="SAMSUNG" id="flexCheckChecked2" checked />
-                        <label class="form-check-label" for="flexCheckChecked2">Samsung</label>
-                        <span class="badge badge-secondary float-end">15</span>
+                      <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingTwo">
+                              <button class="accordion-button text-dark bg-light" type="button" data-mdb-toggle="collapse"
+                                  data-mdb-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
+                                  aria-controls="panelsStayOpen-collapseTwo">
+                                  Brands
+                              </button>
+                          </h2>
+                          <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
+                              aria-labelledby="headingTwo">
+                              <div class="accordion-body">
+                                  <div>
+                                      <label for="brandSelect" class="form-label">Select a Brand:</label>
+                                      <form id="productFilters">
+                                          <select class="form-select" id="brandSelect">
+                                            <option value="ALL">All Brands</option>
+                                            <option value="APPLE">APPLE</option>
+                                            <option value="SAMSUNG">Samsung</option>
+                                            <option value="HP">HP</option>
+                                            <option value="ASUS">Asus</option>
+                                            <option value="ACER">Acer</option>
+                                            <option value="XIOMI">Xiomi</option>
+                                            <option value="LENOVO">LENOVO</option>
+                                            <option value="MSI">MSI</option>
+                                            <option value="DELL">Dell</option>
+                                          </select>
+                                          <br>
+                                          <button type="submit" class="btn btn-primary w-100">Apply Brand Filter</button>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
                       </div>
-                      <!-- Checked checkbox -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="HP" id="flexCheckChecked3" checked />
-                        <label class="form-check-label" for="flexCheckChecked3">HP</label>
-                        <span class="badge badge-secondary float-end">35</span>
-                      </div>
-                      <!-- Checked checkbox -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="ASUS" id="flexCheckChecked4" checked />
-                        <label class="form-check-label" for="flexCheckChecked4">Asus</label>
-                        <span class="badge badge-secondary float-end">89</span>
-                      </div>
-                       <!-- Checked checkbox -->
-                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="ACER" id="flexCheckChecked4" checked />
-                        <label class="form-check-label" for="flexCheckChecked4">Acer</label>
-                        <span class="badge badge-secondary float-end">89</span>
-                      </div>
-
-                      <!-- Default checkbox -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="XIOMI" id="flexCheckDefault" />
-                        <label class="form-check-label" for="flexCheckDefault">Xiomi</label>
-                        <span class="badge badge-secondary float-end">30</span>
-                      </div>
-                       <!-- Default checkbox -->
-                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="LENOVO" id="flexCheckDefault" />
-                        <label class="form-check-label" for="flexCheckDefault">LENOVO</label>
-                        <span class="badge badge-secondary float-end">30</span>
-                      </div>
-                       <!-- Default checkbox -->
-                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="MSI" id="flexCheckDefault" />
-                        <label class="form-check-label" for="flexCheckDefault">MSI</label>
-                        <span class="badge badge-secondary float-end">30</span>
-                      </div>
-                      <!-- Default checkbox -->
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="DELL" id="flexCheckDefault" />
-                        <label class="form-check-label" for="flexCheckDefault">Dell</label>
-                        <span class="badge badge-secondary float-end">30</span>
-                      </div>
-                    </div>
                   </div>
-                </div>
               </div>
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="headingThree">
-                  <button
-                          class="accordion-button text-dark bg-light"
-                          type="button"
-                          data-mdb-toggle="collapse"
-                          data-mdb-target="#panelsStayOpen-collapseThree"
-                          aria-expanded="false"
-                          aria-controls="panelsStayOpen-collapseThree"
-                          >
-                    Price
-                  </button>
-                </h2>
-                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show" aria-labelledby="headingThree">
-                  <div class="accordion-body">
-                    <div class="range">
-                      <input type="range" class="form-range" id="customRange1" />
-                    </div>
-                    <div class="row mb-3">
-                      <div class="col-6">
-                        <p class="mb-0">
-                          Min
-                        </p>
-                        <div class="form-outline">
-                          <input type="number" id="typeNumber" class="form-control" />
-                          <label class="form-label" for="typeNumber">$0</label>
-                        </div>
-                      </div>
-                      <div class="col-6">
-                        <p class="mb-0">
-                          Max
-                        </p>
-                        <div class="form-outline">
-                          <input type="number" id="typeNumber" class="form-control" />
-                          <label class="form-label" for="typeNumber">$1,0000</label>
-                        </div>
-                      </div>
-                    </div>
-                    <button type="button" class="btn btn-white w-100 border border-secondary">apply</button>
-                  </div>
-                </div>
-              </div><div class="accordion-item">
-                <h2 class="accordion-header" id="headingRAM">
-                  <button
-                    class="accordion-button text-dark bg-light"
-                    type="button"
-                    data-mdb-toggle="collapse"
-                    data-mdb-target="#panelsStayOpen-collapseRAM"
-                    aria-expanded="true"
-                    aria-controls="panelsStayOpen-collapseRAM"
-                  >
-                    RAM Size
-                  </button>
-                </h2>
-                <form id="productFilters">
-                <div id="panelsStayOpen-collapseRAM" class="accordion-collapse collapse show" aria-labelledby="headingRAM">
-                  <div class="accordion-body">
-                    <div class="form-check">
-                      <input class="form-check-input ram-checkbox" type="checkbox" value="4GB RAM"  id="ramFilter4GB" />
-                      <label class="form-check-label" for="ram4GB">4GB</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input ram-checkbox" type="checkbox" value="8GB RAM" id="ramFilter8GB" />
-                      <label class="form-check-label" for="ram8GB">8GB</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input ram-checkbox" type="checkbox" value="16GB RAM" id="ramFilter16GB" />
-                      <label class="form-check-label" for="ram16GB">16GB</label>
-                    </div>
-                  </div>
-                </div>
-              </form>
-              </div>
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="headingThree">
-                  <button
-                          class="accordion-button text-dark bg-light"
-                          type="button"
-                          data-mdb-toggle="collapse"
-                          data-mdb-target="#panelsStayOpen-collapseFour"
-                          aria-expanded="false"
-                          aria-controls="panelsStayOpen-collapseFour"
-                          >
-                    Storage
-                  </button>
-                </h2>
-                <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingThree">
-                  <div class="accordion-body">
-                    <input type="checkbox" class="btn-check border justify-content-center" id="btn-check1" checked autocomplete="off" />
-                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check1">128</label>
-                    <input type="checkbox" class="btn-check border justify-content-center" id="btn-check2" checked autocomplete="off" />
-                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check2">256</label>
-                    <input type="checkbox" class="btn-check border justify-content-center" id="btn-check3" checked autocomplete="off" />
-                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check3">512</label>
-                    <input type="checkbox" class="btn-check border justify-content-center" id="btn-check4" checked autocomplete="off" />
-                    <label class="btn btn-white mb-1 px-1" style="width: 60px;" for="btn-check4">1TB</label>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-        </div>
-
-        <div class="col-lg-9">
-            <% data.filter(x => x.status === true && x.AvailableQuantity > 0).forEach((x) => { %>
-                <div class="row justify-content-center mb-3">
-                    <a id="special-link" href="/user/toProductView/<%= x._id %>">
-
-                  <div class="col-md-12">
-                    <div class="card shadow-10 border rounded-3">
-                      <div class="card-body">
-                        <div class="row g-0">
-                          <div class="col-xl-3 col-md-4 d-flex justify-content-center">
-                            <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                              <img src="/product-image/<%= x.images[0] %>" class=" " style="width: 180px;"/>
-                              <a href="#!">
-                                <div class="hover-overlay">
-                                  <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div>
-                                </div>
-                              </a>
-                            </div>
-                          </div>
-                          <div class="col-xl-6 col-md-5 col-sm-7">
-                            <h5><%= x.ProductName %></h5>
-                            <ul>
-                              <li><%= x.Specification1 %></li>
-                              <li><%= x.Specification2 %></li>
-                              <li><%= x.Specification3 %></li>
-                              <li><%= x.Specification4 %></li>
-                            </ul>
-                          </div>
-                          <div class="col-xl-3 col-md-3 col-sm-5">
-                            <div class="d-flex flex-row align-items-center mb-1">
-                              <h4 class="mb-1 me-1"> ₹ <%= x.DiscountAmount %></h4>
-                              <span class="text-danger"><s>₹ <%= x.Price %></s></span>
-                            </div>
-                            <div class="mt-4">
-                              <a href=""><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a>
-                              <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div></a>
-                  </div>
-                </div>
-              <% }); %>
-              
-  
-         
-            </div>
+          <!-- Product List -->
+          <div class="col-lg-9">
+              <div id="productList">
+                  <!-- The products will be loaded here dynamically -->
+              </div>
           </div>
-  
-          <hr />
-  
-          <!-- Pagination -->
-          <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
-            <ul class="pagination">
-              <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-                </a>
-              </li>
-              <li class="page-item active"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item"><a class="page-link" href="#">4</a></li>
-              <li class="page-item"><a class="page-link" href="#">5</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <!-- Pagination -->
-        </div>
       </div>
-    </div>
-  </section>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const productFilters = document.getElementById('productFilters');
-    const productsContainer = document.getElementById('productsContainer');
+  </div>
 
-    const fetchProducts = () => {
-        const formData = new FormData(productFilters);
+  <hr />
 
-        const selectedFilters = Object.fromEntries(formData.entries());
+  <!-- Pagination -->
+  <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
+      <ul class="pagination">
+          <li class="page-item disabled">
+              <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+              </a>
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">4</a></li>
+          <li class="page-item"><a class="page-link" href="#">5</a></li>
+          <li class="page-item">
+              <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+              </a>
+          </li>
+      </ul>
+  </nav>
+  <!-- Pagination -->
+</section>
 
-        // Construct the URL for filtering products
-        const url = `/products?${new URLSearchParams(selectedFilters).toString()}`;
+<script>
+  const brandSelect = document.getElementById('brandSelect');
+  const productList = document.getElementById('productList');
 
-        fetch(url)
-            .then((response) => response.json())
-            .then((data) => {
-                productsContainer.innerHTML = '';
+  // Function to fetch and display products based on the selected brand
+  const fetchProducts = (selectedBrand) => {
+    // Replace with your server URL
+    fetch(`/filter-products/${selectedBrand}`)
+      .then((response) => response.json())
+      .then((data) => {
+        productList.innerHTML = '';
+        data
+          .filter((x) => x.status === true && x.AvailableQuantity > 0)
+          .forEach((x) => {
+            const productElement = document.createElement('div');
+            productElement.classList.add('row', 'justify-content-center', 'mb-3');
+            
+            productElement.innerHTML = `
+                <a id="special-link" href="/user/toProductView/${x._id}">
+                    <div class="col-md-12">
+                        <div class="card shadow-10 border rounded-3">
+                            <div class="card-body">
+                                <div class="row g-0">
+                                    <div class="col-xl-3 col-md-4 d-flex justify-content-center">
+                                        <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
+                                            <img src="/product-image/${x.images[0]}" class="" style="width: 180px;" />
+                                            <a href="#!">
+                                                <div class="hover-overlay">
+                                                    <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-md-5 col-sm-7">
+                                        <h5>${x.ProductName}</h5>
+                                        <ul>
+                                            <li>${x.Specification1}</li>
+                                            <li>${x.Specification2}</li>
+                                            <li>${x.Specification3}</li>
+                                            <li>${x.Specification4}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-xl-3 col-md-3 col-sm-5">
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <h4 class="mb-1 me-1"> ₹ ${x.DiscountAmount}</h4>
+                                            <span class="text-danger"><s>₹ ${x.Price}</s></span>
+                                        </div>
+                                        <div class="mt-4">
+                                            <a href=""><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a>
+                                            <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
 
-                data.forEach((product) => {
-                    const productCard = document.createElement('div');
-                    productCard.innerHTML = `<div class="product-card">
-                        <h2>${product.name}</h2>
-                        <p>Price: $${product.price}</p>
-                        <!-- Add other product details -->
-                    </div>`;
-                    productsContainer.appendChild(productCard);
-                });
-            })
-            .catch((error) => {
-                console.error('Error fetching products:', error);
-            });
-    };
+            productList.appendChild(productElement);
+          });
+      })
+      .catch((error) => {
+        console.error('Error fetching products:', error);
+      });
+  };
 
-    productFilters.addEventListener('change', fetchProducts);
+  // Add an event listener to the brandSelect element
+  brandSelect.addEventListener('change', () => {
+    const selectedBrand = brandSelect.value;
 
-    fetchProducts();
-});
+    if (selectedBrand === 'ALL') {
+      // Fetch and display all products when the "All Brands" option is selected
+      fetchAllProducts();
+    } else {
+      // Fetch and display products based on the selected brand
+      fetchProducts(selectedBrand);
+    }
+  });
 
+  // Function to fetch and display all products
+  const fetchAllProducts = () => {
+    // Replace with your server URL
+    fetch('/all-products')
+      .then((response) => response.json())
+      .then((data) => {
+        productList.innerHTML = '';
+        data
+          .filter((x) => x.status === true && x.AvailableQuantity > 0)
+          .forEach((x) => {
+            const productElement = document.createElement('div');
+            productElement.classList.add('row', 'justify-content-center', 'mb-3');
+            
+            productElement.innerHTML = `
+            <a id="special-link" href="/user/toProductView/${x._id}">
+                    <div class="col-md-12">
+                        <div class="card shadow-10 border rounded-3">
+                            <div class="card-body">
+                                <div class="row g-0">
+                                    <div class="col-xl-3 col-md-4 d-flex justify-content-center">
+                                        <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
+                                            <img src="/product-image/${x.images[0]}" class="" style="width: 180px;" />
+                                            <a href="#!">
+                                                <div class="hover-overlay">
+                                                    <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-md-5 col-sm-7">
+                                        <h5>${x.ProductName}</h5>
+                                        <ul>
+                                            <li>${x.Specification1}</li>
+                                            <li>${x.Specification2}</li>
+                                            <li>${x.Specification3}</li>
+                                            <li>${x.Specification4}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-xl-3 col-md-3 col-sm-5">
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <h4 class="mb-1 me-1"> ₹ ${x.DiscountAmount}</h4>
+                                            <span class="text-danger"><s>₹ ${x.Price}</s></span>
+                                        </div>
+                                        <div class="mt-4">
+                                            <a href=""><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a>
+                                            <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+
+            productList.appendChild(productElement);
+          });
+      })
+      .catch((error) => {
+        console.error('Error fetching products:', error);
+      });
+  };
+
+  // Call the fetchAllProducts function when the page loads to show all products by default
+  window.addEventListener('load', fetchAllProducts);
 </script>
 
-
-  <%-include('./partial/contentFooter')%>
+<%-include('./partial/contentFooter')%>

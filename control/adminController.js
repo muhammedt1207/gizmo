@@ -32,7 +32,7 @@ const toEditcategory=(req,res)=>{
 }
 
 const toDashBoard=(req,res)=>{
-    res.render('./admin/home',{title:"dash board"})
+    res.render('./admin/dashboard',{title:"dash board"})
 }
 
 const toProduct=(req,res)=>{
@@ -246,6 +246,7 @@ const addCategory = async (req, res) => {
         
     }
     } catch (err) {
+        res.render('admin/404')
         console.log('Error found', err);
     }
 };
@@ -258,6 +259,7 @@ const deleteCatagory = async (req, res) => {
         const cetagory = await Category.deleteOne({ _id: id });
         res.redirect('/admin/catogory');
     } catch (error) {
+        req.render('admin/404')
         console.log('Error occurred while deleting category');
     }
 };
@@ -272,6 +274,7 @@ const editCatagory = async (req, res) => {
       console.log("this Edit catogory");
       res.render("admin/edit-catogory", { catagory});
     } catch (error) {
+        res.render('admin/404')
       console.log("an error occured while editing the catagory");
     }}
  
@@ -304,6 +307,43 @@ const toOrders = async (req,res)=>{
 
 }
 
+const orderStatus = async (req, res) => {
+    try {
+      const orderId = req.params.orderId;
+    //   console.log('mmmmmmmmm',orderId);
+      const newStatus = req.body.status;
+    //   console.log('>>>>>>>>>>>>>',newStatus);  
+      const order = await orders.findByIdAndUpdate(orderId, { Status: newStatus });
+
+        // console.log('...............',order);
+      if (order) {
+        res.json({ success: true });
+      } else {
+        res.json({ success: false });
+      }
+    } catch (error) {
+      console.log("Updating status error");
+      res.render('admin/404')
+      res.status(500).json({ success: false, error: "Internal Server Error" });
+    }
+  }
+  
+
+   const orderview= async (req,res)=>{
+    try {
+        const orderId=req.params.id;
+        // console.log(orderId);
+        const orderData= await orders.find({_id:orderId}).populate('Items.productId');
+        // console.log(orderData,"*****************************");
+    
+         res.render('admin/OrderDetialsView',{orderData})
+        
+      } catch (error) {
+        console.error(error)
+        res.render('admin/404')
+      }
+
+   }
 
 module.exports = {
     loginadmin,
@@ -328,5 +368,7 @@ module.exports = {
     toDashBoard,
     toProduct,
     toOrders,
+    orderStatus,
+    orderview
     
 };

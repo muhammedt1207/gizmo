@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Change Password</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container text-center">
+        <button type="button" class="btn btn-primary mx-auto" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Forget Password</button>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Forget Password</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="password-form">
+                        <div class="mb-3">
+                            <label for="old-password" class="col-form-label">Old Password:</label>
+                            <input type="password" class="form-control" id="old-password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new-password" class="col-form-label">New Password:</label>
+                            <input type="password" class="form-control" id="new-password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm-password" class="col-form-label">Confirm Password:</label>
+                            <input type="password" class="form-control" id="confirm-password">
+                        </div>
+                        <div id="password-warning" style="color: red;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="validatePassword()">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script>
+        function validatePassword() {
+            const oldPassword = document.getElementById('old-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const passwordWarning = document.getElementById('password-warning');
+
+            if (!oldPassword) {
+                passwordWarning.textContent = "Old Password is required.";
+            } else if (!newPassword) {
+                passwordWarning.textContent = "New Password is required.";
+            } else if (newPassword !== confirmPassword) {
+                passwordWarning.textContent = "New and Confirm passwords do not match.";
+            } else if (newPassword.length < 8 || !/[0-9]/.test(newPassword) || !/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[$&+,:;=?@#|'<>.^*()%!-]/.test(newPassword)) {
+                passwordWarning.textContent = "Password should contain at least one uppercase letter, one lowercase letter, a special character (@#$%^&+=!), and a number. Password length should be between 8 and 20 characters.";
+            } else {
+                // Create a data object to send to the backend
+                const data = {
+                    oldPassword: oldPassword,
+                    newPassword: newPassword,
+                };
+
+                // Make a POST request to the backend API
+                fetch('/user/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then((response) => {
+                    if (response.ok) {
+                        // Password change was successful, handle the response accordingly
+                        console.log('Password changed successfully');
+                    } else {
+                        // Password change failed, display an error message
+                        passwordWarning.textContent = 'Password change failed.';
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

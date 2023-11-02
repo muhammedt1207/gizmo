@@ -5,7 +5,7 @@ const { use } = require("../routers/adminRoute");
 require("../util/otpindex")
 const OTP = require("../models/otpModel");
 const productUpload = require('../models/model');
-const cart=require('../models/cart');
+const cart = require('../models/cart');
 const Users = require("../models/users");
 const { ObjectId } = require("mongodb");
 
@@ -63,44 +63,44 @@ const { ObjectId } = require("mongodb");
 const addToCart = async (req, res) => {
   // console.log("Adding to cart...");
   try {
-      const user = await Users.findOne({ email: req.session.email });
-      // console.log("User adding to cart: ", user);
-      const userId = user._id;
-      console.log("User ID: ", userId);
-      const { itemId } = req.body;
-      console.log("Item ID:..............", itemId);
-      let productId = itemId;
-      let cartData = await cart.findOne({ userId: userId });
-      
-      console.log("Cart Data: ", cartData);
+    const user = await Users.findOne({ email: req.session.email });
+    // console.log("User adding to cart: ", user);
+    const userId = user._id;
+    console.log("User ID: ", userId);
+    const { itemId } = req.body;
+    // console.log("Item ID:..............", itemId);
+    let productId = itemId;
+    let cartData = await cart.findOne({ userId: userId });
 
-      if (cartData !== null) {
-        const productIndex = cartData.products.findIndex(item => item.productId.toString() === productId.toString());
-          if (productIndex !== -1) {
-              cartData.products[productIndex].quantity += 1;
-          } else {
-              cartData.products.push({ productId: productId, quantity: 1 });
-          }
+    console.log("Cart Data: ", cartData);
 
-          await cartData.save();
-          req.session.userCart=cartData._id;
-          console.log("Item added to cart",cartData);
-          req.flash("success", "Item added to cart");
-          res.json({ success: true, message: "Item added to cart" });
+    if (cartData !== null) {
+      const productIndex = cartData.products.findIndex(item => item.productId.toString() === productId.toString());
+      if (productIndex !== -1) {
+        cartData.products[productIndex].quantity += 1;
       } else {
-          const cartData = await cart.create([{
-              userId: userId,
-              products: [{ productId:productId, quantity: 1 }],
-          }]);
-
-          await cartData.save();
-          req.session.userCart=cartData._id;
-          req.flash("success", "Item added to cart");
-          res.json({ success: true, message: "Item added to cart" });
+        cartData.products.push({ productId: productId, quantity: 1 });
       }
+
+      await cartData.save();
+      req.session.userCart = cartData._id;
+      console.log("Item added to cart", cartData);
+      req.flash("success", "Item added to cart");
+      res.json({ success: true, message: "Item added to cart" });
+    } else {
+      const cartData = await cart.create([{
+        userId: userId,
+        products: [{ productId: productId, quantity: 1 }],
+      }]);
+
+      await cartData.save();
+      req.session.userCart = cartData._id;
+      req.flash("success", "Item added to cart");
+      res.json({ success: true, message: "Item added to cart" });
+    }
   } catch (error) {
-      console.log("Error while adding to cart: ", error);
-      res.render('user/404Page');
+    console.log("Error while adding to cart: ", error);
+    res.render('user/404Page');
   }
 };
 
@@ -110,49 +110,50 @@ const addToCart = async (req, res) => {
 
 
 
-const toCart=async(req,res)=>{
- 
-    try{
-        const email = req.session.email;
-        const user = await Users.findOne({ email: email });
-        // console.log('user>>>>>>>>>>>>>>>>',user);
-        if (!user) {
-          
-            return res.status(404).render('user/404Page');
-        }
-      const userId = user._id;
-    
-        // console.log("**************",userId);
-      const newcart = await cart.findOne({ userId: userId }).populate("products.productId" ); 
-       
+const toCart = async (req, res) => {
 
-      if (!newcart || newcart.products.length === 0) {
-        console.log("this .........inside of if");
-        return res.render('user/cart', {title:"Cart",
-           username: email,
-           product :[] ,
-           subtotal:0,
-           total:0,
-           coupon:0,
-           gstAmount:0,
-           totalQuantity:0
+  try {
+    const email = req.session.email;
+    const user = await Users.findOne({ email: email });
+    // console.log('user>>>>>>>>>>>>>>>>',user);
+    if (!user) {
 
-          });
+      return res.status(404).render('user/404Page');
+    }
+    const userId = user._id;
+
+    // console.log("**************",userId);
+    const newcart = await cart.findOne({ userId: userId }).populate("products.productId");
+
+
+    if (!newcart || newcart.products.length === 0) {
+      console.log("this .........inside of if");
+      return res.render('user/cart', {
+        title: "Cart",
+        username: email,
+        product: [],
+        subtotal: 0,
+        total: 0,
+        coupon: 0,
+        gstAmount: 0,
+        totalQuantity: 0
+
+      });
     }
     // console.log("000000000000000000000000000");
     const products = newcart.products;
-      let subtotal = 0;
-      let totalQuantity = 0;
-      newcart.products.forEach(item => {
-        if (item.productId && item.productId.DiscountAmount !== undefined) {
-            subtotal += item.quantity * item.productId.DiscountAmount;
-            totalQuantity += item.quantity;
-          } else {
-            console.log("Skipping item due to missing or undefined DiscountAmount:", item.productId);
-          }
-          
-      });
-      const gstRate = 0.18; 
+    let subtotal = 0;
+    let totalQuantity = 0;
+    newcart.products.forEach(item => {
+      if (item.productId && item.productId.DiscountAmount !== undefined) {
+        subtotal += item.quantity * item.productId.DiscountAmount;
+        totalQuantity += item.quantity;
+      } else {
+        console.log("Skipping item due to missing or undefined DiscountAmount:", item.productId);
+      }
+
+    });
+    const gstRate = 0.18;
     const gstAmount = subtotal * gstRate;
     const coupon = '';
     const total = subtotal + gstAmount;
@@ -161,42 +162,43 @@ const toCart=async(req,res)=>{
       const couponValue = 50;
       total -= couponValue;
     }
-    req.session.totalPrice=total;
-    console.log(req.session.totalPrice);
-    res.render("user/cart", {title:"Cart",
+    req.session.totalPrice = total;
+
+    res.render("user/cart", {
+      title: "Cart",
       username: email,
       product: products,
       newcart,
       subtotal: subtotal,
       gstAmount: gstAmount.toFixed(2),
-      totalQuantity:totalQuantity,
+      totalQuantity: totalQuantity,
       coupon: coupon,
       total: total,
     });
-  
-    }catch(error){
-        console.log("error in view cart!!!!!!!!!!!!!");
-        res.render('user/404Page')
-        throw error
-    }
+
+  } catch (error) {
+    console.log("error in view cart!!!!!!!!!!!!!");
+    res.render('user/404Page')
+    throw error
+  }
 }
 
 
 
-const removeCart= async (req,res)=>{
+const removeCart = async (req, res) => {
   try {
     const email = req.session.email;
-    const user= await Users.findOne({email:email})
-    const userId=user._id;
+    const user = await Users.findOne({ email: email })
+    const userId = user._id;
     const { productId } = req.body;
-    console.log("remove cart", productId, email,userId);
+    console.log("remove cart", productId, email, userId);
 
-    const userCart = await cart.findOne({ userId:userId });
-    console.log("cart data ....",userCart);
+    const userCart = await cart.findOne({ userId: userId });
+    console.log("cart data ....", userCart);
 
-    userCart.products = userCart.products.filter((item) =>!item.productId.equals(productId));
+    userCart.products = userCart.products.filter((item) => !item.productId.equals(productId));
     await userCart.save();
-    console.log("after the remove cart data ....",userCart);
+    console.log("after the remove cart data ....", userCart);
     res.json({ success: true, message: 'Item removed from cart' });
   } catch (error) {
     res.render('user/404Page')
@@ -213,15 +215,15 @@ const updateQuantity = async (req, res) => {
   const { productId, quantity, cartId } = req.body;
 
   try {
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',productId,quantity,cartId,"123456789")
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', productId, quantity, cartId, "123456789")
     const newcart = await cart.findOne({ _id: cartId }).populate("products.productId");
-    console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<',newcart);
+    console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', newcart);
     if (!newcart) {
       return res.status(404).json({ success: false, error: "Cart not found" });
     }
 
     const productInCart = newcart.products.find(item => item.productId.equals(productId));
-    console.log("productIncart>>>>>>>>>><<<<<<<<",productInCart);
+    console.log("productIncart>>>>>>>>>><<<<<<<<", productInCart);
     if (!productInCart) {
       return res.status(404).json({ success: false, error: "Product not found in the cart" });
     }
@@ -240,7 +242,8 @@ const updateQuantity = async (req, res) => {
       subtotal += quantity * DiscountAmount;
       totalQuantity += quantity;
     });
-    console.log(subtotal,'*********',totalQuantity);
+
+    console.log(subtotal, '*********', totalQuantity);
     return res.status(200).json({
       success: true,
       message: "Cart updated successfully",
@@ -258,10 +261,10 @@ const updateQuantity = async (req, res) => {
 
 
 
-module.exports={
+module.exports = {
   addToCart,
-    toCart,
-    removeCart,
-    updateQuantity,
+  toCart,
+  removeCart,
+  updateQuantity,
 
 }

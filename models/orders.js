@@ -6,8 +6,8 @@ const OrdersSchema = new Schema({
   Status: { type: String },
   Items: [{
      Price: { type: Number },
-     productID: { type: Schema.Types.ObjectId },
-     quantity: { type: Number },
+     productId: { type: Schema.Types.ObjectId, ref: 'productUpload' },
+     quantity: { type: Number },  
   }],
   UserID: { type: Schema.Types.ObjectId },
   Address: { type: String },

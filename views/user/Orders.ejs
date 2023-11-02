@@ -1,49 +1,179 @@
 <%-include('./partial/header')%>
+<link rel="stylesheet" href="/orders.css">
 
-<section class="vh-100" style="background-color: #eee;">
-    <div class="container py-5 h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col">
-          <div class="card card-stepper" style="border-radius: 10px;">
-            <div class="card-body p-4">
-  
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex flex-column">
-                  <span class="lead fw-normal">Your order has been delivered</span>
-                  <span class="text-muted small">by DHFL on 21 Jan, 2020</span>
+<section style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <% if (orderData.length > 0) { %>
+          <% orderData.forEach((x) => { %>
+            <div class="card card-stepper p-4 shadow" style="border-radius: 10px;">
+              <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex flex-column">
+                    <span class="lead fw-normal">Your order has been <%= x.Status %></span>
+                    <ul>
+                      <% x.Items.forEach((item) => { %>
+                        <li>
+                          <b>
+                            <%= item.productId ? item.productId.ProductName : 'Product Name Not Available' %>
+                          </b><br>
+                          Quantity: <%= item.quantity %>
+                        </li>
+                        <br>
+                      <% }); %>
+                    </ul>
+                  </div>
+                  <div>
+                    <a href="/user/toorderDetials/<%= x._id%>"><button class="btn btn-outline-primary" type="button">Order details</button></a>
+                  </div>
                 </div>
-                <div>
-                  <button class="btn btn-outline-primary" type="button">Track order details</button>
-                </div>
-              </div>
-              <hr class="my-4">
-  
-              <div class="d-flex flex-row justify-content-between align-items-center align-content-center">
-                <span class="dot"></span>
-                <hr class="flex-fill track-line"><span class="dot"></span>
-                <hr class="flex-fill track-line"><span class="dot"></span>
-                <hr class="flex-fill track-line"><span class="dot"></span>
-                <hr class="flex-fill track-line"><span
-                  class="d-flex justify-content-center align-items-center big-dot dot">
+               
+                <p class="lead fw-bold mb-4 pb-2" style="color: #276ef3;">Tracking Order</p>
+                <div class="d-flex flex-row justify-content-between align-items-center align-content-center">
+                  <% if(x.Status == "Pending"){%>
+                  <span class="d-flex justify-content-center align-items-center big-dot dot">
                   <i class="fa fa-check text-white"></i></span>
-              </div>
-  
-              <div class="d-flex flex-row justify-content-between align-items-center">
-                <div class="d-flex flex-column align-items-start"><span>15 Mar</span><span>Order placed</span>
-                </div>
-                <div class="d-flex flex-column justify-content-center"><span>15 Mar</span><span>Order
-                    placed</span></div>
-                <div class="d-flex flex-column justify-content-center align-items-center"><span>15
-                    Mar</span><span>Order Dispatched</span></div>
-                <div class="d-flex flex-column align-items-center"><span>15 Mar</span><span>Out for
-                    delivery</span></div>
-                <div class="d-flex flex-column align-items-end"><span>15 Mar</span><span>Delivered</span></div>
-              </div>
-  
-            </div>
+                  <%}else{%>
+                  <span class="dot"></span>
+                  <%}%>
+            <hr class="flex-fill track-line">
+                  <% if(x.Status == "Order Placed"){%>
+                  <span class="d-flex justify-content-center align-items-center big-dot dot">
+                  <i class="fa fa-check text-white"></i></span>
+                  <%}else{%>
+                  <span class="dot"></span>
+                  <%}%>
+            <hr class="flex-fill track-line">
+                  <% if(x.Status == "Shipped"){%>
+                  <span class="d-flex justify-content-center align-items-center big-dot dot">
+                  <i class="fa fa-check text-white"></i></span>
+                  <%}else{%>
+                  <span class="dot"></span>
+                  <%}%>
+            <hr class="flex-fill track-line">
+                  <% if(x.Status == "Delivered"){%>
+                  <span class="d-flex justify-content-center align-items-center big-dot dot">
+                  <i class="fa fa-check text-white"></i></span>
+                  <%}else{%>
+                  <span class="dot"></span>
+                  <%}%>
+                  <% if(x.Status == "Rejected"){%>
+                    <hr class="flex-fill track-line">
+                    <span class="d-flex justify-content-center align-items-center big-dot dot custom-dot">
+                    <i class="fa fa-check text-white"></i></span>
+                    <%}%>
+                    
+
           </div>
-        </div>
+          <% if(x.Status == "Rejected"){%>
+            <div class="d-flex flex-row justify-content-between align-items-center">
+              <div class="d-flex flex-column align-items-start"> <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Pending</p>
+              </div>
+              <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Order Placed</p>
+              <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Shipped</p>
+               <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Delivered</p>
+               <p class="py-1 px-2 rounded text-white" style="background-color: #ff4545;">Rejected</p>
+            </div>
+            <%}else{%>
+              <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex flex-column align-items-start"> <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Pending</p>
+                </div>
+                <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Order Placed</p>
+                <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Shipped</p>
+                 <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Delivered</p>
+              </div>
+          <%}%>
+                <!-- <div class="row">
+                  <div class="col-lg-12">
+                    <div class="horizontal-timeline">
+                      <ul class="list-inline items d-flex justify-content-between">
+                        <div class="d-flex flex-row justify-content-between align-items-center align-content-center">
+                          <% if(x.Status == "Pending"){%>
+                          <span class="d-flex justify-content-center align-items-center big-dot dot">
+                          <i class="fa fa-check text-white"></i></span>
+                          <%}else{%>
+                          <span class="dot"></span>
+                          <%}%>
+                    <hr class="flex-fill track-line">
+                          <% if(x.Status == "Order Placed"){%>
+                          <span class="d-flex justify-content-center align-items-center big-dot dot">
+                          <i class="fa fa-check text-white"></i></span>
+                          <%}else{%>
+                          <span class="dot"></span>
+                          <%}%>
+                    <hr class="flex-fill track-line">
+                          <% if(x.Status == "Shipped"){%>
+                          <span class="d-flex justify-content-center align-items-center big-dot dot">
+                          <i class="fa fa-check text-white"></i></span>
+                          <%}else{%>
+                          <span class="dot"></span>
+                          <%}%>
+                    <hr class="flex-fill track-line">
+                          <% if(x.Status == "Delivered"){%>
+                          <span class="d-flex justify-content-center align-items-center big-dot dot">
+                          <i class="fa fa-check text-white"></i></span>
+                          <%}else{%>
+                          <span class="dot"></span>
+                          <%}%>
+                          <% if(x.Status == "Rejected"){%>
+                            <hr class="flex-fill track-line">
+                            <span class="d-flex justify-content-center align-items-center big-dot dot custom-dot">
+                            <i class="fa fa-check text-white"></i></span>
+                            <%}%>
+                            
+
+                  </div>
+                        <li class="list-inline-item items-list">
+                          <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Ordered</p>
+                        </li>
+                        <% if (x.Status === "Cancelled") { %>
+                          <li class="list-inline-item items-list">
+                            <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Order Cancelled</p>
+                          </li>
+                        <% } else if (x.Status === "Shipped") { %>
+                          <li class="list-inline-item items-list">
+                            <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Shipped</p>
+                          </li>
+                          <li class="list-inline-item items-list">
+                            <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">On the way</p>
+                          
+                          </li>
+                          <li class="list-inline-item items-list">
+                            <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">expecting</p>
+                          </li>
+                        <% } else if (x.Status === "Delivered") { %>
+                          <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
+                            <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Delivered</p>
+                          </li>
+                        <% } else if (x.Status === "Rejected") { %>
+                          <li class="list-inline-item items-list text-end" style="margin-right: 8px;">
+                            <span class="py-1 px-2 rounded text-white" style="background-color: #f32727;">Rejected By Seller</span>
+                          </li>
+                        <% } %>
+                      </ul> -->
+                      <br>
+                      
+                        <div class="d-flex justify-content-between pt-2">
+                          <a href=""><span class="py-1 px-2 rounded text-white" style="background-color: #f32727;">Cancell Order</span></a>
+                          <% if (x.Status==="Delivered"){%>
+                            <a href=""><span class="py-1 px-2 rounded text-white" style="background-color: #2ef327;">Invoice</span></a>
+                            <%}%>
+                        </div>
+                        <!-- <a href=""><span class="py-1 px-2 rounded text-white" style="background-color: #f3ac27;">Cancell Order</span></a> -->
+                    <!-- </div> -->
+                  <!-- </div> -->
+                <!-- </div>  -->
+                <br>
+              </div>
+            </div>
+          <br>
+        <% }); %>
+        <% } else { %>
+          <h3>No orderData Available</h3>
+        <% } %>
       </div>
     </div>
-  </section>
-  <%-include('./partial/footer')%>
+  </div>
+</section>
+<%-include('./partial/footer')%>

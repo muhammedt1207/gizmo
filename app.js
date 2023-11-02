@@ -14,7 +14,8 @@ const IndiaPincodeSearch = require('india-pincode-search');
 
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
+app.use(express.json());
+
 app.set('view engine', 'ejs');
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));

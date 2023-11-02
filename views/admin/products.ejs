@@ -1,30 +1,27 @@
-<%-include('./partial/header')%>
-<h1>Products</h1>
-<div class="search-bar p-3">
-<form action="/admin/search" method="post" name="name">
-  <div class="input-group">
-    <div class="form-outline d-flex p-3">
-      <input type="search" class="form-control " name="search" placeholder="Search" required>
+
+<%-include('./partial/header') %>
+  <h1>Products</h1>
+  <div class="search-bar p-3">
+    <form action="/admin/search" method="post" name="name">
+      <div class="input-group">
+        <div class="form-outline d-flex p-3">
+          <input type="search" class="form-control " name="search" placeholder="Search" required>
           <button id="search-button" type="submit" class="btn btn-primary mx-2">
-            
-<lord-icon
-class="fa-solid fa-magnifying-glass" style="color: #eeeff2;"
-trigger="hover"
-colors="primary:#fff"
-style="width:25px;height:25px"
->
-</lord-icon>
+
+            <lord-icon class="fa-solid fa-magnifying-glass" style="color: #eeeff2;" trigger="hover"
+              colors="primary:#fff" style="width:25px;height:25px">
+            </lord-icon>
           </button>
-    </div>
-    
+        </div>
+
+      </div>
+    </form>
   </div>
-</form>
-</div>
-<table class="table w-75">
+  <table class="table w-75">
     <thead>
       <tr>
         <th scope="col">NO</th>
-        <th scope="col">Image</th> 
+        <th scope="col">Image</th>
         <th scope="col">NAME</th>
         <th scope="col">Catagory</th>
         <th scope="col">STOCK</th>
@@ -33,31 +30,39 @@ style="width:25px;height:25px"
       </tr>
     </thead>
     <tbody>
-    <% if (Array.isArray(data)) { %>
-        <% data.filter(product => product.status === true).forEach((x, i) => { %>
-        <tr>
-            <th scope="row"><%=++i%></th>
+      <% if (Array.isArray(data)) { %>
+        <% data.filter(product=> product.status === true).forEach((x, i) => { %>
+          <tr>
+            <th scope="row">
+              <%=++i%>
+            </th>
             <td><img src="/product-image/<%=x.images[0]%>" alt="product image" style="height: 40px;width: 50px;"></td>
-            <td><%=x.ProductName%></td>
-            <td><%=x.Category%></td>
-            <td><%=x.AvailableQuantity%></td>
-            <td> 
-                <a href="/admin/edit-product/<%-x._id%>" class="text-white">
-                  <i class="fa-solid fa-pen-to-square fa-xl" style="color: #393939;"></i>
-                </a>
+            <td>
+              <%=x.ProductName%>
             </td>
-           
+            <td>
+              <%=x.Category%>
+            </td>
+            <td>
+              <%=x.AvailableQuantity%>
+            </td>
+            <td>
+              <a href="/admin/edit-product/<%-x._id%>" class="text-white">
+                <i class="fa-solid fa-pen-to-square fa-xl" style="color: #393939;"></i>
+              </a>
+            </td>
+
             <td><a href="/admin/delete-product/<%= x._id %>" class="text-white"
                 onclick="return confirm('Do you want delete  <%= x.CategoryName %> ?')">
                 <i class="fa-solid fa-trash" style="color: #5b5b5b;"></i>
-            </a></td>
-        </tr>
-        </div>
-        <% }); %>
-    <% } else { %>
-        <p>No product data available.</p>
-    <% } %>
-          
+              </a></td>
+          </tr>
+          </div>
+          <% }); %>
+            <% } else { %>
+              <p>No product data available.</p>
+              <% } %>
+
     </tbody>
   </table>
   <nav aria-label="Page navigation example" class="d-flex  mt-3">
@@ -80,4 +85,4 @@ style="width:25px;height:25px"
     </ul>
   </nav>
 
-<%-include('./partial/footer')%>
+ <%-include('./partial/footer')%>

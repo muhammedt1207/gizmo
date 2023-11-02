@@ -15,8 +15,8 @@ const userAuth=require('../middlewares/UserAuth')
 const userBlock=require('../middlewares/userblock')
 const cartController=require('../control/cartController')
 const orderController=require('../control/order')
-
-
+const filterController=require('../control/filter')
+const passwordController=require('../control/forgetPassWord')
 
 // login
 user.get('/user/indexToLogin',userAuth.userExist,userControl.IndexToLogin)
@@ -50,7 +50,7 @@ user.get('/user/toProduct-list',userAuth.verifyUser,userControl.toProductList)
 // to cart
 user.get("/user/toCart",userAuth.verifyUser,cartController.toCart)
 //to profile
-user.get("/user/profile",async(req,res)=>{
+user.get("/user/profile",userAuth.verifyUser,async(req,res)=>{
 
     const userData=await Users.findOne({email:req.session.email})
     console.log(userData);
@@ -71,17 +71,18 @@ user.get('/user/toCheckout',userAuth.verifyUser,orderController.toCheckout)
 
 //order
 
-user.post('/user/placeOrder',orderController.placeOrder)
+user.post('/user/placeOrder',userAuth.verifyUser,orderController.placeOrder)
 
+user.get('/filter-products/:brand',userAuth.verifyUser,filterController.filter)
+user.get('/all-products',filterController.allproduct)
 
+user.get('/user/toOrderPage',userAuth.verifyUser,orderController.toOrderPage)
 
+user.get('/user/toAccountSettings',userAuth.verifyUser,userControl.toAccountSettings)
 
+user.post('/user/change-password',userAuth.verifyUser, passwordController.changePass);
 
-
-
-
-
-
+user.get('/user/toorderDetials/:id',userAuth.verifyUser,orderController.orderDetails)
 
 
 

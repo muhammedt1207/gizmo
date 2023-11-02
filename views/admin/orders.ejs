@@ -1,5 +1,5 @@
 <%- include('./partial/header') %>
-<table class="table">
+<table class="table ">
   <thead>
     <tr>
       <th scope="col">No</th>
@@ -23,18 +23,23 @@
           <td><%= x.OrderDate %></td>
           <td>COD</td>
           <td><%= x.TotalPrice %></td>
-          <td><div class="btn-group">
-            <button type="button" class="btn  dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              Action
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Order Processed</a></li>
-              <li><a class="dropdown-item" href="#">Shipped</a></li>
-              <li><a class="dropdown-item" href="#">Arrived</a></li>
-              <li><a class="dropdown-item" href="#">Reject</a></li>
-            </ul>
-          </div></td>
-          <td><button type="button" class="btn btn-light">Light</button></td>
+          <td>
+             
+              <% if (x.Status !== 'Cancelled') { %>
+                <% const currentStatus = x.Status || 'Order Placed'; %>
+                <select class="form-select" id="statusSelect<%= x %>" onchange="updateOrderStatus('<%= x._id %>', this.value)">
+                  <option value="Order Placed" <%= currentStatus === 'Order Placed' ? 'selected' : '' %>>Order Placed</option>
+                  <option value="Shipped" <%= currentStatus === 'Shipped' ? 'selected' : '' %>>Shipped </option>
+                  <option value="Delivered" <%= currentStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                  <option value="Rejected" <%= currentStatus === 'Rejected' ? 'selected' : '' %>>Rejected</option>
+                </select>
+              <% } else { %>
+                Cancelled
+              <% } %>
+              
+
+          </td>
+          <td><a href="/admin/orderView/<%=x._id%>"><button type="button" class="btn btn-light">View</button></a></td>
         </tr>
       <% }) %>
     <% } else { %>
@@ -46,4 +51,33 @@
     <% } %>
   </tbody>
 </table>
+<script>
+  function updateOrderStatus(orderId, newStatus) {
+    fetch(`/admin/updateStatus/${orderId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: newStatus }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      })
+      .then((data) => {
+        if (data.success) {
+          alert('Order status updated successfully!');
+        } else {
+          alert('Failed to update order status.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+</script>
+
 <%- include('./partial/footer') %>
