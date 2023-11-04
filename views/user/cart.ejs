@@ -179,6 +179,13 @@
   function incrementQuantity(productId, cartId) {
     updateQuantity(productId, 1, cartId);
   }
+  function updateCartUI() {
+    var cartEmpty =` <%= product.length === 0 %>`;
+
+    if (cartEmpty) {
+      document.querySelector('.btn-success').disabled = true;
+    }
+  }
   updateCartUI();
 </script>
 

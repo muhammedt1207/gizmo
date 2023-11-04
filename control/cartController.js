@@ -106,6 +106,49 @@ const addToCart = async (req, res) => {
 
 
 
+const addlistToCart = async (req, res) => {
+  // console.log("Adding to cart...");
+  try {
+    const user = await Users.findOne({ email: req.session.email });
+    // console.log("User adding to cart: ", user);
+    const userId = user._id;
+    console.log("User ID: ", userId);
+    const itemId= req.params.id
+    // console.log("Item ID:..............", itemId);
+    let productId = itemId;
+    let cartData = await cart.findOne({ userId: userId });
+
+    console.log("Cart Data: ", cartData);
+
+    if (cartData !== null) {
+      const productIndex = cartData.products.findIndex(item => item.productId.toString() === productId.toString());
+      if (productIndex !== -1) {
+        cartData.products[productIndex].quantity += 1;
+      } else {
+        cartData.products.push({ productId: productId, quantity: 1 });
+      }
+
+      await cartData.save();
+      req.session.userCart = cartData._id;
+      console.log("Item added to cart", cartData);
+      req.flash("success", "Item added to cart");
+      res.json({ success: true, message: "Item added to cart" });
+    } else {
+      const cartData = await cart.create([{
+        userId: userId,
+        products: [{ productId: productId, quantity: 1 }],
+      }]);
+      console.log('cart data secount :',cartData);
+      await cartData.save();
+      req.session.userCart = cartData._id;
+      req.flash("success", "Item added to cart");
+      res.json({ success: true, message: "Item added to cart" });
+    }
+  } catch (error) {
+    console.log("Error while adding to cart: ", error);
+    res.render('user/404Page');
+  }
+};
 
 
 
@@ -266,5 +309,6 @@ module.exports = {
   toCart,
   removeCart,
   updateQuantity,
+  addlistToCart,
 
 }

@@ -1,4 +1,4 @@
-<%-include('./partial/header')%>
+<%- include('./partial/header') %>
 <section class="p-3">
   <div class="container">
       <div class="row">
@@ -64,9 +64,7 @@
           </div>
       </div>
   </div>
-
   <hr />
-
   <!-- Pagination -->
   <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
       <ul class="pagination">
@@ -87,16 +85,11 @@
           </li>
       </ul>
   </nav>
-  <!-- Pagination -->
 </section>
-
 <script>
   const brandSelect = document.getElementById('brandSelect');
   const productList = document.getElementById('productList');
-
-  // Function to fetch and display products based on the selected brand
   const fetchProducts = (selectedBrand) => {
-    // Replace with your server URL
     fetch(`/filter-products/${selectedBrand}`)
       .then((response) => response.json())
       .then((data) => {
@@ -106,49 +99,7 @@
           .forEach((x) => {
             const productElement = document.createElement('div');
             productElement.classList.add('row', 'justify-content-center', 'mb-3');
-            
-            productElement.innerHTML = `
-                <a id="special-link" href="/user/toProductView/${x._id}">
-                    <div class="col-md-12">
-                        <div class="card shadow-10 border rounded-3">
-                            <div class="card-body">
-                                <div class="row g-0">
-                                    <div class="col-xl-3 col-md-4 d-flex justify-content-center">
-                                        <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                                            <img src="/product-image/${x.images[0]}" class="" style="width: 180px;" />
-                                            <a href="#!">
-                                                <div class="hover-overlay">
-                                                    <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-6 col-md-5 col-sm-7">
-                                        <h5>${x.ProductName}</h5>
-                                        <ul>
-                                            <li>${x.Specification1}</li>
-                                            <li>${x.Specification2}</li>
-                                            <li>${x.Specification3}</li>
-                                            <li>${x.Specification4}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-xl-3 col-md-3 col-sm-5">
-                                        <div class="d-flex flex-row align-items-center mb-1">
-                                            <h4 class="mb-1 me-1"> ₹ ${x.DiscountAmount}</h4>
-                                            <span class="text-danger"><s>₹ ${x.Price}</s></span>
-                                        </div>
-                                        <div class="mt-4">
-                                            <a href=""><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a>
-                                            <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            `;
-
+            productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> <div class="mt-4"> <a href="/user/AddToCart/' + x._id + '"><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a> <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a> </div> </div> </div> </div> </div> </a>';
             productList.appendChild(productElement);
           });
       })
@@ -156,23 +107,15 @@
         console.error('Error fetching products:', error);
       });
   };
-
-  // Add an event listener to the brandSelect element
   brandSelect.addEventListener('change', () => {
     const selectedBrand = brandSelect.value;
-
     if (selectedBrand === 'ALL') {
-      // Fetch and display all products when the "All Brands" option is selected
       fetchAllProducts();
     } else {
-      // Fetch and display products based on the selected brand
       fetchProducts(selectedBrand);
     }
   });
-
-  // Function to fetch and display all products
   const fetchAllProducts = () => {
-    // Replace with your server URL
     fetch('/all-products')
       .then((response) => response.json())
       .then((data) => {
@@ -182,49 +125,7 @@
           .forEach((x) => {
             const productElement = document.createElement('div');
             productElement.classList.add('row', 'justify-content-center', 'mb-3');
-            
-            productElement.innerHTML = `
-            <a id="special-link" href="/user/toProductView/${x._id}">
-                    <div class="col-md-12">
-                        <div class="card shadow-10 border rounded-3">
-                            <div class="card-body">
-                                <div class="row g-0">
-                                    <div class="col-xl-3 col-md-4 d-flex justify-content-center">
-                                        <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                                            <img src="/product-image/${x.images[0]}" class="" style="width: 180px;" />
-                                            <a href="#!">
-                                                <div class="hover-overlay">
-                                                    <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-6 col-md-5 col-sm-7">
-                                        <h5>${x.ProductName}</h5>
-                                        <ul>
-                                            <li>${x.Specification1}</li>
-                                            <li>${x.Specification2}</li>
-                                            <li>${x.Specification3}</li>
-                                            <li>${x.Specification4}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-xl-3 col-md-3 col-sm-5">
-                                        <div class="d-flex flex-row align-items-center mb-1">
-                                            <h4 class="mb-1 me-1"> ₹ ${x.DiscountAmount}</h4>
-                                            <span class="text-danger"><s>₹ ${x.Price}</s></span>
-                                        </div>
-                                        <div class="mt-4">
-                                            <a href=""><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a>
-                                            <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            `;
-
+            productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> <div class="mt-4"> <a href="/user/AddToCart/' + x._id + '"><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a> <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a> </div> </div> </div> </div> </div> </a>';
             productList.appendChild(productElement);
           });
       })
@@ -232,9 +133,6 @@
         console.error('Error fetching products:', error);
       });
   };
-
-  // Call the fetchAllProducts function when the page loads to show all products by default
   window.addEventListener('load', fetchAllProducts);
 </script>
-
-<%-include('./partial/contentFooter')%>
+<%- include('./partial/contentFooter') %>

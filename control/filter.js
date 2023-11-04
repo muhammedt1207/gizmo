@@ -66,7 +66,6 @@ const filter = async (req, res) => {
   try {
    const brand=req.params.brand
    const data= await productData.find({BrandName:brand}).exec();
-   console.log(data);
    res.json(data);
   } catch (error) {
     console.error(error);

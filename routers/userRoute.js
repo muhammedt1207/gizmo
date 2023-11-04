@@ -68,27 +68,30 @@ user.post('/user/addToCart',userAuth.verifyUser,cartController.addToCart)
 user.post('/user/removeFromCart/:id',userAuth.verifyUser,cartController.removeCart)
 user.post('/updatequantity',userAuth.verifyUser,cartController.updateQuantity)
 user.get('/user/toCheckout',userAuth.verifyUser,orderController.toCheckout)
+user.get('/user/AddToCart/:id',cartController.addlistToCart)
 
-//order
 
-user.post('/user/placeOrder',userAuth.verifyUser,orderController.placeOrder)
+user.get('/user/toAccountSettings',userAuth.verifyUser,userControl.toAccountSettings)
+user.post('/user/change-password',userAuth.verifyUser, passwordController.changePass);
+
 
 user.get('/filter-products/:brand',userAuth.verifyUser,filterController.filter)
 user.get('/all-products',filterController.allproduct)
 
+
+
+
+//order
+user.post('/user/placeOrder',userAuth.verifyUser,orderController.placeOrder)
 user.get('/user/toOrderPage',userAuth.verifyUser,orderController.toOrderPage)
-
-user.get('/user/toAccountSettings',userAuth.verifyUser,userControl.toAccountSettings)
-
-user.post('/user/change-password',userAuth.verifyUser, passwordController.changePass);
-
 user.get('/user/toorderDetials/:id',userAuth.verifyUser,orderController.orderDetails)
+user.post('/cancel-order/:id',orderController.cancellOrder)
+user.post('/Onecancel-order', orderController.oneItemcancel)
 
 
-
-
-
-
+//invoice
+user.post('/downloadinvoice',userAuth.verifyUser,orderController.generateInvoices)
+user.get('/downloadinvoice/:orderId',userAuth.verifyUser,orderController.downloadInvoice)
 
 
 

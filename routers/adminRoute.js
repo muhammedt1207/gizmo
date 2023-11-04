@@ -7,14 +7,14 @@ const upload = require("../middlewares/multer");
 const Products = require("../models/model");
 const category=require("../models/category")
 const adminAuth=require('../middlewares/AdminAuth')
-
-
+const banermulter=require('../middlewares/bannerMulter')
+const banner =require('../models/banner')
 
 
 
 //login
 admin.get('/',adminAuth.adminExist,adminController.toLogin)
-admin.post('/log',adminAuth.adminExist,adminController.loginadmin)
+admin.post('/log',adminController.loginadmin)
 admin.get('/costomers',adminController.userDataSharing);
 admin.get('/signout',adminAuth.verifyAdmin, adminController.signout)
 
@@ -59,14 +59,18 @@ admin.post("/userSearch", async (req, res) => {
 
   res.render("./admin/costomers", { title: "Home", userData, i });
 });
+admin.get('/banner', async(req,res)=>{
+  const latestBanner = await banner.findOne({}, {}, { sort: { date: -1 } });
+  res.render('admin/banner',{latestBanner})
+})
+
 
 admin.get('/orders',adminAuth.verifyAdmin,adminController.toOrders)
-
 admin.put('/updateStatus/:orderId',adminController.orderStatus)
-
 admin.get('/orderView/:id',adminController.orderview)
 
 
+admin.post('/bannerUpload', banermulter.single('image'), adminController.Addbanner);
 
 
 

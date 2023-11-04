@@ -3,6 +3,10 @@ const Category = require('../models/category');
 const { ObjectId } = require('mongodb');
 const productUpload = require('../models/model');
 const orders = require ('../models/orders')
+const imgCrop=require('../service/bannerCrop')
+const banner =require('../models/banner')
+
+
 // Admin login credentials
 const credential = {
     email: 'admin1@gmail.com',
@@ -345,6 +349,55 @@ const orderStatus = async (req, res) => {
 
    }
 
+
+
+const Addbanner=async  (req,res)=>{
+    const productDetails = req.body;
+    console.log("this add banner",productDetails);
+    try {
+        const uploadedImage = req.file; 
+        console.log("hi  >>>>>>>",uploadedImage);
+
+        if (!uploadedImage) {
+            console.log('No image uploaded');
+           
+        }
+        const supportedFormats = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'image/tiff', 'image/avif'];
+    
+        if (!supportedFormats.includes(uploadedImage.mimetype)) {
+          console.log('Unsupported image format');
+          return res.redirect('/banner');
+        }
+        // imgCrop(uploadedImage)
+        console.log("image ccropped");
+        const currentDate = new Date(); // Get the current date and time
+
+        // Create a new banner document with image and date
+        const newBanner = new banner({
+          image: uploadedImage.filename,
+          date: currentDate,
+        });
+    
+        const savedBanner = await newBanner.save();
+        const latestBanner = await banner.findOne({}, {}, { sort: { date: -1 } });
+        if (savedBanner) {
+          console.log('Banner added');
+          res.render('admin/banner',{latestBanner})
+        } else {
+          console.log('Error saving the banner');
+          res.render('admin/404');
+        }
+    } catch (error) {
+        console.log('An error happened');
+        res.render('admin/404')
+        throw error;
+    }
+}
+
+
+
+
+
 module.exports = {
     loginadmin,
     UserStatus,
@@ -369,6 +422,8 @@ module.exports = {
     toProduct,
     toOrders,
     orderStatus,
-    orderview
+    orderview,
+
+    Addbanner
     
 };

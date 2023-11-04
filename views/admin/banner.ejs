@@ -1,0 +1,39 @@
+<%-include('./partial/header')%>
+
+
+
+<div>
+  <div class="mb-4 d-flex justify-content-center">
+    <img id="selectedImage" src="/banner-image/<%=latestBanner.image%>"
+      alt="example placeholder" style="width: 1500px; height: 557px; object-fit: cover;" />
+  </div>
+  <div class="d-flex justify-content-center">
+    <form action="/admin/bannerUpload" method="POST" enctype="multipart/form-data">
+      <div class="btn btn-primary btn-rounded">
+        <label class="form-label text-white m-1" for="customFile1">Choose file</label>
+        <input type="file" class="form-control d-none" id="customFile1" name="image" accept="image/*" />
+      </div>
+      <button type="submit" class="btn btn-success mt-2">Upload and Save</button>
+    </form>
+  </div>
+</div>
+
+<%- include('./partial/footer') %>
+
+<script>
+  function displaySelectedImage(event, elementId) {
+    const selectedImage = document.getElementById(elementId);
+    const fileInput = event.target;
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            selectedImage.src = e.target.result;
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+}
+</script>
+<%-include('./partial/footer')%>

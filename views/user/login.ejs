@@ -1,4 +1,4 @@
-<%- include ('partial/header') -%>
+<%- include ('partial/dataheader') -%>
 
 
 
@@ -60,14 +60,14 @@
 
 <script>
     $(document).ready(function () {
-  // Submit the login form using Ajax
+  
   document.getElementById("loginForm").addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault(); 
 
     const email = document.querySelector("input[name='email']").value;
     const password = document.querySelector("input[name='password']").value;
 
-    // Create a data object to send via Fetch
+   
     const data = {
         email: email,
         password: password
@@ -83,12 +83,11 @@
     .then(response => response.json())
     .then(data => {
         console.log("responseee", data);
-        // Handle the success response here (e.g., redirection)
         if (data.success) {
-            window.location.href = "/user/home"; // Redirect to the home page
+            window.location.href = "/user/home";
         } else {
             console.log("inside elsee");
-            document.getElementById("errorMessage").textContent = data.error; // Display the error message
+            document.getElementById("errorMessage").textContent = data.error;
         }
     })
     .catch(error => {

@@ -1,90 +1,103 @@
 <%-include('./partial/header')%>
-<link rel="stylesheet" href="/orders.css">
+  <link rel="stylesheet" href="/orders.css">
 
-<section style="background-color: #eee;">
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col">
-        <% if (orderData.length > 0) { %>
-          <% orderData.forEach((x) => { %>
-            <div class="card card-stepper p-4 shadow" style="border-radius: 10px;">
-              <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="d-flex flex-column">
-                    <span class="lead fw-normal">Your order has been <%= x.Status %></span>
-                    <ul>
-                      <% x.Items.forEach((item) => { %>
-                        <li>
-                          <b>
-                            <%= item.productId ? item.productId.ProductName : 'Product Name Not Available' %>
-                          </b><br>
-                          Quantity: <%= item.quantity %>
-                        </li>
-                        <br>
-                      <% }); %>
-                    </ul>
+  <section style="background-color: #eee;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col">
+          <% if (orderData.length> 0) { %>
+            <% orderData.forEach((x)=> { %>
+              <div class="card card-stepper p-4 shadow" style="border-radius: 10px;">
+                <div class="card-body p-4">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex flex-column">
+                      <span class="lead fw-normal">Your order has been <%= x.Status %></span>
+                      <ul>
+                        <% x.Items.forEach((item)=> { %>
+                          <li>
+                            <b>
+                              <%= item.productId ? item.productId.ProductName : 'Product Name Not Available' %>
+                            </b><br>
+                            Quantity: <%= item.quantity %>
+                          </li>
+                          <br>
+                          <% }); %>
+                      </ul>
+                    </div>
+                    <div>
+                      <a href="/user/toorderDetials/<%= x._id%>"><button class="btn btn-outline-primary"
+                          type="button">Order details</button></a>
+                    </div>
                   </div>
-                  <div>
-                    <a href="/user/toorderDetials/<%= x._id%>"><button class="btn btn-outline-primary" type="button">Order details</button></a>
+
+                  <p class="lead fw-bold mb-4 pb-2" style="color: #276ef3;">Tracking Order</p>
+                  <div class="d-flex flex-row justify-content-between align-items-center align-content-center">
+                    <% if(x.Status=="Pending" ){%>
+                      <span class="d-flex justify-content-center align-items-center big-dot dot">
+                        <i class="fa fa-check text-white"></i></span>
+                      <%}else{%>
+                        <span class="dot"></span>
+                        <%}%>
+                          <hr class="flex-fill track-line">
+                          <% if(x.Status=="Order Placed" ){%>
+                            <span class="d-flex justify-content-center align-items-center big-dot dot">
+                              <i class="fa fa-check text-white"></i></span>
+                            <%}else{%>
+                              <span class="dot"></span>
+                              <%}%>
+                                <hr class="flex-fill track-line">
+                                <% if(x.Status=="Shipped" ){%>
+                                  <span class="d-flex justify-content-center align-items-center big-dot dot">
+                                    <i class="fa fa-check text-white"></i></span>
+                                  <%}else{%>
+                                    <span class="dot"></span>
+                                    <%}%>
+                                      <hr class="flex-fill track-line">
+                                      <% if(x.Status=="Delivered" ){%>
+                                        <span class="d-flex justify-content-center align-items-center big-dot dot">
+                                          <i class="fa fa-check text-white"></i></span>
+                                        <%}else{%>
+                                          <span class="dot"></span>
+                                          <%}%>
+                                            <% if(x.Status=="Rejected" ){%>
+                                              <hr class="flex-fill track-line">
+                                              <span
+                                                class="d-flex justify-content-center align-items-center big-dot dot custom-dot">
+                                                <i class="fa fa-check text-white"></i></span>
+                                              <%}%>
+                                             
+
                   </div>
-                </div>
-               
-                <p class="lead fw-bold mb-4 pb-2" style="color: #276ef3;">Tracking Order</p>
-                <div class="d-flex flex-row justify-content-between align-items-center align-content-center">
-                  <% if(x.Status == "Pending"){%>
-                  <span class="d-flex justify-content-center align-items-center big-dot dot">
-                  <i class="fa fa-check text-white"></i></span>
-                  <%}else{%>
-                  <span class="dot"></span>
-                  <%}%>
-            <hr class="flex-fill track-line">
-                  <% if(x.Status == "Order Placed"){%>
-                  <span class="d-flex justify-content-center align-items-center big-dot dot">
-                  <i class="fa fa-check text-white"></i></span>
-                  <%}else{%>
-                  <span class="dot"></span>
-                  <%}%>
-            <hr class="flex-fill track-line">
-                  <% if(x.Status == "Shipped"){%>
-                  <span class="d-flex justify-content-center align-items-center big-dot dot">
-                  <i class="fa fa-check text-white"></i></span>
-                  <%}else{%>
-                  <span class="dot"></span>
-                  <%}%>
-            <hr class="flex-fill track-line">
-                  <% if(x.Status == "Delivered"){%>
-                  <span class="d-flex justify-content-center align-items-center big-dot dot">
-                  <i class="fa fa-check text-white"></i></span>
-                  <%}else{%>
-                  <span class="dot"></span>
-                  <%}%>
-                  <% if(x.Status == "Rejected"){%>
-                    <hr class="flex-fill track-line">
-                    <span class="d-flex justify-content-center align-items-center big-dot dot custom-dot">
-                    <i class="fa fa-check text-white"></i></span>
-                    <%}%>
+                  <% if(x.Status=="Rejected" ){%>
+                    <div class="d-flex flex-row justify-content-between align-items-center">
+                      <div class="d-flex flex-column align-items-start">
+                        <p class="py-1 px-2 rounded text-white" style="background-color: #dadada;">Pending</p>
+                      </div>
+                      <p class="py-1 px-2 rounded text-white" style="background-color: #e7e7e7;">Order Placed</p>
+                      <p class="py-1 px-2 rounded text-white" style="background-color: #dadada;">Shipped</p>
+                      <p class="py-1 px-2 rounded text-white" style="background-color: #dbdbdb;">Delivered</p>
+                      <p class="py-1 px-2 rounded text-white" style="background-color: #ff4545;">Rejected</p>
+                    </div>
+                   <%}else if(x.Status=="Cancelled" ){%>
+                      <div class="d-flex flex-row justify-content-between align-items-center">
+                        
+                        <p class="py-1 px-2 rounded text-white" style="background-color: #dfdfdf;">Order Placed</p>
+                        <p class="py-1 px-2 rounded text-white" style="background-color: #dddddd;">Shipped</p>
+                        <p class="py-1 px-2 rounded text-white" style="background-color: #c7c7c7;">Delivered</p>
+                        <p class="py-1 px-2 rounded text-white" style="background-color: #ff4545;">Cancelled</p>
+                      </div>
                     
-
-          </div>
-          <% if(x.Status == "Rejected"){%>
-            <div class="d-flex flex-row justify-content-between align-items-center">
-              <div class="d-flex flex-column align-items-start"> <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Pending</p>
-              </div>
-              <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Order Placed</p>
-              <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Shipped</p>
-               <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Delivered</p>
-               <p class="py-1 px-2 rounded text-white" style="background-color: #ff4545;">Rejected</p>
-            </div>
-            <%}else{%>
-              <div class="d-flex flex-row justify-content-between align-items-center">
-                <div class="d-flex flex-column align-items-start"> <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Pending</p>
-                </div>
-                <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Order Placed</p>
-                <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Shipped</p>
-                 <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Delivered</p>
-              </div>
-          <%}%>
-                <!-- <div class="row">
+                    <%}else{%>
+                      <div class="d-flex flex-row justify-content-between align-items-center">
+                        <div class="d-flex flex-column align-items-start">
+                          <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Pending</p>
+                        </div>
+                        <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Order Placed</p>
+                        <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Shipped</p>
+                        <p class="py-1 px-2 rounded text-white" style="background-color: #2790f3;">Delivered</p>
+                      </div>
+                      <%}%>
+                        <!-- <div class="row">
                   <div class="col-lg-12">
                     <div class="horizontal-timeline">
                       <ul class="list-inline items d-flex justify-content-between">
@@ -152,28 +165,97 @@
                           </li>
                         <% } %>
                       </ul> -->
-                      <br>
-                      
+                        <br>
+
                         <div class="d-flex justify-content-between pt-2">
-                          <a href=""><span class="py-1 px-2 rounded text-white" style="background-color: #f32727;">Cancell Order</span></a>
-                          <% if (x.Status==="Delivered"){%>
-                            <a href=""><span class="py-1 px-2 rounded text-white" style="background-color: #2ef327;">Invoice</span></a>
+                          <div class="d-flex justify-content-between pt-2">
+                            <% if (x.Status !== "Cancelled" && x.Status !== "Delivered") { %>
+                                <button class="btn btn-danger" id="cancelOrderBtn" data-order-id="<%= x._id %>">Cancel Order</button>
+                            <% } %>
+                        </div>
+                        
+                          <% if (x.Status==="Delivered" ){%>
+                            <button type="button" class="btn btn-dark m-2" onclick="generateAndDownloadInvoice('<%= x._id %>')">
+                              Download Invoice
+                          </button>
                             <%}%>
                         </div>
                         <!-- <a href=""><span class="py-1 px-2 rounded text-white" style="background-color: #f3ac27;">Cancell Order</span></a> -->
-                    <!-- </div> -->
-                  <!-- </div> -->
-                <!-- </div>  -->
-                <br>
+                        <!-- </div> -->
+                        <!-- </div> -->
+                        <!-- </div>  -->
+                        <br>
+                </div>
               </div>
-            </div>
-          <br>
-        <% }); %>
-        <% } else { %>
-          <h3>No orderData Available</h3>
-        <% } %>
+              <br>
+              <% }); %>
+                <% } else { %>
+                  <h3>No orderData Available</h3>
+                  <% } %>
+        </div>
       </div>
     </div>
-  </div>
-</section>
-<%-include('./partial/footer')%>
+  </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const cancelOrderButtons = document.querySelectorAll('#cancelOrderBtn');
+      const cancellationAlert = document.getElementById('cancellationAlert');
+  
+      cancelOrderButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const orderId = button.getAttribute('data-order-id');
+  
+          const userConfirmed = confirm('Are you sure you want to cancel this order?');
+  
+          if (userConfirmed) {
+            fetch(`/cancel-order/${orderId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  cancellationAlert.textContent = `Order with ID ${orderId} has been canceled.`;
+                  cancellationAlert.classList.remove('alert-danger');
+                  cancellationAlert.classList.add('alert-success');
+                  cancellationAlert.style.display = 'block';
+  
+                  button.closest('.card').remove();
+                } else {
+                  cancellationAlert.textContent = data.message;
+                  cancellationAlert.classList.remove('alert-success');
+                  cancellationAlert.classList.add('alert-danger');
+                  cancellationAlert.style.display = 'block';
+                }
+              })
+              .catch((error) => {
+                console.error('Error canceling the order:', error);
+              });
+          }
+        });
+      });
+    });
+  </script>
+  <script>
+    async function generateAndDownloadInvoice(orderId) {
+        try {
+            const response = await fetch('/downloadinvoice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', 
+                },
+                body: JSON.stringify({ orderId }) 
+            });
+            if (response.ok) {
+              console.log("inside response");
+                window.location.href = `/downloadinvoice/${orderId}`;
+            }
+        } catch (error) {
+            console.error('Error in downloading the invoice:', error);
+        }
+    }
+    </script>
+  <%-include('./partial/footer')%>
+  
