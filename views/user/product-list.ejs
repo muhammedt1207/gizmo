@@ -57,8 +57,8 @@
               </div>
           </div>
           <!-- Product List -->
-          <div class="col-lg-9">
-              <div id="productList">
+          <div class="col-lg-9 ">
+              <div id="productList" class="z-n1">
                   <!-- The products will be loaded here dynamically -->
               </div>
           </div>
@@ -66,30 +66,29 @@
   </div>
   <hr />
   <!-- Pagination -->
-  <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3">
-      <ul class="pagination">
-          <li class="page-item disabled">
-              <a class="page-link" href="#" aria-label="Previous">
-                  <span aria-hidden="true">&laquo;</span>
-              </a>
-          </li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">4</a></li>
-          <li class="page-item"><a class="page-link" href="#">5</a></li>
-          <li class="page-item">
-              <a class="page-link" href="#" aria-label="Next">
-                  <span aria-hidden="true">&raquo;</span>
-              </a>
-          </li>
-      </ul>
-  </nav>
+  <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3" id="pagination-navbar">
+    <ul class="pagination">
+        <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="<%= page <= 1 ? '#' : '/user/toProduct-list?page=' + (page - 1) %>" style="color: black;" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="/user/toProduct-list?page=<%= page %>" style="color: black"><%= page %></a>
+        </li>
+        <li class="page-item <%= page >= Count ? 'disabled' : '' %>">
+            <a class="page-link" href="<%= page >= Count ? '#' : '/user/toProduct-list?page=' + (page + 1) %>" style="color: black;" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 </section>
 <script>
   const brandSelect = document.getElementById('brandSelect');
   const productList = document.getElementById('productList');
-  const fetchProducts = (selectedBrand) => {
+  const fetchProducts = (selectedBrand) =>
+   {
     fetch(`/filter-products/${selectedBrand}`)
       .then((response) => response.json())
       .then((data) => {
@@ -99,7 +98,7 @@
           .forEach((x) => {
             const productElement = document.createElement('div');
             productElement.classList.add('row', 'justify-content-center', 'mb-3');
-            productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> <div class="mt-4"> <a href="/user/AddToCart/' + x._id + '"><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a> <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a> </div> </div> </div> </div> </div> </a>';
+            productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a>';
             productList.appendChild(productElement);
           });
       })
@@ -125,7 +124,7 @@
           .forEach((x) => {
             const productElement = document.createElement('div');
             productElement.classList.add('row', 'justify-content-center', 'mb-3');
-            productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> <div class="mt-4"> <a href="/user/AddToCart/' + x._id + '"><button class="btn btn-primary shadow-0" type="button">Add To Cart</button></a> <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i class="fas fa-heart fa-lg px-1"></i></a> </div> </div> </div> </div> </div> </a>';
+            productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a>';
             productList.appendChild(productElement);
           });
       })

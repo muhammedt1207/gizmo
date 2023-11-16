@@ -7,16 +7,33 @@ const OTP = require("../models/otpModel");
 const productUpload = require('../models/model');
 const cart=require('../models/cart');
 const Users = require("../models/users");
-
+const Banner=require("../models/banner")
 
 const tohome = async (req,res)=>{
     if(req.session.logged){
         res.redirect('/user/home');
     }else{
+        const user=await Users.findOne({email:req.session.email})
         const data= await productUpload.find()
-        res.render("./user/index",{title:"Login",err:false, data});
+        const banner=await Banner.findOne({}, {}, { sort: { date: -1 } })
+        console.log(banner,"banner images>>>>>>>>>>>");
+        res.render("./user/index",{title:"Login",err:false, data,banner,user});
     }
 }
+
+
+const productSearch=async (req, res) => {
+    const searchTerm = req.query.q;
+  
+    try {
+      const results = await productUpload.find({ itemName: { $regex: new RegExp(searchTerm, 'i') } });
+      res.json(results);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
 
 const tosignup = (req,res)=>{
     if(req.session.logged){
@@ -315,7 +332,9 @@ const userlog= async (req,res)=>{
         console.log(user);
         console.log(req.session.logged);
         const data= await productUpload.find()
-        res.render("user/user-home",{title:"Home", data,user})
+        const banner=await Banner.findOne({}, {}, { sort: { date: -1 } })
+        console.log(banner,"banner images>>>>>>>>>>>");
+        res.render("user/user-home",{title:"Home", data,user,banner})
     }
     else{
         console.log("login");
@@ -333,9 +352,19 @@ const productView=async(req,res)=>{
 
 
 const toProductList=async (req,res)=>{
-    try{
-    let data= await productUpload.find()
-    res.render('user/product-list',{title:"Products", data})
+    try{var i=0
+        const page = parseInt(req.query.page) || 1;
+        const count = await productUpload.find().count()
+        const pageSize = 1;
+        const totaldata = Math.ceil(count / pageSize);
+        const skip = (page - 1) * pageSize;
+        const data = await productUpload.find().skip(skip).limit(pageSize)
+        const user =await Users.findOne({email:req.session.email})
+        res.render('user/product-list', { title: 'Costomers', userData: data ,
+        Count:totaldata,
+        page: page,
+        user,
+        i})
     }catch{
         console.error(error);
         res.status(500).send("Internet Server Error")
@@ -348,6 +377,7 @@ const addAddress=async (req,res)=>{
     try{
         let email=req.session.email
         let newaddress={
+            name:req.body.name,
             addressLine:req.body.address,
             city:req.body.city,
             pincode:req.body.pincode,
@@ -365,6 +395,27 @@ const addAddress=async (req,res)=>{
     }
 }
 
+const NewAddAddress=async (req,res)=>{
+    try{
+        let email=req.session.email
+        let newaddress={
+            name:req.body.name,
+            addressLine:req.body.address,
+            city:req.body.city,
+            pincode:req.body.pincode,
+            state:req.body.state,
+            mobileNumber:req.body.number
+        }
+        console.log(newaddress);
+        const user=await Users.findOne({email:email})
+        user.address.push(newaddress)
+        await  user.save()
+            res.redirect('/user/toCheckout')
+    }catch(error){
+        console.log("can't add Address");
+
+    }
+}
 
 
 // Add a route for deleting an address
@@ -400,7 +451,7 @@ const toManageAddress=async (req,res)=>{
         console.log("to Address Manage");
         const email= req.session.email
         const userData= await Users.findOne({email:email})
-        res.render("user/addressManage",{title:"Address  page",userData})
+        res.render("user/addressManage",{title:"Address  page",userData,user:userData})
     } catch (error) {
         
     }
@@ -410,9 +461,10 @@ const editAddress=async (req, res) => {
     try {
 
       const addressId = req.params.id;
-      
+      console.log("this user edit address form");
 
       const updatedAddress = {
+        name: req.body.name,
         addressLine: req.body.address,
         city: req.body.city,
         pincode: req.body.pincode,
@@ -436,6 +488,81 @@ const editAddress=async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   }
+
+  const newEditAddress = async (req, res) => {
+    try {
+      const addressId = req.params.id;
+        console.log("check point 1");
+      const updatedAddress = {
+        name: req.body.name,
+        addressLine: req.body.address,
+        city: req.body.city,
+        pincode: req.body.pincode,
+        state: req.body.state,
+        mobileNumber: req.body.number,
+      };
+      console.log("check point 2");
+      const user = await Users.findOneAndUpdate(
+        { 'address._id': addressId },
+        { $set: { 'address.$': updatedAddress } },
+        { new: true }
+      );
+        console.log("check point 3");
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'Address not found' });
+      }
+  console.log("console checck 4");
+      res.json({ success: true, message: 'Address edited successfully', updatedAddress });
+    } catch (error) {
+      console.error('Error updating address:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+  };
+  
+
+  const profilePhoto=  async (req, res) => {
+    try {
+      const name = req.file.originalname;
+      const data = req.file.buffer;
+      const contentType = req.file.mimetype;
+  
+      const image = new Image({ name, data, c});
+      await image.save();
+  
+      res.status(201).json({ message: 'Image uploaded and saved.' });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
+ 
+  const userProfile= async (req, res) => {
+    try{
+        console.log("user Profile section");
+        if (req.file) {
+            const updatedUser = await Users.findOneAndUpdate(
+                { email: req.session.email },
+                { profilePhoto: req.file.filename },
+                { new: true }
+            );
+
+            if (updatedUser) {
+                console.log("updated");
+                res.status(200).json({ message: 'Profile photo updated successfully' });
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        } else {
+            res.status(400).json({ error: 'No file was uploaded' });
+        
+    }
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+  
   
 const toAccountSettings= (req,res)=>{
     try {
@@ -468,5 +595,8 @@ module.exports = {
     toManageAddress,
     editAddress,
     toAccountSettings,
-    
+    userProfile,
+    NewAddAddress,
+    newEditAddress,
+    productSearch,
 }

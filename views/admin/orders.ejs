@@ -1,5 +1,8 @@
 <%- include('./partial/header') %>
-<table class="table ">
+<h2>Orders</h2>
+  <a href="/admin/ReturnPage"><button class="btn btn-primary me-md-2" type="button">Return Products</button></a>
+  <br>
+<table class="table table-striped ">
   <thead>
     <tr>
       <th scope="col">No</th>
@@ -19,8 +22,14 @@
         <tr>
           <th scope="row"><%= index + 1 %></th>
           <td><%= x._id %></td>
-          <td><%= x.UserID %></td>
-          <td><%= x.OrderDate %></td>
+          <t><%= x.UserID %></td>
+           <td>
+            <% const orderDate = new Date(x.OrderDate); %>
+            <%= orderDate.toLocaleString('default', { month: 'short' }) %>
+            <%= orderDate.getDate() %>,
+            <%= orderDate.getFullYear() %>
+            <%= orderDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+          </td>
           <td>COD</td>
           <td><%= x.TotalPrice %></td>
           <td>
@@ -51,6 +60,23 @@
     <% } %>
   </tbody>
 </table>
+<nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3" id="pagination-navbar">
+  <ul class="pagination">
+      <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="<%= page <= 1 ? '#' : '/admin/orders?page=' + (page - 1) %>" style="color: black;" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+          </a>
+      </li>
+      <li class="page-item">
+          <a class="page-link" href="/admin/orders?page=<%= page %>" style="color: black"><%= page %></a>
+      </li>
+      <li class="page-item <%= page >= Count ? 'disabled' : '' %>">
+          <a class="page-link" href="<%= page >= Count ? '#' : '/admin/orders?page=' + (page + 1) %>" style="color: black;" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+          </a>
+      </li>
+  </ul>
+</nav>
 <script>
   function updateOrderStatus(orderId, newStatus) {
     fetch(`/admin/updateStatus/${orderId}`, {

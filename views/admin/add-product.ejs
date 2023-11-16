@@ -1,156 +1,230 @@
 <%- include('./partial/header') %>
 
-        <main class="px-md-4 icons " style="margin-left: 18%;width: 80%; margin-top: 6%;">
+    <main class="px-md-4 icons " style="margin-left: 18%;width: 80%; margin-top: 6%;">
 
-            <div class="row d-flex justify-content-between w-75">
-                <div class="col-md-8">
-                    <h1 class="mt-5">Add Product</h1>
+        <div class="row d-flex justify-content-between w-75">
+            <div class="col-md-8">
+                <h1 class="mt-5">Add Product</h1>
+                <br>
+                <form action="/admin/addproduct" method="post" id="sample" enctype="multipart/form-data"
+                    onsubmit="return validateForm() " class="bg-white">
+                    <div class="form-group">
+                        <label for="productName">Product Name : </label>
+                        <input type="text" name="ProductName" class="form-control bg-light" id="productName"
+                            placeholder="Product name" required />
+                        <p class="" id=""></p>
+                    </div><br>
+
+                    <div class="form-group">
+                        <label for="productDescription">Product Description:</label>
+                        <textarea class="form-control bg-light" name="Description" id="productDescription" rows="4"
+                            placeholder="Enter product description" required></textarea>
+                    </div>
                     <br>
-                    <form action="/admin/addproduct" method="post" id="sample" enctype="multipart/form-data" onsubmit="return validateForm() "  class="bg-white">
-                        <div class="form-group">
-                            <label for="productName">Product Name : </label>
-                            <input type="text" name="ProductName" class="form-control bg-light" id="productName"
-                                placeholder="Product name" required />
-                                <p class="" id=""></p>
-                        </div><br>
+                    <div class="form-group">
+                        <label for="productSpecification">Product Specification:</label>
+                        <textarea class="form-control bg-light" name="Specification1" id="productSpecification1"
+                            placeholder="Enter product Specification" required></textarea>
+                        <label for="productSpecification2">Product Specification:</label>
+                        <textarea class="form-control bg-light" name="Specification2" id="productSpecification"
+                            placeholder="Enter product Specification" required></textarea>
+                        <label for="productSpecification3">Product Specification:</label>
+                        <textarea class="form-control bg-light" name="Specification3" id="productSpecification"
+                            placeholder="Enter product Specification" required></textarea>
+                        <label for="productSpecification4">Product Specification:</label>
+                        <textarea class="form-control bg-light" name="Specification4" id="productSpecification"
+                            placeholder="Enter product Specification" required></textarea>
+                    </div>
+                    <br>
+                    <!-- <div> -->
+                    <!-- <input type="file" name="images" multiple accept="image/*" style="width: 188px; height:188px;"> -->
+                    <!-- <input type="file" name="image1" accept="image/*" style="width: 188px; height:188px;"> -->
+                    <!-- <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;"> -->
+                    <!-- <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;"> -->
+                    <!-- </div> -->
 
+                    <div class="col-md-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="imageInput1" accept="image/*">
+                            <label class="custom-file-label" for="imageInput1">Choose file</label>
+                        </div>
+                        <img id="imagePreview1" src="" class="img-thumbnail mt-2" alt="Preview">
+                        <button class="btn btn-danger mt-2 delete-button" id="deleteButton1"
+                            style="display: none">Delete</button>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="imageInput2" accept="image/*">
+                            <label class="custom-file-label" for="imageInput2">Choose file</label>
+                        </div>
+                        <img id="imagePreview2" src="" class="img-thumbnail mt-2" alt="Preview">
+                        <button class="btn btn-danger mt-2 delete-button" id="deleteButton2"
+                            style="display: none">Delete</button>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="imageInput3" accept="image/*">
+                            <label class="custom-file-label" for="imageInput3">Choose file</label>
+                        </div>
+                        <img id="imagePreview3" src="" class="img-thumbnail mt-2" alt="Preview">
+                        <button class="btn btn-danger mt-2 delete-button" id="deleteButton3"
+                            style="display: none">Delete</button>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="imageInput4" accept="image/*">
+                            <label class="custom-file-label" for="imageInput4">Choose file</label>
+                        </div>
+                        <img id="imagePreview4" src="" class="img-thumbnail mt-2" alt="Preview">
+                        <button class="btn btn-danger mt-2 delete-button" id="deleteButton4"
+                            style="display: none">Delete</button>
+                    </div>
+
+                    <div class="border p-3 mb-3">
+                        <h2>Pricing</h2>
                         <div class="form-group">
-                            <label for="productDescription">Product Description:</label>
-                            <textarea class="form-control bg-light" name="Description" id="productDescription" rows="4"
-                                placeholder="Enter product description" required></textarea>
+                            <label for="basePrice">Base Price:</label>
+                            <input type="number" name="Price" class="form-control bg-light" id="basePrice"
+                                placeholder="Enter base price" required />
                         </div>
                         <br>
                         <div class="form-group">
-                            <label for="productSpecification">Product Specification:</label>
-                            <textarea class="form-control bg-light" name="Specification1" id="productSpecification1"
-                                placeholder="Enter product Specification" required></textarea>
-                            <label for="productSpecification2">Product Specification:</label>
-                            <textarea class="form-control bg-light" name="Specification2" id="productSpecification"
-                                placeholder="Enter product Specification" required></textarea>
-                            <label for="productSpecification3">Product Specification:</label>
-                            <textarea class="form-control bg-light" name="Specification3" id="productSpecification"
-                                placeholder="Enter product Specification" required></textarea>
-                            <label for="productSpecification4">Product Specification:</label>
-                            <textarea class="form-control bg-light" name="Specification4" id="productSpecification"
-                                placeholder="Enter product Specification" required></textarea>
-                        </div>
-                        <br>
-                        <div>
-                            <input type="file" name="images" multiple accept="image/*" style="width: 188px; height:188px;">
-                            <!-- <input type="file" name="image1" accept="image/*" style="width: 188px; height:188px;"> -->
-                            <!-- <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;"> -->
-                            <!-- <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;"> -->
-                        </div>
-
-
-                        <div class="border p-3 mb-3">
-                            <h2>Pricing</h2>
-                            <div class="form-group">
-                                <label for="basePrice">Base Price:</label>
-                                <input type="number" name="Price" class="form-control bg-light" id="basePrice"
-                                    placeholder="Enter base price" required />
-                            </div>
-                            <br>
-                            <div class="form-group">
-                                <label for="discountAmount">Discount Amount:</label>
-                                <input type="number" name="DiscountAmount" class="form-control bg-light"
-                                    id="discountAmount" placeholder="Enter discount amount" required />
-                            </div>
-                        </div>
-                        <div class="border p-3 mb-3">
-                        </div>
-                        <div class="border p-3 mb-3">
-                            <h2>Stock</h2>
-                            <div class="form-group">
-                                <label for="quantity">Quantity:</label>
-                                <input type="number" name="AvailableQuantity" class="form-control bg-light"
-                                    id="quantity" placeholder="Enter quantity" required />
-                            </div>
-                        </div>
-                </div>
-                <div class="col-md-4 my-5">
-                    <div class="bg-white p-3">
-                        <div class="form-group">
-                            <br>
-                            <label>Category:</label>
-                            <select class="form-select bg-light" id="category" name="Category" required>
-                                <option value="" selected disabled>Select a category</option>
-                                <option>GAMING LAPTOP</option>
-                                <option>OFFICE USE LAPTOP</option>
-                                <option>NOTE BOOK</option>
-                                <option>STUDENTS LAPTOP</option>
-                                <option>EDITING LAPTOP</option>
-                            </select>
-                        </div><br>
-                        <div class="form-group">
-                            <br>
-                            <label>Brand Name:</label>
-                            <select name="BrandName" class="form-select bg-light" id="brand" required>
-                                <option value="" selected disabled>Select a Brand</option>
-                                <option>SAMSUNG</option>
-                                <option>APPLE</option>
-                                <option>XIOMI</option>
-                                <option>HP</option>
-                                <option>DELL</option>
-                                <option>ASUS</option>
-                                <option>MSI</option>
-                                <option>ACER</option>
-                                <option>LENOVO</option>
-                            </select>
-                        </div><br>
-                        <div class="form-group">
-                            <label for="tags">Tags:</label>
-                            <input type="text" class="form-control bg-light" name="Tags" id="tags"
-                                placeholder="Enter tags" required />
+                            <label for="discountAmount">Discount Amount:</label>
+                            <input type="number" name="DiscountAmount" class="form-control bg-light" id="discountAmount"
+                                placeholder="Enter discount amount" required />
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary ms-3">Add Product</button>
-                </div>
-                </form>
+                    <div class="border p-3 mb-3">
+                    </div>
+                    <div class="border p-3 mb-3">
+                        <h2>Stock</h2>
+                        <div class="form-group">
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" name="AvailableQuantity" class="form-control bg-light" id="quantity"
+                                placeholder="Enter quantity" required />
+                        </div>
+                    </div>
             </div>
-        </main>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-              const form = document.getElementById("sample");
-          
-              form.addEventListener("submit", function (event) {
-                console.log("form submitted")
+            <div class="col-md-4 my-5">
+                <div class="bg-white p-3">
+                    <div class="form-group">
+                        <br>
+                        <label>Category:</label>
+                        <select class="form-select bg-light" id="category" name="Category" required>
+                            <option value="" selected disabled>Select a category</option>
+                            <% catogory.forEach((x)=>{ %>
+                                <option>
+                                    <%= x.CategoryName%>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div><br>
+                    <div class="form-group">
+                        <br>
+                        <label>Brand Name:</label>
+                        <select name="BrandName" class="form-select bg-light" id="brand" required>
+                            <option value="" selected disabled>Select a Brand</option>
+                            <option>SAMSUNG</option>
+                            <option>APPLE</option>
+                            <option>XIOMI</option>
+                            <option>HP</option>
+                            <option>DELL</option>
+                            <option>ASUS</option>
+                            <option>MSI</option>
+                            <option>ACER</option>
+                            <option>LENOVO</option>
+                        </select>
+                    </div><br>
+                    <div class="form-group">
+                        <label for="tags">Tags:</label>
+                        <input type="text" class="form-control bg-light" name="Tags" id="tags" placeholder="Enter tags"
+                            required />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary ms-3">Add Product</button>
+            </div>
+            </form>
+        </div>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("sample");
+    
+            form.addEventListener("submit", function (event) {
+                console.log("form submitted");
+    
                 const requiredFields = {
-                 productName: "Product Name is required.",
-                 category: "Category is required.",
-                 Specification1: "Highlight-1 is required.",
-                 Specification2: "Highlight-2 is required.",
-                 Specification3: "Highlight-3 is required.",
-                  Specification4: "Highlight-4 is required.",
-                  productDescription: "Description is required.",
-                  Price: "Price must be a positive number.",
-                  quantity: "Stock must be a non-negative integer.",
+                    ProductName: "Product Name is required.",
+                    Category: "Category is required.",
+                    Specification1: "Highlight-1 is required.",
+                    Specification2: "Highlight-2 is required.",
+                    Specification3: "Highlight-3 is required.",
+                    Specification4: "Highlight-4 is required.",
+                    Description: "Description is required.",
+                    Price: "Price must be a positive number.",
+                    AvailableQuantity: "Stock must be a non-negative integer.",
                 };
-          
+    
                 for (const field in requiredFields) {
-                  const input = document.querySelector([name="${field}"]);
-                  if (!input.value.trim()) {
-                    alert(requiredFields[field]);
-                    event.preventDefault(); 
-                    return;
-                  }
+                    const input = document.querySelector(`[name="${field}"]`);
+                    if (!input.value.trim()) {
+                        alert(requiredFields[field]);
+                        event.preventDefault();
+                        return;
+                    }
                 }
-                const priceInput = document.querySelector('input[name="price"]');
-                
-                const stockInput = document.querySelector('input[name="stock"]');
-          
+    
+                const priceInput = document.querySelector('input[name="Price"]');
+                const stockInput = document.querySelector('input[name="AvailableQuantity"]');
+                const discountAmountInput = document.querySelector('input[name="DiscountAmount"]');
+    
                 if (isNaN(parseFloat(priceInput.value)) || parseFloat(priceInput.value) <= 0) {
-                  alert("Price must be a positive number.");
-                  event.preventDefault();
-                  return;
+                    alert("Price must be a positive number.");
+                    event.preventDefault();
+                    return;
                 }
-          
+    
                 if (isNaN(parseInt(stockInput.value)) || parseInt(stockInput.value) < 0) {
-                  alert("Stock must be a non-negative integer.");
-                  event.preventDefault();
-                  return;
+                    alert("Stock must be a non-negative integer.");
+                    event.preventDefault();
+                    return;
                 }
-              });
+    
+                if (isNaN(parseFloat(discountAmountInput.value)) || parseFloat(discountAmountInput.value) < 0) {
+                    alert("Discount Amount must be a positive number.");
+                    event.preventDefault();
+                    return;
+                }
             });
-          </script>
-        <%- include('./partial/footer') %>
+        });
+    </script>
+    
+    <script>
+        // JavaScript to handle image preview and delete
+        const inputIds = ["1", "2", "3", "4"];
+
+        inputIds.forEach((id) => {
+            const input = document.getElementById(`imageInput${id}`);
+            const preview = document.getElementById(`imagePreview${id}`);
+            const deleteButton = document.getElementById(`deleteButton${id}`);
+
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        preview.src = event.target.result;
+                        deleteButton.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            deleteButton.addEventListener('click', () => {
+                input.value = '';
+                preview.src = '';
+                deleteButton.style.display = 'none';
+            });
+        });
+    </script>
+    <%- include('./partial/footer') %>

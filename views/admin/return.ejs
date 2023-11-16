@@ -1,0 +1,81 @@
+<%- include('./partial/header') %>
+<h2>Return</h2>
+<div class="d-grid gap-2 d-md-flex ">
+  <a href="/admin/orders"><button class="btn btn-primary me-md-2" type="button">Orders</button></a>
+</div>
+<table class="table table-striped ">
+  <thead>
+    <tr>
+      <th scope="col">No</th>
+      <th scope="col">Order Id</th>
+      <th scope="col">User Id</th>
+    
+      <th scope="col">Total Price</th>
+      <th scope="col">Status</th>
+      <th scope="col">View</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if (returns.length > 0) { %>
+      <% returns.forEach((x, index) => { %>
+        <tr>
+          <th scope="row"><%= index + 1 %></th>
+          <td><%= x.userId %></td>
+          <td><%= x.product %></td>
+         
+        
+          <td><%= x.price %></td>
+          <td>
+             <% if (x.Status=="NotVerified"){%>
+                <a href=""><button type="button" class="btn btn-warning btn-sm" onclick="updateOrderStatus('<%= x._id %>', 'Verified')">Verify</button></a>
+                <% } else {%>
+                    <button type="button" class="btn btn-danger btn-sm" disabled>Verifyed</button>
+                    <% } %>
+          </td>
+          <td><a href="/admin/orderView/<%=x._id%>"><button type="button" class="btn btn-light">View</button></a></td>
+        </tr>
+      <% }) %>
+    <% } else { %>
+      <tr>
+        <td colspan="8">
+          <h4>No Data Available</h4>
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+
+<script>
+  function updateOrderStatus(orderId, newStatus) {
+    console.log(orderId,".............................");
+    fetch(`/admin/updateReturnStatus/${orderId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: newStatus }),
+    })
+      .then((response) => {
+        if (response.ok) {
+            window.location.reload()
+          return response.json();
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      })
+      .then((data) => {
+        if (data.success) {
+          alert('Order status updated successfully!');
+        } else {
+          alert('Failed to update order status.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+</script>
+
+<%- include('./partial/footer') %>

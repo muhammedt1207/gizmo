@@ -9,26 +9,33 @@ const category=require("../models/category")
 const adminAuth=require('../middlewares/AdminAuth')
 const banermulter=require('../middlewares/bannerMulter')
 const banner =require('../models/banner')
+const couponControll=require('../control/coupon')
 
-
-
+const uploadFields = [
+  { name: "main", maxCount: 1 },
+  { name: "image1", maxCount: 1 },
+  { name: "image2", maxCount: 1 },
+  { name: "image3", maxCount:1},
+];
 //login
 admin.get('/',adminAuth.adminExist,adminController.toLogin)
 admin.post('/log',adminController.loginadmin)
 admin.get('/costomers',adminController.userDataSharing);
 admin.get('/signout',adminAuth.verifyAdmin, adminController.signout)
+admin.get('/dashboard',adminAuth.verifyAdmin,adminController.toDashBoard)
 
 
 admin.get('/add-products',adminController.toAddProduct)  
 
-  admin.post("/addproduct", upload.array('images',4),adminController.addProduct);
+  admin.post("/addproduct", upload.fields(uploadFields),adminController.addProduct);
   admin.get('/toproducts',adminController.toproducts)
   admin.get('/products',adminController.productData)
   admin.get('/delete-product/:id',adminController.deleteProduct)
   admin.get('/edit-product/:id',adminController.toEditProduct)
-  admin.post('/postEdit-product/:id',adminController.EditProduct)
+  admin.post('/postEdit-product/:id',upload.fields(uploadFields),adminController.EditProduct)
+  admin.delete('/delete-image/:id/:index', adminAuth.verifyAdmin, adminController.deleteImage);
 
-admin.get('/dashboard',adminAuth.verifyAdmin,adminController.toDashBoard)
+
 admin.get('/products',adminAuth.verifyAdmin,adminController.toProduct)
 admin.get('/catogory',adminAuth.verifyAdmin,adminController.categoryData)
 admin.get('/block/:id',adminController.UserStatus)
@@ -38,27 +45,9 @@ admin.get('edit-catogory',adminAuth.verifyAdmin,adminController.toEditcategory)
 admin.get('/edit-catogory/:id',adminAuth.verifyAdmin,adminController.editCatagory)
 admin.post('/DoneEdit-category/:id',adminAuth.verifyAdmin,adminController.afterEditCatagory)
 admin.get('/delete-catogory/:id',adminAuth.verifyAdmin,adminController.deleteCatagory)
-admin.post("/search", async (req, res) => {
-  var i = 0;
-  const getdata = req.body;
-  console.log(getdata);
-  let data = await Products.find({
-    ProductName: { $regex: "^" + getdata.search, $options: "i" },
-  });
-  console.log(`Search Data ${data} `);
-  res.render("./admin/products", { title: "Home", data, i });
-});
+admin.post("/search",adminAuth.verifyAdmin,adminController.productSearch);
 
-admin.post("/userSearch", async (req, res) => {
-  var i = 0;
-  const getdata = req.body;
-  console.log(getdata);
-  let userData = await users.find({
-    userName: { $regex: "^" + getdata.search, $options: "i" },
-  });
-
-  res.render("./admin/costomers", { title: "Home", userData, i });
-});
+admin.post("/userSearch",adminController.userSearch);
 admin.get('/banner', async(req,res)=>{
   const latestBanner = await banner.findOne({}, {}, { sort: { date: -1 } });
   res.render('admin/banner',{latestBanner})
@@ -66,14 +55,16 @@ admin.get('/banner', async(req,res)=>{
 
 
 admin.get('/orders',adminAuth.verifyAdmin,adminController.toOrders)
-admin.put('/updateStatus/:orderId',adminController.orderStatus)
-admin.get('/orderView/:id',adminController.orderview)
+admin.put('/updateStatus/:orderId',adminAuth.verifyAdmin,adminController.orderStatus)
+admin.get('/orderView/:id',adminAuth.verifyAdmin,adminController.orderview)
+admin.get('/ReturnPage',adminAuth.verifyAdmin,adminController.toReturnPage)
+admin.put('/updateReturnStatus/:id',adminAuth.verifyAdmin,adminController.verifyReturn)
 
 
 admin.post('/bannerUpload', banermulter.single('image'), adminController.Addbanner);
 
-
-
-
+admin.get('/coupens',adminAuth.verifyAdmin,couponControll.tocoupon)
+admin.post('/CreateCoupon',adminAuth.verifyAdmin,couponControll.createCoupon)
+admin.get('/delete-coupon/:id',couponControll.deleteCoupon)
 module.exports=admin;
 

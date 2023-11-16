@@ -5,7 +5,7 @@
         <form action="/admin/userSearch" method="post" name="name">
             <div class="input-group">
               <div class="form-outline d-flex p-3">
-                <input type="search" class="form-control " name="search" placeholder="Search" required>
+                <input type="search" class="form-control " name="search" placeholder="Search" >
                     <button id="search-button" type="submit" class="btn btn-primary mx-2">
                       
           <lord-icon
@@ -20,7 +20,7 @@
               
             </div>
           </form>
-    <table class="table table-striped w-75">
+    <table class="table table-striped ">
         <thead>
         <tr>
             <th scope="col">No</th>
@@ -60,24 +60,22 @@
         </tbody>
     </table>
     </div>
-    <nav aria-label="Page navigation example" class="d-flex  mt-3">
-        <ul class="pagination">
-          <li class="page-item disabled">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
+    <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3" id="pagination-navbar">
+      <ul class="pagination">
+          <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+              <a class="page-link" href="<%= page <= 1 ? '#' : '/admin/costomers?page=' + (page - 1) %>" style="color: black;" aria-label="Previous">
+                  <span aria-hidden="true">&laquo;</span>
+              </a>
           </li>
-          <li class="page-item active"><a class="page-link" href="/products?page=1">1</a></li>
-          <li class="page-item"><a class="page-link" href="/products?page=2">2</a></li>
-          <li class="page-item"><a class="page-link" href="/products?page=3">3</a></li>
-          <li class="page-item"><a class="page-link" href="/products?page=4">4</a></li>
-          <li class="page-item"><a class="page-link" href="/products?page=5">5</a></li>
           <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
+              <a class="page-link" href="/admin/costomers?page=<%= page %>" style="color: black"><%= page %></a>
           </li>
-        </ul>
-      </nav>
+          <li class="page-item <%= page >= Count ? 'disabled' : '' %>">
+              <a class="page-link" href="<%= page >= Count ? '#' : '/admin/costomers?page=' + (page + 1) %>" style="color: black;" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+              </a>
+          </li>
+      </ul>
+  </nav>
     
     <%- include('partial/footer') -%>

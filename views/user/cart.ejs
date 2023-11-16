@@ -50,28 +50,13 @@
               </div>
             </div>
             <% }) %>
-            <% } else { %>
-            <h3>cart is empty</h3>
-            <% } %>
+          
           </div>
         </div>
       </div>
       <!-- cart -->
       <!-- summary -->
       <div class="col-lg-3">
-        <div class="card mb-3 border shadow">
-          <div class="card-body">
-            <form>
-              <div class="form-group">
-                <label class="form-label">Have coupon?</label>
-                <div class="input-group">
-                  <input type="text" class="form-control border" name="" placeholder="Coupon code" />
-                  <button class="btn btn-light border">Apply</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
         <div class="card shadow border">
           <div class="card-body">
             <div class="d-flex justify-content-between">
@@ -102,9 +87,22 @@
           </div>
         </div>
       </div>
+      <% } else { %>
+        <div class="card-body cart">
+          <div class="col-sm-12 empty-cart-cls text-center">
+            <img src="https://i.imgur.com/dCdflKN.png" width="130" height="130" class="img-fluid mb-4 mr-3">
+            <h3><strong>Your Cart is Empty</strong></h3>
+            <h4>Add something to make me happy :)</h4>
+            <a href="/user/home" class="btn btn-primary cart-btn-transform m-3" data-abc="true">continue shopping</a>
+            
+          
+          </div>
+      </div>
+        <% } %>
       <!-- summary -->
     </div>
   </div>
+
 </section>
 
 <script>

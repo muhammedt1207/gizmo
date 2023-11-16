@@ -17,6 +17,11 @@ const cartController=require('../control/cartController')
 const orderController=require('../control/order')
 const filterController=require('../control/filter')
 const passwordController=require('../control/forgetPassWord')
+const imgUpload=require('../middlewares/profile-multer')
+const paymentControll=require('../control/payment')
+const cartAuth =require('../middlewares/checkCart')
+
+
 
 // login
 user.get('/user/indexToLogin',userAuth.userExist,userControl.IndexToLogin)
@@ -62,12 +67,17 @@ user.post('/user/addAddress',userAuth.verifyUser,userControl.addAddress)
 user.get('/user/toManageAddress',userAuth.verifyUser,userControl.toManageAddress)
 user.post('/user/deleteAddress/:id',userControl.deleteAddress)
 user.post('/user/editAddress/:id',userControl.editAddress)
+user.post('/user/uploadProfileImage',imgUpload.single('profileImage'),userControl.userProfile)
+user.post('/user/NewAddAddress',userAuth.verifyUser,userControl.NewAddAddress)
+user.post('/user/NewEditAddress/:id',userAuth.verifyUser,userControl.newEditAddress)
+
+
 
 //item add to cart
 user.post('/user/addToCart',userAuth.verifyUser,cartController.addToCart)
 user.post('/user/removeFromCart/:id',userAuth.verifyUser,cartController.removeCart)
 user.post('/updatequantity',userAuth.verifyUser,cartController.updateQuantity)
-user.get('/user/toCheckout',userAuth.verifyUser,orderController.toCheckout)
+user.get('/user/toCheckout',cartAuth,userAuth.verifyUser,orderController.toCheckout)
 user.get('/user/AddToCart/:id',cartController.addlistToCart)
 
 
@@ -81,25 +91,31 @@ user.get('/all-products',filterController.allproduct)
 
 
 
+
 //order
 user.post('/user/placeOrder',userAuth.verifyUser,orderController.placeOrder)
 user.get('/user/toOrderPage',userAuth.verifyUser,orderController.toOrderPage)
 user.get('/user/toorderDetials/:id',userAuth.verifyUser,orderController.orderDetails)
-user.post('/cancel-order/:id',orderController.cancellOrder)
-user.post('/Onecancel-order', orderController.oneItemcancel)
+user.post('/cancel-order/:id',userAuth.verifyUser,orderController.cancellOrder)
+user.post('/Onecancel-order',userAuth.verifyUser, orderController.oneItemcancel)
+user.post('/return-order',userAuth.verifyUser,orderController.returnOrder)
+user.post('/verify-payment',userAuth.verifyUser,paymentControll.verifyPayment)
+user.get('/ordersuccess',userAuth.verifyUser,(req,res)=>{
+    res.render('user/orderSuccess')
+})
 
 
 //invoice
 user.post('/downloadinvoice',userAuth.verifyUser,orderController.generateInvoices)
 user.get('/downloadinvoice/:orderId',userAuth.verifyUser,orderController.downloadInvoice)
 
+user.post('/verify-payment',paymentControll.verifyPayment)
+user.post('/apply-coupon',orderController.useCoupon)
 
 
 
 
-
-
-
+user.get('/api/search',userControl.productSearch)
 
 
 

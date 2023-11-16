@@ -1,8 +1,7 @@
 
-<%-include('./partial/header') %>
+<%-include('./partial/header')%>
 
-
-<!-- <div class="text-center center-div d-flex align-items-center justify-content-center" id="LoginPage">
+  <!-- <div class="text-center center-div d-flex align-items-center justify-content-center" id="LoginPage">
     <div class="wrapper text-center center-div align-items-center justify-content-center">
         <div class="title-one">
             Add Category
@@ -16,31 +15,66 @@
                 <input type="submit" value="Add ">
             </div>
         </form> -->
-        <section class="vh-100" style="background-color: #ffffff; ">
-            <div class="container py-5 h-100">
-              <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                  <div class="card shadow-2-strong" style="border-radius: 1rem;">
-                    <div class="card-body p-5 text-center" style="background-color: aliceblue;">
-          
-                      <h3 class="mb-5">Add Category</h3>
-                      <%if(err){%>
-                        <span id="err" class="alert-danger">
-                          <%=err%>
-                        </span>
-                      <%}%>
-                      <form action="/admin/add-category" method="POST">
-                      <div class="form-outline mb-4">
-                        <input type="text" name="CategoryName" placeholder="catogory name" style="height: 40px; width: 80%;" required>
-                        
-                      </div>
-                      <button class="btn btn-primary btn-lg btn-block" type="submit">ADD</button>
-                    </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+  <section class="vh-100" style="background-color: #ffffff; ">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+          <div class="card shadow-2-strong" style="border-radius: 1rem;">
+            <div class="card-body p-5 text-center" style="background-color: aliceblue;">
 
-<%-include('./partial/footer') %>
+              <h3 class="mb-5">Add Category</h3>
+              <div id="error" class="alert-danger"></div>
+              <form id="category-form">
+                <div class="form-outline mb-4">
+                  <input type="text" name="CategoryName" placeholder="catogory name" style="height: 40px; width: 80%;"
+                    id="CategoryName" required>
+
+                </div>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">ADD</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('category-form');
+      const errorElement = document.getElementById('error');
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const categoryName = document.getElementById('CategoryName').value;
+
+        try {
+          const response = await fetch('/admin/add-category', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ CategoryName: categoryName }),
+          });
+
+          if (response.ok) {
+            // Category added successfully, you can redirect or handle as needed
+            window.location.href = '/admin/category';
+          } else {
+            // Display an error message from the server if available
+            const data = await response.json();
+            errorElement.textContent = data.err;
+            setTimeout(() => {
+          errorElement.textContent = '';
+        }, 1000);
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          errorElement.textContent = 'An error occurred on the client side.';
+        }
+      });
+    });
+  </script>
+
+  <%-include('./partial/footer')%>

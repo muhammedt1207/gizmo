@@ -8,7 +8,7 @@ const productUpload = require('../models/model');
 const cart = require('../models/cart');
 const Users = require("../models/users");
 const { ObjectId } = require("mongodb");
-
+const Coupons=require("../models/coupon")
 // const =async (req,res)=>{
 //     console.log(";oaseht.........>>>>>>>>>>>>>>>>>>>");
 //     try {
@@ -179,7 +179,8 @@ const toCart = async (req, res) => {
         total: 0,
         coupon: 0,
         gstAmount: 0,
-        totalQuantity: 0
+        totalQuantity: 0,
+        user,
 
       });
     }
@@ -198,13 +199,10 @@ const toCart = async (req, res) => {
     });
     const gstRate = 0.18;
     const gstAmount = subtotal * gstRate;
-    const coupon = '';
     const total = subtotal + gstAmount;
 
-    if (coupon) {
-      const couponValue = 50;
-      total -= couponValue;
-    }
+    
+
     req.session.totalPrice = total;
 
     res.render("user/cart", {
@@ -215,8 +213,8 @@ const toCart = async (req, res) => {
       subtotal: subtotal,
       gstAmount: gstAmount.toFixed(2),
       totalQuantity: totalQuantity,
-      coupon: coupon,
       total: total,
+      user,
     });
 
   } catch (error) {
@@ -225,6 +223,7 @@ const toCart = async (req, res) => {
     throw error
   }
 }
+
 
 
 
@@ -258,15 +257,15 @@ const updateQuantity = async (req, res) => {
   const { productId, quantity, cartId } = req.body;
 
   try {
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', productId, quantity, cartId, "123456789")
+    // console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', productId, quantity, cartId, "123456789")
     const newcart = await cart.findOne({ _id: cartId }).populate("products.productId");
-    console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', newcart);
+    // console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', newcart);
     if (!newcart) {
       return res.status(404).json({ success: false, error: "Cart not found" });
     }
 
     const productInCart = newcart.products.find(item => item.productId.equals(productId));
-    console.log("productIncart>>>>>>>>>><<<<<<<<", productInCart);
+    // console.log("productIncart>>>>>>>>>><<<<<<<<", productInCart);
     if (!productInCart) {
       return res.status(404).json({ success: false, error: "Product not found in the cart" });
     }

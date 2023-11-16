@@ -1,118 +1,388 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/costum alert.css">
-  <title>Checkout Page</title>
-</head>
-<body>
-  <%- include('./partial/header') %>
+<%-include('./partial/header')%>
+  <br>
+  <br>
+ 
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/user/NewAddAddress" method="post">
+          <div class="form-group">
+          <label for="recipient-name" class="col-form-label">Name:</label>
+          <input type="text" name="name" class="form-control" id="recipient-name" required>
+        </div>
+          <div class="form-group">
+          
+            <label for="recipient-name" class="col-form-label">Address:</label>
+            <input type="text" name="address" class="form-control" id="recipient-name" required>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">City:</label>
+            <input type="text" name="city" class="form-control" id="recipient-name" required>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Pincode:</label>
+            <input type="text" name="pincode" class="form-control" id="recipient-name"
+              oninput="this.value = this.value.replace(/[^0-9]/g, '');" pattern="[0-9]*" maxlength="6"
+              required>
+            <div id="pincode-validation-message" class="text-danger"></div>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">State:</label>
+            <input type="text" name="state" class="form-control" id="recipient-name" required>
+          </div>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Mobile Number:</label>
+            <input type="number" name="number" class="form-control" id="recipient-name" required>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" id="submit-button" class="btn btn-primary">Add</button>
+      </div>
+      </form>
+    </div>
+  </div>
+  </div>
 
-  <section class="bg-white my-5">
-    <div class="container">
+
+  <form id="form-checkout">
+    <div class="container custom-container main">
       <div class="row">
-        <!-- cart -->
+
         <div class="col-lg-9">
           <div class="card border rounded shadow">
             <div class="m-4 rounded shadow-5">
               <h4 class="card-title mb-4">Select Address</h4>
 
-              <% userData.address.forEach((x) => { %>
-              <div class="form-check">
-                <hr>
-                <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault<%= x._id %>" value="<%= x._id %>">
-                <label class="form-check-label" for="flexRadioDefault<%= x._id %>">
-                  <h6>Select Address</h6>
-                </label>
-                <hr>
-                <p><%= x.addressLine %></p>
-                <p><%= x.pincode %></p>
-                <p><%= x.city %></p>
-                <p><%= x.state %></p>
-                <p><%= x.mobileNumber %></p>
-              </div>
-              <% }) %>
+              <% userData.address.forEach((x)=> { %>
+                <div class="form-check">
+                  <hr>
+                  <input class="form-check-input" value="<%= x._id %>" id="address1" type="radio" name="Address" id="flexRadioDefault<%= x._id %> " checked>
+                  <!-- <label class="form-check-label" for="flexRadioDefault<%= x._id %>"> -->
+                    <h6>Select Address</h6>
+                  </label>
+                  <hr>
+                  <p>
+                    <%= x.name %>
+                  </p>
+                  <p>
+                    <%= x.addressLine %>
+                  </p>
+                  <p>
+                    <%= x.pincode %>
+                  </p>
+                  <p>
+                    <%= x.city %>
+                  </p>
+                  <p>
+                    <%= x.state %>
+                  </p>
+                  <p>
+                    <%= x.mobileNumber %>
+                  </p>
+                </div>
+                <% }) %>
             </div>
           </div>
-        </div>
-        <!-- cart -->
-        <!-- summary -->
+        
+          <br>
+          <!-- <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal" style="width: 200px;">
+            Add Address
+          </a> -->
+          <a href="#" class="btn btn-success w-100 shadow-0 mb-2" data-toggle="modal" data-target="#exampleModal"
+          data-whatever="@fat"> Add Address </a>
 
-        <div class="col-lg-3">
-          <div class="card shadow border">
+        
+        
+        
+
+
+        </div>
+
+       
+        <div class="col-md-3">
+            <div class="card mb-3 border shadow">
+                <div class="card-body">
+                  <fieldset>
+                    <div id="couponFormContainer">
+                        <div class="form-group">
+                            <label class="form-label">Have coupon?</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control border" name="couponCode"
+                                    id="couponCode" placeholder="Coupon code" />
+                                <button type="button" class="btn btn-light border" onclick="applyCoupon()">Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                </div>
+            </div>
+        
+            <div class="card shadow border">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <p class="mb-2">Total price:</p>
+                  <p class="mb-2 fw-bold">₹<%= TotalPrice %></p>
+                </div>
+                <% if(coupon){%>
+                <div class="d-flex justify-content-between">
+                  <p class="mb-2">Discount:<%=coupon %></p>
+                 <% }else{%>
+                  <div class="d-flex justify-content-between">
+                    <p class="mb-2">Discount:</p>
+                    <p id="discount" class="mb-2 fw-bold"></p>
+                    <% }%>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between">
+                  <p class="mb-2">Total price:</p>
+                  <% if(grandTotal===undefined){%>
+                  <p id="grandTotal" class="mb-2 fw-bold">₹<%= TotalPrice %></p>
+                  <% } else { %>
+                    <p id="grandTotal" class="mb-2 fw-bold">₹<%= grandTotal %></p>
+                    <% } %>
+                </div>
+                </div>
+              </div>
+              <br>
+          <!-- Inside the "Payment Methods" card -->
+          <div class="card">
             <div class="card-body">
-              <div class="d-flex justify-content-between">
-                <form action="/user/placeOrder" method="post">
-                  <div class="form-check" aria-required="true">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
-                      Cash On Delivery
-                    </label>
-                  </div>
-                  <br>
-                  <br>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" disabled>
-                    <label class="form-check-label" for="flexRadioDefault2">
-                      Online Payment
-                    </label>
-                  </div>
+              <h5 class="card-title">Payment Methods</h5>
 
-                  <!-- Add a hidden input field to store the selected address ID -->
-                  <input type="hidden" id="selectedAddressId" name="selectedAddressId" value="">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" checked />
+                <label class="form-check-label" for="cod">
+                  Cash on Delivery (COD)
+                </label>
+              </div>
 
-                  <div class="mt-3">
-                    <button class="btn btn-success w-100 border mt-2" type="button" onclick="checkAddressAndPlaceOrder()">Place Order</button>
-                  </div>
-                </form>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="online" value="online" />
+                <label class="form-check-label" for="online">
+                  Online Payment
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet" />
+                 <label class="form-check-label" data-walletAmount="<%=userData.wallet%>" id="<%=TotalPrice%>" for="wallet">
+              Pay Using Wallet (Available Wallet Balance: <%=userData.wallet%>)
+          </label>
+              </div>
+
+              <!-- Add the "Pay Using Wallet" radio button here -->
+
+              <div class="justify-content-center">
+                <button class="btn btn-success mt-4" id="pay-button" type="submit">
+                  Confirm Order
+                </button>
+                <a href="/home"><button class="btn btn-secondary mt-4" type="button">Back to Shop</button></a>
               </div>
             </div>
           </div>
+
+
         </div>
-        <!-- summary -->
       </div>
     </div>
-  </section>
+  </form>
 
-  <div id="custom-alert" class="custom-alert">
-    <div class="custom-alert-content">
-      <span class="custom-alert-close" onclick="closeCustomAlert()">&times;</span>
-      <h2>Alert</h2>
-      <p>Please select an address before placing the order.</p>
-      <button onclick="closeCustomAlert()">OK</button>
+  <!-- Add this div to your HTML body -->
+<div class="modal" id="customAlertModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Alert</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="customAlertBody">
+        <!-- Your alert message will be displayed here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+      </div>
     </div>
   </div>
+</div>
 
-  <script>
-    function setSelectedAddressId(addressId) {
-      if (addressId) {
-        document.querySelector('#selectedAddressId').value = addressId;
-      } else {
-        showCustomAlert();
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@clientIO/rave-js@3"></script>
+<script>
+  function showAlert(message, type) {
+  const alertBody = document.getElementById('customAlertBody');
+  
+  // Set the message and style based on the type
+  alertBody.innerHTML = message;
+  alertBody.className = `modal-body ${type}`;
+
+  // Show the modal
+  $('#customAlertModal').modal('show');
+}
+
+ function applyCoupon() {
+        const couponCode = document.getElementById('couponCode').value;
+
+        fetch('/apply-coupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    couponCode: couponCode,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+              
+              if (data.success) {
+                 
+                  showAlert('Coupon applied successfully', 'success');
+                 console.log('Coupon applied successfully');
+                 $('#grandTotal').text(data.grandTotal);
+                 $('#discount').text(data.coupon);
+                } else {
+                  showAlert(` ${data.message}`, 'error');
+                   console.error('Coupon application failed:', data.message);
+                }
+            })
+            .catch(error => {
+              console.error('Fetch error:', error);
+              showAlert('An error occurred while applying the coupon', 'error');
+            });
+    }
+
+  document.getElementById('form-checkout').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const selectedAddress = document.querySelector('input[name="Address"]:checked');
+    const selectedAddressValue = selectedAddress ? selectedAddress.value : null;
+
+    if (!selectedAddress) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please add an address before confirming the order.',
+      });
+      return;
+    }
+
+    const walletAmount = $("input[name='paymentMethod']:checked").val()
+      if(walletAmount === "wallet"){
+        const labelElement = document.querySelector('label[for="wallet"]');
+        const walletAmountValue = parseInt(labelElement.getAttribute('data-walletAmount'));
+        const totalAmount = parseInt(labelElement.getAttribute('id'));
+        console.log('hii');
+        console.log(totalAmount);
+        console.log(walletAmountValue);
+        if(walletAmountValue < totalAmount){
+          console.log("inside if");
+          Swal.fire({
+            icon: "error",
+            title: "Insufficient Wallet Balance",
+            text: "Your wallet balance is not sufficient for this transaction.",
+        });
+        return;
+        }
       }
-    }
+      const selectedPaymentMethod = $("input[name='paymentMethod']:checked").val();
 
-    function showCustomAlert() {
-      document.getElementById('custom-alert').style.display = 'block';
-    }
+    try {
+      const response = await fetch('/user/placeOrder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          selectedAddress: selectedAddressValue,
+          selectedPaymentMethod: selectedPaymentMethod,
 
-    function closeCustomAlert() {
-      document.getElementById('custom-alert').style.display = 'none';
-    }
-
-    function checkAddressAndPlaceOrder() {
-      const selectedAddressRadio = document.querySelector('input[name="flexRadioDefault"]:checked');
-      if (selectedAddressRadio) {
-        const selectedAddressId = selectedAddressRadio.value;
-        setSelectedAddressId(selectedAddressId);
-        document.querySelector('form').submit(); // Submit the form
-      } else {
-        showCustomAlert();
+        }),
+      });
+console.log(response,'res...........');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
+      const result = await response.json();
+
+      if (result.codSuccess) {
+        window.location = '/ordersuccess';
+      } else {
+        handlePayNowClick(result);
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
+  });
+
+
+
+    function handlePayNowClick(order) {
+      var options = {
+        "key": "rzp_test_2kq1q9uS7VLUsv",
+        "amount": order.createdOrder.amount,
+        "currency": "INR",
+        "name": "Gizmo",
+        "description": "Test Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": order.createdOrder.id,
+        "handler": function (response) {
+          console.log('Razorpay handler triggered with response:', response);
+          verifyPayment(response, order)
+        },
+        "prefill": {
+          "user": order.order.UserId,
+        },
+        "notes": {
+          "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+          "color": "#2AF8FF"
+        }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+    }
+
+    function verifyPayment(payment, order) {
+    console.log('now in verifyPayment');
+    
+    fetch('/verify-payment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            payment,
+            order,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('response got');
+            location.href = '/orderSuccess';
+        } else {
+            console.log('response not get');
+            location.href = '';
+
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+    });
+}
   </script>
 
-  <%- include('./partial/footer') %>
-</body>
-</html>
+  <%-include('./partial/contentFooter')%>

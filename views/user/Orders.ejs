@@ -29,7 +29,9 @@
                           type="button">Order details</button></a>
                     </div>
                   </div>
-
+                  <% if(x.Status=="Return"){ %>
+                  <h3>Order Returned</h3>
+                    <% }else{ %>
                   <p class="lead fw-bold mb-4 pb-2" style="color: #276ef3;">Tracking Order</p>
                   <div class="d-flex flex-row justify-content-between align-items-center align-content-center">
                     <% if(x.Status=="Pending" ){%>
@@ -185,8 +187,10 @@
                         <!-- </div> -->
                         <!-- </div>  -->
                         <br>
+                        <% } %>
                 </div>
               </div>
+
               <br>
               <% }); %>
                 <% } else { %>

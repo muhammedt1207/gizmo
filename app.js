@@ -21,7 +21,6 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 
-// MIDDLEWARE: Configure express-session before Passport.js
 app.use(session({
     secret: 'my secret key',
     saveUninitialized: true,

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <title>Order Detials</title>
 </head>
 
@@ -20,7 +21,7 @@
         <div class="col-lg-10 col-xl-8">
           <div class="card shadow" style="border-radius: 10px;">
             <div class="card-header px-4 py-5">
-              <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: #0a80c5;"><%=user%></span>!</h5>
+              <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: #0a80c5;"><%=user.userName%></span>!</h5>
             </div>
             <div class="card-body p-4">
               <div class="d-flex justify-content-between align-items-center mb-4">
@@ -36,6 +37,7 @@
                       <img src="/product-image/<%=x.productId.images[0]%>"
                         class="img-fluid" alt="Phone">
                     </div>
+                    
                     <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
                       <p class="text-muted mb-0"><%= x.productId.ProductName %> </p>
                     </div>
@@ -51,12 +53,21 @@
                     <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
                       <p class="text-muted mb-0 small">$<%= x.productId.DiscountAmount %></p>
                     </div>
-                    <!-- <hr>
+                    <% if(x.status=="return"){%>
+                      <h5 style="color: brown;">Product Return</h5>
+                    
+                    <% }else if(orderData[0].Status=="Delivered" ){ %>
+                      <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                        <button class="btn small btn-danger"  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;"
+                         id="returnOrderBtn" data-item-id="<%= x._id %> " data-order-id="<%=orderData[0]._id%>">Return</button>
+                      </div>
+                      <% }else{%>
+                    <hr>
                     <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
                         <button class="btn small btn-danger"  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;" id="cancelOrderBtn" data-item-id="<%= x._id %> " data-order-id="<%=orderData[0]._id%>">Cancel Order</button>
-                      </div> -->
+                      </div>
                   </div>
-                 
+                 <% } %>
                   <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
                   <div class="row d-flex align-items-center">
                     <!-- <div class="col-md-2">
@@ -89,7 +100,7 @@
   
               <div class="d-flex justify-content-between pt-2">
                 <p class="text-muted mb-0">Invoice Number : 788152</p>
-                <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
+                
               </div>-->
   
               <div class="d-flex justify-content-between">
@@ -101,6 +112,26 @@
                 <p class="text-muted mb-0"><b>Order Status : <%=orderData[0].Status%></b></p>
                 <!-- <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p> -->
               </div> 
+              <div class="d-flex justify-content-between pt-2">
+                <p class="text-muted mb-0"><%=orderData[0].Address.addressLine%></p>
+                
+              </div>
+              <div class="d-flex justify-content-between pt-2">
+                <p class="text-muted mb-0"><%=orderData[0].Address.city%></p>
+                
+              </div>
+              <div class="d-flex justify-content-between pt-2">
+                <p class="text-muted mb-0"><%=orderData[0].Address.pincode%></p>
+                
+              </div>
+              <div class="d-flex justify-content-between pt-2">
+                <p class="text-muted mb-0"><%=orderData[0].Address.state%></p>
+                
+              </div>
+              <div class="d-flex justify-content-between pt-2">
+                <p class="text-muted mb-0"><%=orderData[0].Address.mobileNumber%></p>
+                
+              </div>
             </div>
             <div class="card-footer border-0 px-4 py-5"
               style="background-color: #50ff40; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
@@ -112,10 +143,85 @@
       </div>
     </div>
   </section>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!-- Add this to your HTML file before the closing body tag -->
+<div class="modal fade" id="returnOrderModal" tabindex="-1" role="dialog" aria-labelledby="returnOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="returnOrderModalLabel">Return Order</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="returnReason">Reason:</label>
+          <input type="text" class="form-control" id="returnReason" placeholder="Enter reason" required>
+        </div>
+        <div class="form-group">
+          <label for="returnDescription">Description:</label>
+          <textarea class="form-control" id="returnDescription" placeholder="Enter description" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="confirmReturnBtn">Confirm Return</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // const returnOrderButtons = document.querySelectorAll('#returnOrderBtn');
+  const returnOrderButtons = document.querySelectorAll('#returnOrderBtn');
+
+console.log("..................",returnOrderButtons);
+  returnOrderButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const orderId = button.getAttribute('data-order-id');
+      const itemId = button.getAttribute('data-item-id');
+      console.log(",,,,,,,,,,,,,,,,,,",orderId);
+      console.log('...............',itemId);
+      // Show the modal
+      $('#returnOrderModal').modal('show');
+    
+      console.log("..................midal opened.");
+      // Handle the confirmation inside the modal
+       document.getElementById('confirmReturnBtn').addEventListener('click', () => {
+        const returnReason = document.getElementById('returnReason').value;
+        const returnDescription = document.getElementById('returnDescription').value;
+
+        fetch('/return-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ orderId, itemId, returnReason, returnDescription }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert(`Order has been returned successfully.`);
+              returnOrderModal.hide()
+            } else {
+              alert(`Error: ${data.message}`);
+            }
+          })
+          .catch((error) => {
+            console.error('Error returning the order:', error);
+            alert('An error occurred while returning the order.');
+          })
+          .finally(() => {
+            // Close the modal after processing
+            returnOrderModal.hide();
+          });
+      });
+    });
+  });
+});
+</script>
+<%-include('./partial/contentFooter')%>
 
     <script>
 document.addEventListener('DOMContentLoaded', function () {
