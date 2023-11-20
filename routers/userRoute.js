@@ -85,7 +85,7 @@ user.get('/user/toAccountSettings',userAuth.verifyUser,userControl.toAccountSett
 user.post('/user/change-password',userAuth.verifyUser, passwordController.changePass);
 
 
-user.get('/filter-products/:brand',userAuth.verifyUser,filterController.filter)
+user.get('/filter-products',userAuth.verifyUser,filterController.filter)
 user.get('/all-products',filterController.allproduct)
 
 
@@ -99,7 +99,7 @@ user.get('/user/toorderDetials/:id',userAuth.verifyUser,orderController.orderDet
 user.post('/cancel-order/:id',userAuth.verifyUser,orderController.cancellOrder)
 user.post('/Onecancel-order',userAuth.verifyUser, orderController.oneItemcancel)
 user.post('/return-order',userAuth.verifyUser,orderController.returnOrder)
-user.post('/verify-payment',userAuth.verifyUser,paymentControll.verifyPayment)
+
 user.get('/ordersuccess',userAuth.verifyUser,(req,res)=>{
     res.render('user/orderSuccess')
 })
@@ -109,13 +109,12 @@ user.get('/ordersuccess',userAuth.verifyUser,(req,res)=>{
 user.post('/downloadinvoice',userAuth.verifyUser,orderController.generateInvoices)
 user.get('/downloadinvoice/:orderId',userAuth.verifyUser,orderController.downloadInvoice)
 
-user.post('/verify-payment',paymentControll.verifyPayment)
+user.post('/verify-payment',orderController.verifyPayment)
 user.post('/apply-coupon',orderController.useCoupon)
 
+user.get('/user/coupon',userControl.toCoupons)
 
-
-
-user.get('/api/search',userControl.productSearch)
+user.post('/user/search',userControl.productSearch)
 
 
 

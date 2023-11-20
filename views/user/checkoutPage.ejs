@@ -309,17 +309,16 @@
 
         }),
       });
-console.log(response,'res...........');
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
       const result = await response.json();
-
       if (result.codSuccess) {
         window.location = '/ordersuccess';
-      } else {
-        handlePayNowClick(result);
+      } else if(result.online) {
+        console.log('online payment ////////////////',result);
+        razOrPay(result);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -327,37 +326,9 @@ console.log(response,'res...........');
   });
 
 
+  function razorpayHandler(payment, order) {
+    console.log("Inside handler", payment, order);
 
-    function handlePayNowClick(order) {
-      var options = {
-        "key": "rzp_test_2kq1q9uS7VLUsv",
-        "amount": order.createdOrder.amount,
-        "currency": "INR",
-        "name": "Gizmo",
-        "description": "Test Transaction",
-        "image": "https://example.com/your_logo",
-        "order_id": order.createdOrder.id,
-        "handler": function (response) {
-          console.log('Razorpay handler triggered with response:', response);
-          verifyPayment(response, order)
-        },
-        "prefill": {
-          "user": order.order.UserId,
-        },
-        "notes": {
-          "address": "Razorpay Corporate Office"
-        },
-        "theme": {
-          "color": "#2AF8FF"
-        }
-      };
-      var rzp1 = new Razorpay(options);
-      rzp1.open();
-    }
-
-    function verifyPayment(payment, order) {
-    console.log('now in verifyPayment');
-    
     fetch('/verify-payment', {
         method: 'POST',
         headers: {
@@ -368,20 +339,47 @@ console.log(response,'res...........');
             order,
         }),
     })
-    .then(response => response.json())
+    .then(result => result.json())
     .then(data => {
         if (data.success) {
-            console.log('response got');
-            location.href = '/orderSuccess';
+            console.log('Response received successfully');
+            window.location.href = '/ordersuccess'; 
         } else {
-            console.log('response not get');
-            location.href = '';
-
+            console.log('Response not received');
+            window.location.href = ''; 
         }
     })
     .catch(error => {
         console.error('Fetch error:', error);
     });
+}
+
+function razOrPay(order) {
+    var options = {
+        "key": "rzp_test_0Qv1w8OcPzkkWY",
+        "amount": order.createdOrder.amount,
+        "currency": "INR",
+        "name": "GIZMO",
+        "description": "Test Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": order.order.id,
+        "handler": function (payment) {
+          console.log("..........payment",payment);
+            razorpayHandler(payment, order); 
+        },
+        "prefill": {
+            "name": "Gizmo",
+        },
+        "notes": {
+            "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+            "color": "#5DFFE5"
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
 }
   </script>
 

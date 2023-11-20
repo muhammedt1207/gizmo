@@ -22,7 +22,7 @@
         <tr>
           <th scope="row"><%= index + 1 %></th>
           <td><%= x._id %></td>
-          <t><%= x.UserID %></td>
+          <td><%= x.UserID %></td>
            <td>
             <% const orderDate = new Date(x.OrderDate); %>
             <%= orderDate.toLocaleString('default', { month: 'short' }) %>

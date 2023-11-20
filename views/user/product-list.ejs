@@ -47,8 +47,31 @@
                                             <option value="DELL">Dell</option>
                                           </select>
                                           <br>
+                                          <br>
+
+                                          <label for="priceRangeSelect" class="form-label">Select Price Range:</label>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="0-25000" id="priceRange1">
+                                            <label class="form-check-label" for="priceRange1">Below ₹25,000</label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="25000-50000" id="priceRange2">
+                                            <label class="form-check-label" for="priceRange2">₹25,000 - ₹50,000</label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="50000-75000" id="priceRange3">
+                                            <label class="form-check-label" for="priceRange3">₹50,000 - ₹75,000</label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="75000-100000" id="priceRange4">
+                                            <label class="form-check-label" for="priceRange4">₹75,000 - ₹100,000</label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="100000-0" id="priceRange5">
+                                            <label class="form-check-label" for="priceRange5">₹100,000 above</label>
+                                          </div>
                                           <button type="submit" class="btn btn-primary w-100">Apply Brand Filter</button>
-                                      </form>
+                                        </form>
                                   </div>
                               </div>
                           </div>
@@ -85,11 +108,35 @@
 </nav>
 </section>
 <script>
-  const brandSelect = document.getElementById('brandSelect');
+   const brandSelect = document.getElementById('brandSelect');
+  const priceRangeCheckboxes = document.querySelectorAll('[id^="priceRange"]');
   const productList = document.getElementById('productList');
-  const fetchProducts = (selectedBrand) =>
-   {
-    fetch(`/filter-products/${selectedBrand}`)
+  const productFiltersForm = document.getElementById('productFilters');
+
+  console.log(".......",brandSelect,priceRangeCheckboxes,productList,productFiltersForm);
+
+  productFiltersForm.addEventListener('submit', (event) => {
+    console.log(",,,,,,,,,,,,,,,,,");
+    event.preventDefault();
+    const selectedBrand = brandSelect.value;
+    const selectedPriceRanges = Array.from(priceRangeCheckboxes)
+      .filter((checkbox) => checkbox.checked)
+      .map((checkbox) => checkbox.value);
+    console.log('-------------------------');
+    if (selectedBrand === 'ALL' && selectedPriceRanges.length === 0) {
+      console.log("=======================");
+      fetchAllProducts();
+    } else {
+      console.log("+++++++++++++++++++++++++++++++");
+      fetchProducts(selectedBrand, selectedPriceRanges);
+    }
+  });
+
+  const fetchProducts = (selectedBrand, selectedPriceRanges) => {
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    const queryString = `brand=${selectedBrand}&priceRanges=${selectedPriceRanges.join(',')}`;
+
+    fetch(`/filter-products?${queryString}`)
       .then((response) => response.json())
       .then((data) => {
         productList.innerHTML = '';
@@ -97,24 +144,16 @@
           .filter((x) => x.status === true && x.AvailableQuantity > 0)
           .forEach((x) => {
             const productElement = document.createElement('div');
-            productElement.classList.add('row', 'justify-content-center', 'mb-3');
             productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a>';
             productList.appendChild(productElement);
           });
       })
       .catch((error) => {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching filtered products:', error);
       });
   };
-  brandSelect.addEventListener('change', () => {
-    const selectedBrand = brandSelect.value;
-    if (selectedBrand === 'ALL') {
-      fetchAllProducts();
-    } else {
-      fetchProducts(selectedBrand);
-    }
-  });
-  const fetchAllProducts = () => {
+
+   const fetchAllProducts = () => {
     fetch('/all-products')
       .then((response) => response.json())
       .then((data) => {
@@ -123,7 +162,6 @@
           .filter((x) => x.status === true && x.AvailableQuantity > 0)
           .forEach((x) => {
             const productElement = document.createElement('div');
-            productElement.classList.add('row', 'justify-content-center', 'mb-3');
             productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a>';
             productList.appendChild(productElement);
           });
@@ -132,6 +170,7 @@
         console.error('Error fetching products:', error);
       });
   };
+
   window.addEventListener('load', fetchAllProducts);
 </script>
 <%- include('./partial/contentFooter') %>

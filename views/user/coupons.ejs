@@ -1,0 +1,61 @@
+<%- include('./partial/header') %>
+
+
+
+
+
+
+
+<div class="container">
+<div class="row p-3">
+    <% couponData.forEach((couponData, index) => { %>
+        <% if (couponData.couponType === 'public') { %>
+            <div class="col-md-3">
+              <div class="card mb-4 shadow">
+                <div class="card-body text-center bg-light">
+                  <h5 class="card-title">
+                    <%= couponData.CoupenName %>
+                  </h5>
+                  <h6 class="card-subtitle mb-2 text-muted">
+                    <b><%= couponData.CoupenCode %></b>
+                  </h6>
+                  <p class="card-text">Discount Amount: <%= couponData.DiscountAmount %></p>
+                  <button type="button" class="btn btn-outline-success" id="copyButton<%= index %>">
+                    Copy Coupon
+                  </button>
+                </div>
+              </div>
+            </div>
+          <% } %>
+      <% }) %>
+      
+</div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      <% couponData.forEach((couponData, index) => { %>
+        const copyButton<%= index %> = document.getElementById('copyButton<%= index %>');
+        const couponCode<%= index %> = '<%= couponData.CoupenCode %>';
+  
+        copyButton<%= index %>.addEventListener('click', function () {
+          copyToClipboard(couponCode<%= index %>);
+        });
+      <% }) %>
+  
+      function copyToClipboard(text) {
+        const dummy = document.createElement('textarea');
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        alert('Coupon code copied to clipboard: ' + text);
+      }
+    });
+  </script>
+  
+
+
+<%-include('./partial/contentFooter')%>

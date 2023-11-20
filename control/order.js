@@ -18,7 +18,7 @@ const Return=require('../models/returnSchema');
 const { log } = require("util");
 const Coupons=require('../models/coupon')
 const rezorpay=require('../service/rezorpay')
-
+const crypto =require('crypto')
 
 
 const toCheckout = async (req, res) => {
@@ -111,7 +111,11 @@ const placeOrder = async (req, res) => {
     const selectedAddressId = req.body.selectedAddress;
     const paymentMethod=req.body.selectedPaymentMethod
     console.log("d>>>>>>>>>>>>>>>>>>>>>>>>>", selectedAddressId,"payment method is",paymentMethod);
-    const amount=req.session.totalPrice
+    const amount=req.session.grandTotal || req.session.totalPrice
+    const amountInRupees=Math.floor(amount)
+
+    const amountInPaisa = Math.round(amountInRupees * 100);
+    console.log(amountInPaisa,'...........',amountInRupees);
     const selectedAddress = userData.address.find((address) => address._id == selectedAddressId);
     console.log("..................", selectedAddress);
     if (!selectedAddress) {
@@ -162,10 +166,11 @@ const placeOrder = async (req, res) => {
     }else if(paymentMethod=="online"){
       console.log("payment online");
       const order = {
-        amount: amount,
+        amount: amount*100,
         currency: "INR",
         receipt: savedOrder._id,
       };
+      console.log("/|?\?|",order);
       await rezorpay
               .createRazorpayOrder(order)
               .then((createdOrder) => {
@@ -195,12 +200,63 @@ const placeOrder = async (req, res) => {
 
 }
 
+
+
+
+
+const verifyPayment = async (req, res) => {
+  try {
+    let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
+    console.log("verify Payment");
+    const {payment,order}=req.body
+    res.json({ success: true });
+    console.log(payment,",,,,,,,,,,,,,,,",order,"//////////////////////////")
+    console.log(
+      req.body.payment.razorpay_order_id +
+        "|" +
+        req.body.payment.razorpay_payment_id
+    );
+    hmac.update(
+      req.body.payment.razorpay_order_id +
+        "|" +
+        req.body.payment.razorpay_payment_id
+    );
+
+    hmac = hmac.digest("hex");
+    if (hmac === req.body.payment.razorpay_signature) {
+      const orderId = new mongoose.Types.ObjectId(
+        req.body.order.createdOrder.receipt
+      );
+
+      console.log("reciept", req.body.order.createdOrder.receipt);
+
+      const updateOrderDocument = await order.findByIdAndUpdate(orderId, {
+        PaymentStatus: "Paid",
+        PaymentMethod: "Online",
+      });
+      console.log("hmac success");
+      console.log("order paymment success full");
+     
+    } else {
+      // console.log("hmac failed");
+      res.json({ failure: true });
+    }
+  } catch (error) {
+    console.error("failed to verify the payment", error);
+  }
+};
+
+
+
+
+
+
 const toOrderPage = async (req, res) => {
   try {
     const userData = await Users.findOne({ email: req.session.email });
     const userId = userData._id;
     // console.log(userId, '.............');
-    const orderData = await order.find({ UserID: userId }).populate('Items.productId');
+    const orderData = await order.find({ UserID: userId }).populate('Items.productId').sort({OrderDate:-1});
 
     // console.log(orderData, '..................................');
 
@@ -492,5 +548,6 @@ module.exports = {
   generateInvoices,
   returnOrder,
   useCoupon,
+  verifyPayment
 
 }

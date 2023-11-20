@@ -8,6 +8,8 @@ const productUpload = require('../models/model');
 const cart=require('../models/cart');
 const Users = require("../models/users");
 const Banner=require("../models/banner")
+const Coupon=require("../models/coupon") 
+
 
 const tohome = async (req,res)=>{
     if(req.session.logged){
@@ -26,8 +28,20 @@ const productSearch=async (req, res) => {
     const searchTerm = req.query.q;
   
     try {
-      const results = await productUpload.find({ itemName: { $regex: new RegExp(searchTerm, 'i') } });
-      res.json(results);
+      const count = await productUpload.find({ ProductName: { $regex: new RegExp(searchTerm, 'i') } }).count();
+      var i=0
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = 1;
+      const totaldata = Math.ceil(count / pageSize);
+      const skip = (page - 1) * pageSize;
+      const data = await productUpload.find({ ProductName: { $regex: new RegExp(searchTerm, 'i') } }).skip(skip).limit(pageSize)
+      const user =await Users.findOne({email:req.session.email})
+      console.log("...............",data);
+      res.render('user/product-list', { title: 'Costomers', userData: data ,
+      Count:totaldata,
+      page: page,
+      user,
+      i})
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -255,10 +269,10 @@ const OtpConfirmation = async (req,res) => {
                 await OTP.deleteOne({email});
             }else{
                 const hashed=Otp.otp
-                console.log("hashed......"+hashed);
-                console.log("body"+req.body)
+                // console.log("hashed......"+hashed);
+                // console.log("body"+req.body)
                 const { code, email} = req.body
-                console.log("code otp ....."+code);
+                // console.log("code otp ....."+code);
                 req.session.email=data.email;
                 console.log(req.session.email)
                 if(hashed==code){
@@ -572,6 +586,17 @@ const toAccountSettings= (req,res)=>{
     }
 }
 
+
+const toCoupons=async (req,res)=>{
+    try {
+        const couponData=await Coupon.find()
+        const user=await Users.findOne({email:req.session.email})
+        res.render('user/coupons',{title:"Coupons",couponData,user})
+    } catch (error) {
+        
+    }
+}
+
 module.exports = {
     userLogin,
     userSignup,
@@ -599,4 +624,5 @@ module.exports = {
     NewAddAddress,
     newEditAddress,
     productSearch,
+    toCoupons
 }

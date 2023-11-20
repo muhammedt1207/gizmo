@@ -30,7 +30,7 @@
              <% if (x.Status=="NotVerified"){%>
                 <a href=""><button type="button" class="btn btn-warning btn-sm" onclick="updateOrderStatus('<%= x._id %>', 'Verified')">Verify</button></a>
                 <% } else {%>
-                    <button type="button" class="btn btn-danger btn-sm" disabled>Verifyed</button>
+                    <button type="button" class="btn btn-danger btn-sm" disabled>verified</button>
                     <% } %>
           </td>
           <td><a href="/admin/orderView/<%=x._id%>"><button type="button" class="btn btn-light">View</button></a></td>

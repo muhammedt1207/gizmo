@@ -469,11 +469,12 @@ const Addbanner = async (req, res) => {
             console.log('Unsupported image format');
             return res.redirect('/banner');
         }
-        imgCrop(uploadedImage)
+        
+        console.log("image start cropping");
+        // await imgCrop(uploadedImage)
         console.log("image ccropped");
-        const currentDate = new Date(); // Get the current date and time
-
-        // Create a new banner document with image and date
+        const currentDate = new Date(); 
+    
         const newBanner = new banner({
             image: uploadedImage.filename,
             date: currentDate,

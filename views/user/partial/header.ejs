@@ -19,7 +19,7 @@
 </head>
 
 <body style="background-color: transparent;">
-  <nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded">
+  <nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded ">
     <div class="container">
       <a class="navbar-brand" href="#"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;"
           alt="logo"></a>
@@ -30,8 +30,8 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
         <!-- Centered search bar -->
-        <form class="d-flex mx-auto" id="searchForm" >
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <form action="/user/search" method="post" class="d-flex mx-auto" id="searchForm" >
+          <input class="form-control me-2" type="search" name="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass"
               style="color: #4f4f4f;"></i></button>
         </form>
@@ -39,6 +39,9 @@
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/user/home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/user/toProduct-list">Shop</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">About</a>
