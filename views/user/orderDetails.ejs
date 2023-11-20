@@ -203,7 +203,8 @@ console.log("..................",returnOrderButtons);
           .then((data) => {
             if (data.success) {
               alert(`Order has been returned successfully.`);
-              returnOrderModal.hide()
+              $('#returnOrderModal').modal('hide');
+              window.location.reload()
             } else {
               alert(`Error: ${data.message}`);
             }
@@ -212,10 +213,7 @@ console.log("..................",returnOrderButtons);
             console.error('Error returning the order:', error);
             alert('An error occurred while returning the order.');
           })
-          .finally(() => {
-            // Close the modal after processing
-            returnOrderModal.hide();
-          });
+          
       });
     });
   });

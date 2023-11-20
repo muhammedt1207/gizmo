@@ -6,6 +6,9 @@ const returnSchema = mongoose.Schema({
     type: ObjectId,
     required: true,
   },
+  orderId:{
+    type:ObjectId, 
+  },
   Status:{type:String,
     default:"NotVerified"
     },
@@ -13,6 +16,7 @@ const returnSchema = mongoose.Schema({
     type: ObjectId,
   },
   quantity:{type:Number},
+  
   reason: {
     type: String,
   },

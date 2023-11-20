@@ -20,6 +20,7 @@ app.set('view engine', 'ejs');
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
+app.use('/banner-image/cropped_image', express.static(path.join(__dirname, 'public/banner-image/cropped_image')));
 
 app.use(session({
     secret: 'my secret key',

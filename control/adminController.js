@@ -7,9 +7,11 @@ const imgCrop = require('../service/bannerCrop')
 const banner = require('../models/banner')
 const mongoose = require('mongoose')
 const moment = require('moment')
-const Returns =require('../models/returnSchema');
+const Returns = require('../models/returnSchema');
 const Users = require('../models/users');
-
+const fs = require('fs');
+const path = require('path');
+const sharp = require('sharp');
 
 // Admin login credentials
 const credential = {
@@ -49,7 +51,7 @@ const toProduct = (req, res) => {
 
 const signout = async (req, res) => {
     console.log('Signout');
-    req.session.adminlogged=false;
+    req.session.adminlogged = false;
     res.redirect('/');
 };
 
@@ -81,17 +83,19 @@ const UserStatus = async (req, res) => {
 };
 
 const userDataSharing = async (req, res) => {
-    var i=0
+    var i = 0
     const page = parseInt(req.query.page) || 1;
     const count = await users.find().count()
     const pageSize = 5;
     const totaldata = Math.ceil(count / pageSize);
     const skip = (page - 1) * pageSize;
     const data = await users.find().skip(skip).limit(pageSize)
-    res.render('./admin/costomers.ejs', { title: 'Costomers', userData: data ,
-    Count:totaldata,
-    page: page,
-    i});
+    res.render('./admin/costomers.ejs', {
+        title: 'Costomers', userData: data,
+        Count: totaldata,
+        page: page,
+        i
+    });
 };
 
 const categoryData = async (req, res) => {
@@ -109,17 +113,18 @@ const categoryData = async (req, res) => {
 
 const toproducts = async (req, res) => {
     try {
-        var i=0
+        var i = 0
         const page = parseInt(req.query.page) || 1;
         const count = await productUpload.find().count();
         const pageSize = 7;
         const totalOrder = Math.ceil(count / pageSize);
         const skip = (page - 1) * pageSize;
         const data = await productUpload.find().skip(skip).limit(pageSize)
-        res.render('admin/products', { title: 'category', data,
-        productDataCount:totalOrder,
-        page: page
-    });
+        res.render('admin/products', {
+            title: 'category', data,
+            productDataCount: totalOrder,
+            page: page
+        });
     } catch (error) {
         console.log('An error occurred', error);
         res.status(500).send('Internal Server Error');
@@ -127,8 +132,8 @@ const toproducts = async (req, res) => {
 };
 
 const toAddProduct = async (req, res) => {
-    let catogory=await Category.find()
-    res.render('./admin/add-product', { title: 'Add Products' ,catogory});
+    let catogory = await Category.find()
+    res.render('./admin/add-product', { title: 'Add Products', catogory });
 };
 
 const productData = async (req, res) => {
@@ -151,7 +156,7 @@ const addProduct = async (req, res) => {
             allImage[i] = images[i].filename
         }
 
-      
+
 
 
         const uploaded = await productUpload.create({
@@ -186,10 +191,10 @@ const EditProduct = async (req, res) => {
         let id = req.params.id;
         const productDetails = req.body;
         console.log("asss", productDetails);
-        console.log(req.files,'>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+        console.log(req.files, '>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
         const files = req.files;
 
-        console.log("...........",files);
+        console.log("...........", files);
         const ProductData = await productUpload.findById(id);
         if (!ProductData) {
             console.log("ProductData not found");
@@ -383,18 +388,20 @@ const afterEditCatagory = async (req, res) => {
 //------------------------------------<<<<<<<<<<<<<<<<< ORDER MANEGEMENT   >>>>>>>>>>>>>>>>>>>>>>>-------------------
 
 const toOrders = async (req, res) => {
-    var i=0
+    var i = 0
     const page = parseInt(req.query.page) || 1;
     const count = await orders.find().count()
     const pageSize = 10;
     const totaldata = Math.ceil(count / pageSize);
     const skip = (page - 1) * pageSize;
     const data = await orders.find().sort({ OrderDate: -1 }).skip(skip).limit(pageSize)
-    
-    res.render('./admin/orders', { title: 'Orders', orderData: data ,
-    Count:totaldata,
-    page: page,
-    i})
+
+    res.render('./admin/orders', {
+        title: 'Orders', orderData: data,
+        Count: totaldata,
+        page: page,
+        i
+    })
 }
 
 const orderStatus = async (req, res) => {
@@ -428,7 +435,7 @@ const orderview = async (req, res) => {
         // }
         console.log(orderId);
         const orderData = await orders.findOne({ _id: orderId }).populate('Items.productId');
-        console.log(">>>>>>>>>>>>>",orderData);
+        console.log(">>>>>>>>>>>>>", orderData);
         // const addressId = new mongoose.Types.ObjectId(orderData.Address);
         // console.log("@@@@@@@@@@",orderData.UserID);
         // const userData = await users.findOne({ _id: orderData.UserID });
@@ -444,7 +451,7 @@ const orderview = async (req, res) => {
         res.render('admin/OrderDetialsView', { orderData })
 
     } catch (error) {
-        console.error("order view getting some errors ",error)
+        console.error("order view getting some errors ", error)
         res.render('admin/404')
     }
 
@@ -469,12 +476,10 @@ const Addbanner = async (req, res) => {
             console.log('Unsupported image format');
             return res.redirect('/banner');
         }
-        
-        console.log("image start cropping");
-        // await imgCrop(uploadedImage)
-        console.log("image ccropped");
-        const currentDate = new Date(); 
-    
+
+
+        const currentDate = new Date();
+
         const newBanner = new banner({
             image: uploadedImage.filename,
             date: currentDate,
@@ -496,59 +501,147 @@ const Addbanner = async (req, res) => {
     }
 }
 
+const changeBanner = async (req, res) => {
 
-const toReturnPage=async (req,res)=>{
+    try {
+        const uploadedImage = req.file;
+        console.log("hi  >>>>>>>", uploadedImage);
+
+        if (!uploadedImage) {
+            console.log('No image uploaded');
+        }
+
+        const supportedFormats = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'image/tiff', 'image/avif'];
+
+        if (!supportedFormats.includes(uploadedImage.mimetype)) {
+            console.log('Unsupported image format');
+            return res.redirect('/banner');
+        }
+        const imageBuffer = fs.readFileSync(uploadedImage.path);
+        
+        const croppedImageBuffer = await sharp(imageBuffer)
+            .resize({ width: 750, height: 279, fit: sharp.fit.cover })
+            .toBuffer();
+        console.log(croppedImageBuffer, "image cropp image success................................");
+        const savePath = path.join(__dirname, '../public/banner-image/cropped_images');
+        const fileName = uploadedImage.originalname;
+        console.log(savePath, "!!!!!!!!!!!!!!!!!");
+        fs.writeFileSync(path.join(savePath, fileName), croppedImageBuffer);
+        const currentDate = new Date();
+        const newBanner = new banner({
+            image: fileName,
+            date: currentDate,
+        });
+
+
+        const savedBanner = await newBanner.save();
+        const latestBanner = await banner.findOne({}, {}, { sort: { date: -1 } });
+        console.log('latestBanner.image:', latestBanner.image);
+
+        if (savedBanner) {
+            console.log('Banner added');
+            res.render('admin/banner', { latestBanner });
+        } else {
+            console.log('Error saving the banner');
+            res.render('admin/404');
+        }
+    } catch (error) {
+        console.error('An error happened', error);
+        res.render('admin/404');
+        // Handle the error appropriately, for example, send an error response to the client
+    }
+};
+
+
+
+
+const toReturnPage = async (req, res) => {
     console.log("return page");
-    const returns= await  Returns.find()
-    res.render('admin/return',{returns})
+    const returns = await Returns.find()
+    res.render('admin/return', { returns })
 }
 
-const verifyReturn= async (req,res)=>{
+const verifyReturn = async (req, res) => {
     try {
         console.log("_________------------_____________");
-        const orderId= req.params.id
-        const returnOrder= await Returns.findOne({_id:orderId})
+        const orderId = req.params.id
+        const returnOrder = await Returns.findOne({ _id: orderId })
         console.log(returnOrder);
-        returnOrder.Status="Verified"
+        returnOrder.Status = "Verified"
         returnOrder.save()
-        console.log("return status shanged.....",returnOrder);
+        console.log("return status shanged.....", returnOrder);
         const User = await Users.findByIdAndUpdate(
             { _id: returnOrder.userId },
-            { $inc: { wallet: returnOrder.price} },
+            { $inc: { wallet: returnOrder.price } },
             { new: true }
-          );
-          console.log("user wallet updated...........",User);
-          if (!returnOrder) {
+        );
+        console.log("user wallet updated...........", User);
+        if (!returnOrder) {
             return res.status(404).json({ success: false, message: 'Order not found' });
-          }
-      
-          res.status(200).json({ success: true, message: 'Order status updated successfully', updatedOrder });
+        }
+
+        res.status(200).json({ success: true, message: 'Order status updated successfully', updatedOrder });
     } catch (error) {
         res.render('admin/404')
     }
 }
 
 
-const toCoupens=async (req,res)=>{
+const returnView = async (req, res) => {
+    try {
+        const returnId = req.params.id;
+        // if (!mongoose.Types.ObjectId.isValid(orderId)) {
+        //     // Handle invalid ObjectId here (e.g., return an error response)
+        //     return res.status(400).send('Invalid ObjectId');
+        // }
+        const returnData=await Returns.findById(returnId)
+        const orderId=returnData.orderId
+        console.log(orderId);
+        const orderData = await orders.findOne({ _id: orderId }).populate('Items.productId');
+        console.log(">>>>>>>>>>>>>", orderData);
+        // const addressId = new mongoose.Types.ObjectId(orderData.Address);
+        // console.log("@@@@@@@@@@",orderData.UserID);
+        // const userData = await users.findOne({ _id: orderData.UserID });
+
+        // if (!userData) {
+        //     console.error('User not found');
+        //     return res.render('admin/404');
+        // }
+        // console.log("^^^^^^",userData);
+        // const Address = userData.address.find((address) => address._id.equals(addressId));
+        // console.log("************",Address);
+
+        res.render('admin/OrderDetialsView', { orderData,returnData })
+
+    } catch (error) {
+        console.error("order view getting some errors ", error)
+        res.render('admin/404')
+    }
+
+}
+
+
+
+const toCoupens = async (req, res) => {
     res.render('admin/coupens')
 }
 
 
-const userSearch= async (req, res) => {
-  var i = 0;
-  const getdata = req.body;
-  console.log(getdata);
-  let userData = await users.find({
-    userName: { $regex: "^" + getdata.search, $options: "i" },
-  });
+const userSearch = async (req, res) => {
+    var i = 0;
+    const getdata = req.body;
+    console.log(getdata);
+    let userData = await users.find({
+        userName: { $regex: "^" + getdata.search, $options: "i" },
+    });
 
-  res.render("./admin/costomers", { title: "Home", userData, i });
+    res.render("./admin/costomers", { title: "Home", userData, i });
 }
 
 
 
-const productSearch=async (req, res) => {
-    var i=0
+const productSearch = async (req, res) => {
+    var i = 0
     const page = parseInt(req.query.page) || 1;
     const count = await productUpload.find().count();
     const pageSize = 7;
@@ -557,12 +650,14 @@ const productSearch=async (req, res) => {
     const getdata = req.body;
     console.log(getdata);
     let data = await productUpload.find({
-      ProductName: { $regex: "^" + getdata.search, $options: "i" },
+        ProductName: { $regex: "^" + getdata.search, $options: "i" },
     }).skip(skip).limit(pageSize)
     console.log(`Search Data ${data} `);
-    res.render("./admin/products", { title: "Home", data, i, productDataCount:totalOrder,
-    page: page });
-  }
+    res.render("./admin/products", {
+        title: "Home", data, i, productDataCount: totalOrder,
+        page: page
+    });
+}
 module.exports = {
     loginadmin,
     UserStatus,
@@ -595,5 +690,7 @@ module.exports = {
     toCoupens,
     userSearch,
     productSearch,
-    
+    changeBanner,
+    returnView
+
 };

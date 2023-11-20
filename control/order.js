@@ -406,9 +406,9 @@ const oneItemcancel = async (req, res) => {
 const returnOrder = async (req, res) => {
   try{
   const { orderId, itemId, returnReason, returnDescription } = req.body;
-    // console.log(orderId, "Order ID");
-    // console.log(returnReason);
-    // console.log(returnDescription);
+    console.log(orderId, "Order ID");
+    console.log(returnReason);
+    console.log(returnDescription);
     const newitemId=itemId.trim()
     const orderData = await order.findById(orderId);
     console.log(orderData,"))))))))))))))))))))))))))))))))))");
@@ -420,20 +420,19 @@ const returnOrder = async (req, res) => {
 
     let itemReturn = null;
     let itemIndex =-1
-    // Find the item in the order
-    // console.log(item._id.toString(),">>>>>>>>>>>>>");
-    // console.log(itemId,"Item ID");
-    // console.log(newitemId,'>>>>>>>>>>');
+
+    console.log(itemId,"Item ID");
+    console.log(newitemId,'>>>>>>>>>>');
 
     orderData.Items.forEach((item,index) => {
       const itemID = item._id.toString()
       if ( itemID == newitemId ) {
         itemReturn = item;
         itemIndex = index
-        // console.log('................90234909',item);
+        console.log('................90234909',item);
       }
     });
-    // console.log(',,,,,,,,,,', itemReturn);
+    console.log(',,,,,,,,,,', itemReturn);
 
     if (!itemReturn) {
       return res.status(404).json({ message: 'Item not found' });
@@ -449,14 +448,14 @@ const returnOrder = async (req, res) => {
     await orderData.save();
    
     const product = await productUpload.findById(itemReturn.productId);
-    // console.log(product,'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+    console.log(product,'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
     const user= await Users.findOne({email:req.session.email})
-    // console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',user);
+    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',user);
     const userId = user._id; 
-    // console.log('!!!!!!!!!!!!!',userId);
+    console.log('!!!!!!!!!!!!!',userId);
     const productId = product._id; 
     const price = product.DiscountAmount*returnQuantity; 
    
@@ -464,6 +463,7 @@ const returnOrder = async (req, res) => {
     const orderDate = orderData.OrderDate;
     const returnData = new Return({
       userId,
+      orderId,
       product: productId,
       reason: returnReason,
       quantity: returnQuantity,

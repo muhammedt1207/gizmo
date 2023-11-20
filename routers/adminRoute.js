@@ -59,12 +59,19 @@ admin.put('/updateStatus/:orderId',adminAuth.verifyAdmin,adminController.orderSt
 admin.get('/orderView/:id',adminAuth.verifyAdmin,adminController.orderview)
 admin.get('/ReturnPage',adminAuth.verifyAdmin,adminController.toReturnPage)
 admin.put('/updateReturnStatus/:id',adminAuth.verifyAdmin,adminController.verifyReturn)
+admin.get('/returnDetails/:id',adminAuth.verifyAdmin,adminController.returnView)
 
-
-admin.post('/bannerUpload', banermulter.single('image'), adminController.Addbanner);
+admin.post('/bannerUpload', banermulter.single('image'), adminController.changeBanner);
 
 admin.get('/coupens',adminAuth.verifyAdmin,couponControll.tocoupon)
 admin.post('/CreateCoupon',adminAuth.verifyAdmin,couponControll.createCoupon)
 admin.get('/delete-coupon/:id',couponControll.deleteCoupon)
+
+
+
+
+
+
+
 module.exports=admin;
 
