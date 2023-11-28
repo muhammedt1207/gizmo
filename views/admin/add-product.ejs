@@ -42,44 +42,48 @@
                     <!-- <input type="file" name="image2" accept="image/*" style="width: 188px; height:188px;"> -->
                     <!-- <input type="file" name="image3" accept="image/*" style="width: 188px; height:188px;"> -->
                     <!-- </div> -->
-
+                        <h3>Product Images</h3>
                     <div class="col-md-3">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="imageInput1" accept="image/*">
-                            <label class="custom-file-label" for="imageInput1">Choose file</label>
+                            <label class="btn btn-rounded border rounded custom-file-label" for="imageInput1">
+                                <input type="file" class="custom-file-input" name="main" style="display: none;" id="imageInput1" accept="image/*">
+                                Main Image
+                            </label>
                         </div>
-                        <img id="imagePreview1" src="" class="img-thumbnail mt-2" alt="Preview">
-                        <button class="btn btn-danger mt-2 delete-button" id="deleteButton1"
-                            style="display: none">Delete</button>
-                    </div>
+                        <img id="imagePreview1" src="" class="img-thumbnail mt-2" alt="">
+                        
+                        <button class="btn btn-outline-danger mt-2 delete-button" id="deleteButton1" style="display: none">Delete</button>
+                    <br></div>
                     <div class="col-md-3">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="imageInput2" accept="image/*">
-                            <label class="custom-file-label" for="imageInput2">Choose file</label>
+                            <label class="btn btn-rounded border rounded custom-file-label" for="imageInput2">
+                                <input type="file" class="custom-file-input" name="image1" style="display: none;" id="imageInput2" accept="image/*">
+                                Add Image
+                            </label>
                         </div>
-                        <img id="imagePreview2" src="" class="img-thumbnail mt-2" alt="Preview">
-                        <button class="btn btn-danger mt-2 delete-button" id="deleteButton2"
-                            style="display: none">Delete</button>
-                    </div>
+                        <img id="imagePreview2" src="" class="img-thumbnail mt-2" alt="">
+                        <button class="btn btn-outline-danger mt-2 delete-button" id="deleteButton2" style="display: none">Delete</button>
+                    <br> </div>
                     <div class="col-md-3">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="imageInput3" accept="image/*">
-                            <label class="custom-file-label" for="imageInput3">Choose file</label>
+                            <label class="btn btn-rounded border rounded custom-file-label" for="imageInput3">
+                                <input type="file" class="custom-file-input" name="image2" style="display: none;" id="imageInput3" accept="image/*">
+                                Add Image
+                            </label>
                         </div>
-                        <img id="imagePreview3" src="" class="img-thumbnail mt-2" alt="Preview">
-                        <button class="btn btn-danger mt-2 delete-button" id="deleteButton3"
-                            style="display: none">Delete</button>
-                    </div>
+                        <img id="imagePreview3" src="" class="img-thumbnail mt-2" alt="">
+                        <button class="btn btn-outline-danger mt-2 delete-button" id="deleteButton3" style="display: none">Delete</button>
+                   <br> </div>
                     <div class="col-md-3">
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="imageInput4" accept="image/*">
-                            <label class="custom-file-label" for="imageInput4">Choose file</label>
+                            <label class="btn btn-rounded border rounded custom-file-label" for="imageInput4">
+                                <input type="file" class="custom-file-input" name="image3" style="display: none;" id="imageInput4" accept="image/*">
+                                Add Image
+                            </label>
                         </div>
-                        <img id="imagePreview4" src="" class="img-thumbnail mt-2" alt="Preview">
-                        <button class="btn btn-danger mt-2 delete-button" id="deleteButton4"
-                            style="display: none">Delete</button>
-                    </div>
-
+                        <img id="imagePreview4" src="" class="img-thumbnail mt-2" alt="">
+                        <button class="btn btn-outline-danger mt-2 delete-button" id="deleteButton4" style="display: none">Delete</button>
+                    <br></div>
                     <div class="border p-3 mb-3">
                         <h2>Pricing</h2>
                         <div class="form-group">
@@ -116,7 +120,7 @@
                                 <option>
                                     <%= x.CategoryName%>
                                 </option>
-                                <% }) %>
+                                <% }) %>        
                         </select>
                     </div><br>
                     <div class="form-group">
@@ -201,30 +205,39 @@
     
     <script>
         // JavaScript to handle image preview and delete
-        const inputIds = ["1", "2", "3", "4"];
-
-        inputIds.forEach((id) => {
-            const input = document.getElementById(`imageInput${id}`);
-            const preview = document.getElementById(`imagePreview${id}`);
-            const deleteButton = document.getElementById(`deleteButton${id}`);
-
-            input.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        preview.src = event.target.result;
-                        deleteButton.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            deleteButton.addEventListener('click', () => {
-                input.value = '';
-                preview.src = '';
-                deleteButton.style.display = 'none';
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputIds = ["1", "2", "3", "4"];
+    
+            inputIds.forEach((id) => {
+                const input = document.getElementById(`imageInput${id}`);
+                const preview = document.getElementById(`imagePreview${id}`);
+                const deleteButton = document.getElementById(`deleteButton${id}`);
+    
+                input.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+    
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            preview.src = event.target.result;
+                            deleteButton.style.display = 'block';
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        // Clear preview if no image is selected
+                        preview.src = '';
+                        preview.alt= '';
+                        deleteButton.style.display = 'none';
+                    }
+                });
+    
+                deleteButton.addEventListener('click', () => {
+                    input.value = '';
+                    preview.src = '';
+                    deleteButton.style.display = 'none';
+                });
             });
         });
     </script>
+    
     <%- include('./partial/footer') %>

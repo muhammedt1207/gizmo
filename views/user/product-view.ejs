@@ -103,6 +103,7 @@
                     <h4 class="text-success">Price: ₹<%=data.DiscountAmount%>
                     </h4>
                 </div>
+
                 <button class="btn" style="background-color: #4196f7;" id="addToCartButton"
                     data-item-id="<%= data._id %>" onclick="addEventListener">Add to Cart</button>
                 <button class="btn" style="background-color: #078505;" id="addToWishlist">Add to Wishlist</button>
@@ -147,6 +148,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
@@ -154,6 +156,13 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
+                        button.innerText = "View Cart";
+
+                    // Change the click event to navigate to the cart page
+                    button.onclick = function () {
+                        window.location.href = "/user/toCart"; // Replace with your cart page URL
+                    };
+                    
                     } else {
                         Swal.fire({
                             icon: 'error',

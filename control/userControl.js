@@ -1,3 +1,4 @@
+require('dotenv').config();
 const user = require("../models/users")
 const bcrypt = require("bcrypt");
 const sendOTP = require("./otpController");
@@ -9,7 +10,7 @@ const cart=require('../models/cart');
 const Users = require("../models/users");
 const Banner=require("../models/banner")
 const Coupon=require("../models/coupon") 
-
+const jwt=require('jsonwebtoken')
 
 const tohome = async (req,res)=>{
     if(req.session.logged){
@@ -18,7 +19,6 @@ const tohome = async (req,res)=>{
         const user=await Users.findOne({email:req.session.email})
         const data= await productUpload.find()
         const banner=await Banner.findOne({}, {}, { sort: { date: -1 } })
-        console.log(banner,"banner images>>>>>>>>>>>");
         res.render("./user/index",{title:"Login",err:false, data,banner,user});
     }
 }
@@ -50,11 +50,10 @@ const productSearch=async (req, res) => {
   
 
 const tosignup = (req,res)=>{
-    if(req.session.logged){
-        res.redirect('/user/home')
-    }else{
-    res.render("user/signup",{title:"Signup",err:req.flash("err")})
-    }
+    const reffer = req.query.ref;
+    console.log('Your referral code:', reffer);
+    res.render("user/signup",{title:"Signup",err:req.flash("err") ,reffer})
+    
 }
 const signupToLog=(req,res)=>{
     res.render('./user/login',{title : 'hello' , err: false});
@@ -70,21 +69,13 @@ const toOtp=(req,res)=>{
     }
 }
 
-const toforgetPage= (req,res)=>{
-    if (req.session.logged) {
-        res.redirect('/user/home');
-    } else {
-        req.session.forgot = true
-        res.render("./user/forgot-pass", { err: req.flash("errmsg") })
-    }
-}
-
 const userSignup = async (req,res) => {
     console.log("user sign up");
     console.log(req.body+"hi");
-    
+    console.log('Referral Code from Frontend:', req.body.referralId);
+
     try {
-        const check = await user.find({ email: req.body.email })
+        const check = await Users.find({ email: req.body.email })
         console.log(typeof (check));
         if (check.length == 0) {
             const pass = await bcrypt.hash(req.body.password, 10);
@@ -92,6 +83,7 @@ const userSignup = async (req,res) => {
                 userName: req.body.name,
                 email: req.body.email,
                 password: pass,
+                reffer:req.body.referralId
             }
             req.session.data = data;
             req.session.email = data.email
@@ -158,7 +150,7 @@ const resendOTP = async (req, res) => {
 const forgotPass = async (req, res) => {
     try{
         console.log(req.body);
-        const check=await user.findOne({email:req.body.email})
+        const check=await Users.findOne({email:req.body.email})
         req.session.email=check.email
         
         if(check){
@@ -191,13 +183,20 @@ const forgotPass = async (req, res) => {
 
 const userLogin = async (req, res) => {
     try {
-      const check = await user.findOne({ email: req.body.email });
+      const check = await Users.findOne({ email: req.body.email });
   
       if (check) {
         const isMatch = await bcrypt.compare(req.body.password, check.password);
   
         if (isMatch) {
           if (check.status == true) {
+            const accessToken = jwt.sign(
+                { user: check._id },
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: 60 * 60 }
+              );
+              res.cookie("userJwt", accessToken, { maxAge: 60 * 1000 * 60 });
+                console.log("jwt token created");
             req.session.user = check.userName;
             req.session.logged = true;
             req.session.email = req.body.email;
@@ -212,6 +211,7 @@ const userLogin = async (req, res) => {
         return res.json({ success: false, error: "User not found" });
       }
     } catch (error) {
+        console.error(error,"login error")
       return res.json({ success: false, error: "Invalid username or password" });
     }
   };
@@ -269,18 +269,38 @@ const OtpConfirmation = async (req,res) => {
                 await OTP.deleteOne({email});
             }else{
                 const hashed=Otp.otp
-                // console.log("hashed......"+hashed);
-                // console.log("body"+req.body)
-                const { code, email} = req.body
-                // console.log("code otp ....."+code);
+                const { code, email} = req.body              
                 req.session.email=data.email;
                 console.log(req.session.email)
                 if(hashed==code){
                     const result=await user.insertMany([data])
+                    console.log(data.reffer,'^^^^^^^^^^^^^^');
+                    const updatedUserData = await user.findByIdAndUpdate(
+                        data.reffer,
+                        {
+                          $inc: { 'wallet.amount': 100 },
+                          $push: {
+                            'wallet.transactions': {
+                              amount: 100,
+                              transactionType: 'credit',
+                              timestamp: new Date(),
+                              description: 'Refer by user',
+                            },
+                          },
+                        },
+                        { new: true } 
+                      );
                     req.session.logged=true;
-                    console.log(result);
+                    if (result) {
+                        const accessToken = jwt.sign(
+                          { user: result._id },
+                          process.env.ACCESS_TOKEN_SECRET,
+                          { expiresIn: 60 * 60 }
+                        );
+                        res.cookie("userJwt", accessToken, { maxAge: 60 * 1000 * 60 });
+                        }
                     req.session.signotp=false
-                    // const user= await user.findOne()
+
                     res.redirect("/user/home")
     
                 }
@@ -295,22 +315,16 @@ const OtpConfirmation = async (req,res) => {
         }catch(err){
             console.log(err);
             console.log("error 2"+err);
-            res.redirect("./user/otpPage")
+            res.render("./user/otpPage",{title: "OTP ", err:false });
         }
     }
 }
+
  const toForgotPass=(req,res)=>{
     req.session.forgot=true
     res.render("./user/forget-pass")
 }
-const get_password_reset = (req, res) => {
-    if (req.session.pass_reset) {
-        res.render("userView/resetPass",{title:"Reset password"});
 
-    } else {
-        res.redirect("/user/login-page")
-    }
-}
 
 const passwordReset = async (req, res) => {
     try {
@@ -320,7 +334,7 @@ const passwordReset = async (req, res) => {
         const pass = await bcrypt.hash(req.body.password, 10);
         const email = req.session.email
         console.log(email);
-        const update = await user.updateOne({ email: email }, { $set: { password: pass } })
+        const update = await Users.updateOne({ email: email }, { $set: { password: pass } })
         req.session.logged = true;
         // req.session.pass_reset = false
         res.redirect("/user/indexToLogin")
@@ -597,6 +611,17 @@ const toCoupons=async (req,res)=>{
     }
 }
 
+const ToWalletHistory=async (req,res)=>{
+    try{
+        const email=req.session.email
+        const userData=await Users.findOne({email:email})
+        userData.wallet.transactions.sort((a, b) => b.timestamp - a.timestamp)
+        res.render("user/walletHistory",{title:"wallet",userData})
+    }catch(error){
+        console.error("wallet history error",error);
+    }
+}
+
 module.exports = {
     userLogin,
     userSignup,
@@ -624,5 +649,6 @@ module.exports = {
     NewAddAddress,
     newEditAddress,
     productSearch,
-    toCoupons
+    toCoupons,
+    ToWalletHistory
 }

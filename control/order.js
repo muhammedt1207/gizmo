@@ -7,7 +7,7 @@ const OTP = require("../models/otpModel");
 const productUpload = require('../models/model');
 const cart = require('../models/cart');
 const Users = require("../models/users");
-const order = require('../models/orders');
+const Orders = require('../models/orders');
 // const { ObjectId } = require("mongodb");
 const { ObjectId } = require("mongoose");
 const moment = require('moment');
@@ -67,6 +67,9 @@ const useCoupon= async (req,res)=>{
       return res.json({ success: false, message: 'Purchase amount does not meet the minimum requirement for the coupon' });
     }
     console.log("--------",purchaseAmount,coupon.MinAmount);
+    if (purchaseAmount < coupon.DiscountAmount) {
+      return res.json({ success: false, message: 'Purchase Amount must Greater Than Discount amount' });
+    }
 
     const currentDate = new Date();
     const endDate = new Date(coupon.EndDate);
@@ -111,7 +114,19 @@ const placeOrder = async (req, res) => {
     const selectedAddressId = req.body.selectedAddress;
     const paymentMethod=req.body.selectedPaymentMethod
     console.log("d>>>>>>>>>>>>>>>>>>>>>>>>>", selectedAddressId,"payment method is",paymentMethod);
-    const amount=req.session.grandTotal || req.session.totalPrice
+    const grandTotal=req.session.grandTotal
+    let amount=null
+    if(grandTotal==null){
+      amount=req.session.totalPrice
+
+      console.log('grand total is null -----',amount);
+    }else{
+      amount=req.session.grandTotal
+      
+      console.log('grand total is not null -----',amount);
+    }
+    console.log(grandTotal,'coupon not applied......');
+    
     const amountInRupees=Math.floor(amount)
 
     const amountInPaisa = Math.round(amountInRupees * 100);
@@ -124,7 +139,7 @@ const placeOrder = async (req, res) => {
 
     const cartDetails = await cart.findOne({ userId: userId });
 
-    const newOrder = new order({
+    const newOrder = new Orders({
       Status: 'Pending',
       Items: cartDetails.products,
       UserID: userId,
@@ -137,6 +152,7 @@ const placeOrder = async (req, res) => {
         state: selectedAddress.state,
         mobileNumber: selectedAddress.mobileNumber,
       },
+      paymentMethod:"Pending",
       TotalPrice: req.session.totalPrice,
       OrderDate: new Date(),
     });
@@ -183,8 +199,18 @@ const placeOrder = async (req, res) => {
   
             } else if(paymentMethod=="wallet"){
               const TotalPrice=req.session.totalPrice
-              userData.wallet -= TotalPrice;
+              userData.wallet.amount -= TotalPrice;
+              userData.wallet.transactions.push({
+                amount: TotalPrice,
+                transactionType: 'debit',
+                timestamp: new Date(),
+                description: 'Order payment', 
+              });
               userData.save()
+              const newOrder = new Orders({
+                paymentStatus:"Paid"
+              })
+              newOrder.save()
               console.log("payment is wallet");
               res.json({
                 codSuccess: true,
@@ -209,13 +235,19 @@ const verifyPayment = async (req, res) => {
     let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
     console.log("verify Payment");
     const {payment,order}=req.body
-    res.json({ success: true });
     console.log(payment,",,,,,,,,,,,,,,,",order,"//////////////////////////")
     console.log(
-      req.body.payment.razorpay_order_id +
+      req.body.order.createdOrder.receipt +
         "|" +
         req.body.payment.razorpay_payment_id
     );
+    const orderId=order.createdOrder.receipt
+    const updateOrderDocument = await Orders.findByIdAndUpdate(orderId, {
+      paymentStatus: "Paid",
+      paymentMethod: "Online",
+    });
+    console.log(updateOrderDocument,'/\/\/\/\/\/\/\/\/\/\/\/\/\/');
+        res.json({ success: true });
     hmac.update(
       req.body.payment.razorpay_order_id +
         "|" +
@@ -227,16 +259,6 @@ const verifyPayment = async (req, res) => {
       const orderId = new mongoose.Types.ObjectId(
         req.body.order.createdOrder.receipt
       );
-
-      console.log("reciept", req.body.order.createdOrder.receipt);
-
-      const updateOrderDocument = await order.findByIdAndUpdate(orderId, {
-        PaymentStatus: "Paid",
-        PaymentMethod: "Online",
-      });
-      console.log("hmac success");
-      console.log("order paymment success full");
-     
     } else {
       // console.log("hmac failed");
       res.json({ failure: true });
@@ -256,7 +278,7 @@ const toOrderPage = async (req, res) => {
     const userData = await Users.findOne({ email: req.session.email });
     const userId = userData._id;
     // console.log(userId, '.............');
-    const orderData = await order.find({ UserID: userId }).populate('Items.productId').sort({OrderDate:-1});
+    const orderData = await Orders.find({ UserID: userId }).populate('Items.productId').sort({OrderDate:-1});
 
     // console.log(orderData, '..................................');
 
@@ -291,7 +313,7 @@ const cancellOrder = async (req, res) => {
   try {
     const orderId = req.params.id;
 
-    const orderData = await order.findById(orderId);
+    const orderData = await Orders.findById(orderId);
 
 
     if (orderData.Status !== 'Delivered') {
@@ -299,8 +321,15 @@ const cancellOrder = async (req, res) => {
       if (orderData.paymentMethod === 'online' || orderData.paymentMethod === 'wallet') {
         const userData = await Users.findOne({email:req.session.email});
        
-        userData.wallet += orderData.TotalPrice;
+        userData.wallet.amount += orderData.TotalPrice;
+        userData.wallet.transactions.push({
+          amount: orderData.TotalPrice,
+          transactionType: 'credit', 
+          timestamp: new Date(),
+          description: 'Order cancellation refund', 
+        });
         await userData.save();
+        console.log(userData);
       }
       await orderData.save();
 
@@ -333,7 +362,7 @@ const oneItemcancel = async (req, res) => {
     console.log(orderId, "Order ID");
     console.log(itemId, "Item ID");
     const newitemId=itemId.trim()
-    const orderData = await order.findById(orderId);
+    const orderData = await Orders.findById(orderId);
     console.log(orderData, "Order Data");
 
     if (!orderData) {
@@ -352,15 +381,8 @@ const oneItemcancel = async (req, res) => {
     console.log("oiqhpgigtqgp99494y");
 
 
-    // orderData.Items.forEach((item) => {
-
-
-    //   if (item._id.equals(new mongoose.Types.ObjectId(itemId))) {
-    //     itemToCancel = item;
-    //     console.log("<<<<<<<<<<<<", itemToCancel);
-    //   }
-    // });
-    const itemToCancel=null
+  
+    let itemToCancel=null
     orderData.Items.forEach((item,index) => {
       const itemID = item._id.toString()
       if ( itemID == newitemId ) {
@@ -410,7 +432,7 @@ const returnOrder = async (req, res) => {
     console.log(returnReason);
     console.log(returnDescription);
     const newitemId=itemId.trim()
-    const orderData = await order.findById(orderId);
+    const orderData = await Orders.findById(orderId);
     console.log(orderData,"))))))))))))))))))))))))))))))))))");
     
     
@@ -495,7 +517,7 @@ const generateInvoices = async (req, res) => {
   try {
     const { orderId } = req.body;
 
-    const orderDetails = await order.find({ _id: orderId }).populate("Items.productId");
+    const orderDetails = await Orders.find({ _id: orderId }).populate("Items.productId");
 
     console.log(orderDetails, '>>>>>>>>>>>>>>');
 

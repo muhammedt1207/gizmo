@@ -23,22 +23,21 @@ const tocoupon=async (req,res)=>{
 }
 const createCoupon= async (req,res)=>{
     try {
-        const { name, couponCode, description, maxAmount, discountAmount, couponType, startDate, endDate} = req.body;
-        console.log(".........",name,couponCode,description,maxAmount,discountAmount,couponType,startDate,endDate);
+        const { name, couponCode, maxAmount, discountAmount, couponType, startDate, endDate} = req.body;
+        console.log(".........",name,couponCode,maxAmount,discountAmount,couponType,startDate,endDate);
 
         const existingCoupon = await Coupons.findOne({ CoupenCode: couponCode });
         if (existingCoupon) {
           return res.status(400).json({ success: false, message: 'Coupon with this code already exists.' });
         }
         
-        if (!name || !couponCode || !description || isNaN(maxAmount) || isNaN(discountAmount) || !couponType || !startDate || !endDate ) {
+        if (!name || !couponCode || isNaN(maxAmount) || isNaN(discountAmount) || !couponType || !startDate || !endDate ) {
             return res.status(400).json({ success: false, message: 'Invalid input. Please provide all required fields with valid values.' });
           }
       
         const coupon = new Coupons({
             CoupenName:name,
             CoupenCode:couponCode,
-            description,
             MinAmount:maxAmount,
             DiscountAmount:discountAmount,
             couponType:couponType,

@@ -9,7 +9,7 @@ const verifyAdmin=(req,res,next)=>{
 
 const adminExist=(req,res,next)=>{
     if(req.session.adminlogged){
-        res.redirect('/')
+        res.redirect('/admin')
     }else{
      next()
     }

@@ -25,10 +25,7 @@
               <small id="couponWarning" class="form-text text-danger d-none">Invalid coupon code. Must contain at least one
                 uppercase letter, one lowercase letter, one number, and #</small>
             </div>
-            <div class="mb-3">
-              <label for="message-text" class="col-form-label">Description:</label>
-              <textarea class="form-control" id="message-text" name="description"></textarea>
-            </div>
+           
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Min Purchase Amount:</label>
               <input type="number" class="form-control" id="recipient-name" name="maxAmount" required>
@@ -165,7 +162,7 @@
          
             console.log("Coupon created..................");
             showAlert('Coupon created successfully!', 'success');
-            
+            window.location.reload()
           } else {
             console.log(".........");
             alert(`Error: ${data.message}`);

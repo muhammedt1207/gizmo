@@ -34,7 +34,7 @@
                 </button>
                 <input class="form-control text-center quantity-input" type="text" value="<%= x.quantity %>"
                   id="quantity-<%= x.productId._id %>" readonly />
-                <button class="btn btn-light border" type="button" onclick="incrementQuantity('<%= x.productId._id %>','<%= newcart._id %>')">
+                <button class="btn btn-light border" type="button" onclick="incrementQuantity('<%= x.productId._id %>','<%= newcart._id %>','<%=x.productId.AvailableQuantity%>')">
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
@@ -67,10 +67,7 @@
               <p class="mb-2">Total price:</p>
               <p class="mb-2">₹<%= subtotal %></p>
             </div>
-            <div class="d-flex justify-content-between">
-              <p class="mb-2">Discount:</p>
-              <p class="mb-2 text-success">-₹</p>
-            </div>
+            
             <div class="d-flex justify-content-between">
               <p class="mb-2">TAX:</p>
               <p class="mb-2">₹ <%= gstAmount %></p>
@@ -105,8 +102,9 @@
 
 </section>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <script>
-  
   function removeFromCart(productId, cartId) {
     console.log("this the data", productId, cartId);
     if (confirm("Are you sure you want to remove this item from your cart?")) {
@@ -123,14 +121,15 @@
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            // Reload the page or update the cart UI as needed
             window.location.reload();
           } else {
             console.error('Error removing product from the cart:', data.message);
+            showAlert('Error removing product from the cart: ' + data.message, 'danger');
           }
         })
         .catch((error) => {
           console.error('Error removing product from the cart:', error);
+          showAlert('Error removing product from the cart: ' + error.message, 'danger');
         });
     }
   }
@@ -162,10 +161,10 @@
       .then((data) => {
         console.log("Response from the server:", data);
         window.location.reload();
-
       })
       .catch((error) => {
         console.error('Error updating quantity:', error);
+        showAlert('Error updating quantity: ' + error.message, 'danger');
         window.location.reload();
       });
   }
@@ -174,16 +173,42 @@
     updateQuantity(productId, -1, cartId);
   }
 
-  function incrementQuantity(productId, cartId) {
-    updateQuantity(productId, 1, cartId);
-  }
-  function updateCartUI() {
-    var cartEmpty =` <%= product.length === 0 %>`;
+  function incrementQuantity(productId, cartId, maxQuantity) {
+    var quantityElement = document.getElementById("quantity-" + productId);
+    var currentQuantity = parseInt(quantityElement.value, 10);
 
+    if (currentQuantity < maxQuantity && currentQuantity < 10) {
+      updateQuantity(productId, +1, cartId);
+      showAlert('Quantity incremented successfully', 'success');
+    } else {
+      if (currentQuantity >= 10) {
+        showAlert('Cannot add more items. Maximum quantity reached (10).', 'warning');
+      } else {
+        showAlert('Cannot add more items. Maximum quantity reached.', 'warning');
+      }
+    }
+  }
+
+  function updateCartUI() {
+    var cartEmpty = `<%= product.length === 0 %>`;
     if (cartEmpty) {
       document.querySelector('.btn-success').disabled = true;
     }
   }
+
+  function showAlert(message, type) {
+    var alertDiv = document.createElement('div');
+    alertDiv.classList.add('alert', 'alert-' + type, 'mt-3');
+    alertDiv.setAttribute('role', 'alert');
+    alertDiv.innerHTML = message;
+
+    document.body.appendChild(alertDiv);
+
+    setTimeout(function () {
+      alertDiv.remove();
+    }, 3000);
+  }
+
   updateCartUI();
 </script>
 

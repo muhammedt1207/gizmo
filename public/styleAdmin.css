@@ -253,7 +253,7 @@ body{
    
  
    
- 
+/*  
  
    .details {
      position: relative;
@@ -263,8 +263,8 @@ body{
      grid-template-columns: 2fr 1fr;
      grid-gap: 30px;
      /* margin-top: 10px; */
+     /*
    }
-   
    .details .recentOrders {
      position: relative;
      display: grid;
@@ -323,7 +323,7 @@ body{
    }
    .details .recentOrders table tr td:nth-child(3) {
      text-align: center;
-   }
+   } */
    .status.delivered {
      padding: 2px 4px;
      background: #8de02c;

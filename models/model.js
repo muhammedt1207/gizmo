@@ -57,6 +57,10 @@ const productUploadSchema = new Schema({
     Specification4: {
       type: String,
     },
+    offer:{
+      type:Boolean,
+      default:false
+    },
   });
 
 

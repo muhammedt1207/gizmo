@@ -25,6 +25,9 @@
                 <input type="password" name="password" id="password" required onchange="validatePassword();">
                 <label>Password</label>
             </div>
+            <% if(reffer){ %>
+                <input type="hidden" name="referralId" id="Referral" value="<%=reffer%>" aria-hidden="true">
+            <% } %>
             <p class="msg" style="color: rgb(255, 74, 74);" id="passwordError"></p>
             <div class="field">
                 <input type="password" name="confirmPassword" id="confirmPassword" required onkeyup="checkPasswordMatch();">
@@ -44,7 +47,6 @@
 </div>
 
 <script>
-    // Function to toggle password visibility
     function togglePassword(inputId, toggleId) {
         var input = document.getElementById(inputId);
         var inputType = input.getAttribute("type");
@@ -59,7 +61,6 @@
         }
     }
 
-    // Function to check if the form is valid and enable/disable the "Sign Up" button
     function updateSignUpButton() {
         var username = document.getElementById("name").value;
         var email = document.getElementById("email").value;

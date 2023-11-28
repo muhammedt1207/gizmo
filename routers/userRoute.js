@@ -60,7 +60,7 @@ user.get("/user/profile",userAuth.verifyUser,async(req,res)=>{
     const userData=await Users.findOne({email:req.session.email})
     console.log(userData);
     // const adress=userData.address;
-    res.render('user/profile',{title:"profile",userData})
+    res.render('user/profile',{title:"profile",userData ,user:userData})
 })
 //add Address
 user.post('/user/addAddress',userAuth.verifyUser,userControl.addAddress)
@@ -77,7 +77,6 @@ user.post('/user/NewEditAddress/:id',userAuth.verifyUser,userControl.newEditAddr
 user.post('/user/addToCart',userAuth.verifyUser,cartController.addToCart)
 user.post('/user/removeFromCart/:id',userAuth.verifyUser,cartController.removeCart)
 user.post('/updatequantity',userAuth.verifyUser,cartController.updateQuantity)
-user.get('/user/toCheckout',cartAuth,userAuth.verifyUser,orderController.toCheckout)
 user.get('/user/AddToCart/:id',cartController.addlistToCart)
 
 
@@ -93,6 +92,7 @@ user.get('/all-products',filterController.allproduct)
 
 
 //order
+user.get('/user/toCheckout',cartAuth,userAuth.verifyUser,orderController.toCheckout)
 user.post('/user/placeOrder',userAuth.verifyUser,orderController.placeOrder)
 user.get('/user/toOrderPage',userAuth.verifyUser,orderController.toOrderPage)
 user.get('/user/toorderDetials/:id',userAuth.verifyUser,orderController.orderDetails)
@@ -113,7 +113,7 @@ user.post('/verify-payment',orderController.verifyPayment)
 user.post('/apply-coupon',orderController.useCoupon)
 
 user.get('/user/coupon',userControl.toCoupons)
-
+user.get("/user/Wallet",userControl.ToWalletHistory)
 user.post('/user/search',userControl.productSearch)
 
 

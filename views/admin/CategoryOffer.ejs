@@ -1,0 +1,154 @@
+<%-include('./partial/header')%>
+    <h1>Category Offer</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        data-bs-whatever="@getbootstrap">Add Coupon</button>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="couponForm">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Select Category</label>
+                            <select class="form-control" id="categorySelect" name="category" required>
+                                <option value="" selected disabled>Select a Category</option>
+                                <% categoryData.forEach(category=> { %>
+                                    <option value="<%= category._id %>">
+                                        <%= category.CategoryName %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                            <span class="error" id="categoryError" style="color: red;"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="percentage" class="col-form-label">Percentage</label>
+                            <input type="number" class="form-control" id="percentage" name="percentage">
+                            <span class="error" id="percentageError" style="color: red;"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="startDate" class="col-form-label">Start Date:</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                            <span class="error" id="startDateError" style="color: red;"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="endDate" class="col-form-label">End Date:</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" required>
+                            <span class="error" id="endDateError" style="color: red;"></span>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row p-3">
+
+        <% offerData.forEach((data)=>{%>
+        <div class="col-md-4">
+            <div class="card mb-4 shadow">
+                <div class="card-body text-center bg-light">
+                    <h5 class="card-title">
+                        <img src="/image/pngfind.com-offer-tag-icon-png-6701318.png" style="width: 150px; color: brown;"
+                            alt="">
+                    </h5>
+                    <h6 class="card-subtitle mb-2 text-muted"><b>
+                        </b></h6>
+                    <p class="card-text">Category Name :<b><%=data.categoryName%></b>
+                    </p>
+                    <p class="card-text">Discount Percentage: <b><%=data.percentage%>%</b>
+                    </p>
+                    <p class="card-text">Coupon Type : <b><%= new Date(data.startDate).toLocaleDateString() %></b>
+                    </p>
+                    <p class="card-text">End Date :<b><%= new Date(data.expireDate).toLocaleDateString() %></b>
+                    </p>
+                    <a href="#" class="text-white" onclick="return window.confirm('Do you want to delete the Coupon?')">
+                        <i class="fa-solid fa-trash fa-xl" style="color: #000000;"></i>
+                    </a>
+                    <!-- <a href="">&nbsp;<i class="fa-solid fa-pen-to-square fa-lg" style="color: #000000;"></i></a> -->
+                </div>
+            </div>
+        </div>
+        <% }) %>
+
+    </div>
+    <script>
+        function submitForm() {
+            const categorySelect = document.getElementById('categorySelect');
+            const percentage = document.getElementById('percentage');
+            const startDate = document.getElementById('startDate');
+            const endDate = document.getElementById('endDate');
+
+            const currentDate = new Date().toISOString().split('T')[0];
+
+            document.getElementById('categoryError').innerText = '';
+            document.getElementById('percentageError').innerText = '';
+            document.getElementById('startDateError').innerText = '';
+            document.getElementById('endDateError').innerText = '';
+
+            let isValid = true;
+
+            if (!categorySelect.value) {
+                document.getElementById('categoryError').innerText = 'Category is required';
+                isValid = false;
+            }
+
+            if (isNaN(percentage.value) || percentage.value < 1 || percentage.value > 99) {
+                document.getElementById('percentageError').innerText = 'Percentage must be a number between 1 and 99';
+                isValid = false;
+            }
+
+            if (startDate.value < currentDate) {
+                document.getElementById('startDateError').innerText = 'Start date must be greater than the current date';
+                isValid = false;
+            }
+
+            if (endDate.value <= startDate.value) {
+                document.getElementById('endDateError').innerText = 'End date must be greater than the start date';
+                isValid = false;
+            }
+
+            if (isValid) {
+            const data = {
+                category: categorySelect.value,
+                percentage: percentage.value,
+                startDate: startDate.value,
+                endDate: endDate.value
+            };
+            console.log(data)
+                fetch('/admin/addOffer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json(); 
+                        } else {
+                            throw new Error('Failed to submit form');
+                        }
+                    })
+                    .then(data => {
+                        console.log("Response from server:", data);
+                        alert('Coupon added successfully');
+                    })
+                    .catch(error => {
+                        console.error('Form submission error:', error);
+                        // Handle error if needed
+                    });
+            }
+        }
+    </script>
+
+
+    <%-include('./partial/footer')%>

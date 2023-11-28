@@ -307,8 +307,8 @@ a#special-link {
 h1, h2, h3, p {
   font-family: 'Poppins', sans-serif;
 }
-.Newproduct :hover{
-  box-shadow: 10px 15px 25px 0 rgba(0,0,0,.2);
+.Newproduct:hover {
+  box-shadow: 10px 15px 25px 0 rgba(0, 0, 0, 0.2);
   /*transform: rotate(45deg) translate(450%, 0);*/
-  transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition:  0.5s cubic-bezier(0.645, 0.045, 0.355, 1);
 }

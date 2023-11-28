@@ -89,23 +89,24 @@
   </div>
   <hr />
   <!-- Pagination -->
-  <nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3" id="pagination-navbar">
-    <ul class="pagination">
-        <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
-            <a class="page-link" href="<%= page <= 1 ? '#' : '/user/toProduct-list?page=' + (page - 1) %>" style="color: black;" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        <li class="page-item">
-            <a class="page-link" href="/user/toProduct-list?page=<%= page %>" style="color: black"><%= page %></a>
-        </li>
-        <li class="page-item <%= page >= Count ? 'disabled' : '' %>">
-            <a class="page-link" href="<%= page >= Count ? '#' : '/user/toProduct-list?page=' + (page + 1) %>" style="color: black;" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-    </ul>
+<nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3" id="pagination-navbar">
+  <ul class="pagination">
+      <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+          <a class="page-link" href="<%= page <= 1 ? '#' : '/user/toProduct-list?page=' + (page - 1) %>" style="color: black;" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+          </a>
+      </li>
+      <li class="page-item">
+          <a class="page-link" href="/user/toProduct-list?page=<%= page %>" style="color: black"><%= page %></a>
+      </li>
+      <li class="page-item <%= page >= Count ? 'disabled' : '' %>">
+          <a class="page-link" href="<%= page >= Count ? '#' : '/user/toProduct-list?page=' + (page + 1) %>" style="color: black;" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+          </a>
+      </li>
+  </ul>
 </nav>
+
 </section>
 <script>
    const brandSelect = document.getElementById('brandSelect');
@@ -162,7 +163,7 @@
           .filter((x) => x.status === true && x.AvailableQuantity > 0)
           .forEach((x) => {
             const productElement = document.createElement('div');
-            productElement.innerHTML = '<a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a>';
+            productElement.innerHTML = '<br><a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a>';
             productList.appendChild(productElement);
           });
       })

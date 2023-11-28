@@ -173,8 +173,8 @@
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet" />
-                 <label class="form-check-label" data-walletAmount="<%=userData.wallet%>" id="<%=TotalPrice%>" for="wallet">
-              Pay Using Wallet (Available Wallet Balance: <%=userData.wallet%>)
+                 <label class="form-check-label" data-walletAmount="<%=userData.wallet.amount%>" id="<%=TotalPrice%>" for="wallet">
+              Pay Using Wallet (Available Wallet Balance: <%=userData.wallet.amount%>)
           </label>
               </div>
 

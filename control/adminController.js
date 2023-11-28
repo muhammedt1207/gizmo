@@ -152,10 +152,11 @@ const addProduct = async (req, res) => {
         const allfiles = req?.files;
         const images = req.files;
         let allImage = [];
-        for (let i = 0; i < images.length; i++) {
-            allImage[i] = images[i].filename
+        for (const fieldImages of Object.values(images)) {        
+            for (const image of fieldImages) {
+                allImage.push(image.filename);             
+            }
         }
-
 
 
 
@@ -518,7 +519,7 @@ const changeBanner = async (req, res) => {
             return res.redirect('/banner');
         }
         const imageBuffer = fs.readFileSync(uploadedImage.path);
-        
+
         const croppedImageBuffer = await sharp(imageBuffer)
             .resize({ width: 750, height: 279, fit: sharp.fit.cover })
             .toBuffer();
@@ -557,7 +558,7 @@ const changeBanner = async (req, res) => {
 
 const toReturnPage = async (req, res) => {
     console.log("return page");
-    const returns = await Returns.find()
+    const returns = await Returns.find().sort({returnedDate:-1})
     res.render('admin/return', { returns })
 }
 
@@ -570,12 +571,22 @@ const verifyReturn = async (req, res) => {
         returnOrder.Status = "Verified"
         returnOrder.save()
         console.log("return status shanged.....", returnOrder);
-        const User = await Users.findByIdAndUpdate(
+        const updatedUser = await Users.findByIdAndUpdate(
             { _id: returnOrder.userId },
-            { $inc: { wallet: returnOrder.price } },
+            {
+              $inc: { 'wallet.amount': returnOrder.price },
+              $push: {
+                'wallet.transactions': {
+                  amount: returnOrder.price,
+                  transactionType: 'credit', 
+                  timestamp: new Date(),
+                  description: 'Return order refund', 
+                },
+              },
+            },
             { new: true }
-        );
-        console.log("user wallet updated...........", User);
+          );
+        console.log("user wallet updated...........", updatedUser);
         if (!returnOrder) {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
@@ -590,26 +601,13 @@ const verifyReturn = async (req, res) => {
 const returnView = async (req, res) => {
     try {
         const returnId = req.params.id;
-        // if (!mongoose.Types.ObjectId.isValid(orderId)) {
-        //     // Handle invalid ObjectId here (e.g., return an error response)
-        //     return res.status(400).send('Invalid ObjectId');
-        // }
+     
         const returnData=await Returns.findById(returnId)
         const orderId=returnData.orderId
         console.log(orderId);
-        const orderData = await orders.findOne({ _id: orderId }).populate('Items.productId');
+        const orderData = await orders.findOne({ _id: orderId }).populate('Items.productId').sort({returnedDate:-1});
         console.log(">>>>>>>>>>>>>", orderData);
-        // const addressId = new mongoose.Types.ObjectId(orderData.Address);
-        // console.log("@@@@@@@@@@",orderData.UserID);
-        // const userData = await users.findOne({ _id: orderData.UserID });
 
-        // if (!userData) {
-        //     console.error('User not found');
-        //     return res.render('admin/404');
-        // }
-        // console.log("^^^^^^",userData);
-        // const Address = userData.address.find((address) => address._id.equals(addressId));
-        // console.log("************",Address);
 
         res.render('admin/OrderDetialsView', { orderData,returnData })
 
@@ -684,7 +682,7 @@ module.exports = {
     orderStatus,
     orderview,
     deleteImage,
-    Addbanner,
+    // Addbanner,
     toReturnPage,
     verifyReturn,
     toCoupens,

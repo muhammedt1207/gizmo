@@ -22,7 +22,10 @@ const OrdersSchema = new Schema({
     mobileNumber:{type:Number}
 },
   paymentMethod:{type : String},
-  paymentStatus:{type : String},
+  paymentStatus:{type : String,
+    default:"Pending"
+  
+  },
   CoupenID: { type: Schema.Types.ObjectId },
   TotalPrice: { type: Number },
   OrderDate: { type: Date },

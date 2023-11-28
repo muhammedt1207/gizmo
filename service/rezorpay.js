@@ -5,7 +5,7 @@ require("dotenv").config();
 
 module.exports = {
     createRazorpayOrder:(order)=>{
-    return new Promise ((resolve,reject)=>{
+    return new Promise ((resolve,reject)=>{    
         const razorpay = new Razorpay({
             key_id:  process.env.KEY_ID,
             key_secret:  process.env.KEY_SECRET
@@ -19,7 +19,6 @@ module.exports = {
               currency: 'INR',
               receipt: order.receipt,
           });
-          console.log(razorpayOrder);
           resolve(razorpayOrder) ;
       })
 }
