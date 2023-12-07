@@ -13,10 +13,11 @@
         </div>
         <div class="modal-body">
             <form id="salesReport" method="post" action="/admin/download-sales-report">
-            <label for="startDate">Start Date:</label>
-            <input type="date" name="startDate" id="startDate" required>
-            <label for="endDate">End Date:</label>
-            <input type="date" name="endDate" id="endDate" required>
+                <label for="startDate">Start Date:</label>
+                <input type="date" name="startDate" id="startDate" required onchange="return handleDateChange()">
+                <label for="endDate">End Date:</label>
+                <input type="date" name="endDate" id="endDate" required onchange="return handleDateChange()">
+                <div style="color: red;" id="dateAlert"></div>
            
             <div class="row mt-5">
                 <div class="col-sm-6"> 
@@ -85,6 +86,10 @@
                                         <canvas id="salesGraphCount"></canvas>
                                        
                                       </div>
+                                      <div class="col-lg-12">
+                                        <canvas id="categoryChart"></canvas>
+                                    </div>
+                                    
                                   </div>
                                 </div>
                               </div>
@@ -164,6 +169,28 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function handleDateChange() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const alertArea = document.getElementById('dateAlert');
+            const submitButton = document.getElementById('generateReportBtn')
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+    
+            const parsedStartDate = new Date(startDateInput.value);
+            const parsedEndDate = new Date(endDateInput.value);
+            console.log(currentDate,parsedEndDate,parsedStartDate,'======================');
+            if (parsedStartDate > currentDate || parsedEndDate > currentDate) {
+        submitButton.disabled = true;
+        alertArea.innerHTML = '<div class="alert alert-danger mt-2" role="alert">Please select a date less than or equal to the current date.</div>';
+    } else {
+        submitButton.disabled = false;
+        alertArea.innerHTML = '';
+    }
+        }
+    </script>
+    
               
 <script>
 
@@ -244,14 +271,15 @@ async function updateSalesGraph(timeInterval) {
     if (window.myChart2) {
         window.myChart2.destroy();
     }
-
+    const last5DaysCount = salesData.labelsByCount.slice(-5);
+    const last5DaysCountData = salesData.dataByCount.slice(-5);
     window.myChart1 = new Chart(Amount, {
         type: "line",
         data: {
-            labels: salesData.labelsByCount,
+            labels: last5DaysCount,
             datasets: [{ 
                 label: "Sales by orders",
-                data: salesData.dataByCount,
+                data: last5DaysCountData,
                 borderColor: "red",
                 fill: false
             }]
@@ -262,14 +290,17 @@ async function updateSalesGraph(timeInterval) {
     });
     
     const barColors = ["green"];
+    const last5DaysLabels = salesData.labelsByAmount.slice(-5);
+    const last5DaysData = salesData.dataByAmount.slice(-5);
+    console.log('lasr 5 days data',last5DaysData,'===');
     window.myChart2 = new Chart(Count, {
         type: "bar",
         data: {
-            labels: salesData.labelsByAmount,
+            labels: last5DaysLabels,
             datasets: [
                 {
                     label: "Sales by Amount",
-                    data: salesData.dataByAmount,
+                    data: last5DaysData,
                     backgroundColor: barColors,
                     borderColor: "white",
                     borderWidth: 3,
@@ -281,7 +312,8 @@ async function updateSalesGraph(timeInterval) {
                 x: [{
                     grid: {
                         display: true
-                    }
+                    },
+                    maxBarThickness: 5,
                 }],
                 y: [{
                     beginAtZero: true,
@@ -290,6 +322,36 @@ async function updateSalesGraph(timeInterval) {
             }
         },
     });
+
+    const categoryChartCanvas = document.getElementById('categoryChart');
+
+const categoryColors = ['#f7464a', '#4d5360', '#fdb45c', '#46bfbd', '#949fb1'];
+
+const categoryChart = new Chart(categoryChartCanvas.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+        labels: salesData.labelsByCategory,
+        datasets: [{
+            data: salesData.dataByCategory,
+            backgroundColor: categoryColors,
+        }],
+    },
+    options: {
+        legend: {
+            position: 'right',
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        aspectRatio: 1, // Adjust this value to set the aspect ratio as needed
+    },
+});
+
+categoryChartCanvas.style.height = '100vh'; // Set the height after initializing the chart
+
+
+
+
+
 
 }
 

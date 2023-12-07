@@ -28,10 +28,12 @@ const createCoupon= async (req,res)=>{
 
         const existingCoupon = await Coupons.findOne({ CoupenCode: couponCode });
         if (existingCoupon) {
+            console.log("coupon already exist");
           return res.status(400).json({ success: false, message: 'Coupon with this code already exists.' });
         }
         
         if (!name || !couponCode || isNaN(maxAmount) || isNaN(discountAmount) || !couponType || !startDate || !endDate ) {
+            console.log("invalid input....in coupon");
             return res.status(400).json({ success: false, message: 'Invalid input. Please provide all required fields with valid values.' });
           }
       
@@ -45,8 +47,8 @@ const createCoupon= async (req,res)=>{
             EndDate:endDate,
           
           });
-      console.log("coupen saving.....");
           await coupon.save();
+      console.log("coupen saving.....");
           console.log("coupon saved..................")
           res.json({ success: true, message: 'Coupon created successfully' });
 
@@ -70,8 +72,35 @@ const deleteCoupon = async (req, res) => {
     }
 };
 
+
+const editCoupon=async (req,res)=>{
+    try {
+        console.log("edit coupon on proccess");
+        const couponId=req.params.id
+        const {endDate,startDate,discountAmount,maxAmount,couponCode,couponName}=req.body
+        const changedCoupon = await Coupons.findByIdAndUpdate(
+            { _id: couponId },
+            {
+                $set: {
+                    CoupenName: couponName,
+                    CoupenCode: couponCode,
+                    MinAmount: maxAmount,
+                    DiscountAmount: discountAmount,
+                    StartDate: startDate,
+                    EndDate: endDate,
+                }
+            }
+        );
+        console.log(changedCoupon,'!!!!!!!!!!!!!!!!!!!!!');
+        res.json({success:true,messsage:"coupon edit success"})
+    } catch (error) {
+        console.log(error,'error happened in copon edit');
+        res.render('admin/404')
+    }
+}
 module.exports={
     createCoupon,
     tocoupon,
-    deleteCoupon
+    deleteCoupon,
+    editCoupon
 }

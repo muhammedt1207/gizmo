@@ -1,4 +1,5 @@
 <%- include('./partial/dataheader') %>
+<%-include('./partial/header')%>
 
 <section class="h-100 gradient-custom shadow">
     <div class="container py-5 h-100">
@@ -6,7 +7,7 @@
             <div class="col-lg-10 col-xl-8">
                 <div class="card shadow" style="border-radius: 10px;">
                     <div class="card-header px-4 py-5">
-                        <h5 class=" mb-0" style="color: rgb(161, 206, 0);"><b>Available Balance, $<%= userData.wallet.amount %></b></h5>
+                        <h5 class=" mb-0" style="color: rgb(161, 206, 0);"><b>Available Balance, $<%= userData.wallet.amount.toFixed(2) %></b></h5>
                     </div>
                     <div class="card-body">
                         <h3 class="card-subtitle mb-2 text-muted text-center"><b>Wallet History</b></h3>
@@ -18,7 +19,7 @@
                                     <% if (transaction.transactionType === 'credit') { %>
                                         +<%= transaction.amount %>
                                     <% } else if (transaction.transactionType === 'debit') { %>
-                                        -<%= transaction.amount %>
+                                        -<%= transaction.amount.toFixed(2) %>
                                     <% } %>
                                 </p>
                                 <p class="text-muted mb-0"><%= new Date(transaction.timestamp).toLocaleString() %></p>

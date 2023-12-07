@@ -48,7 +48,7 @@ module.exports = {
           orders.forEach(order => {
           // console.log(orders);
             order.Items.forEach(item => {
-              // console.log(item);
+              console.log(item,'------------------');
               worksheet.addRow({
                 orderId: order._id,
                 productName: item.productId.ProductName,

@@ -73,7 +73,7 @@ const filter = async (req, res) => {
       filters.BrandName = brand;
     }
 
-    console.log("............",filters,priceRanges);
+    // console.log("............",filters,priceRanges);
     if (priceRanges) {
       const priceRangesArray = priceRanges.split(','); 
       // console.log("----------",priceRanges,'.........',priceRangesArray);

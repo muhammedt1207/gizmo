@@ -57,9 +57,12 @@ const productUploadSchema = new Schema({
     Specification4: {
       type: String,
     },
-    offer:{
+    CatogoryOffer:{
       type:Boolean,
       default:false
+    },
+    offer:{
+      type:Number,
     },
   });
 

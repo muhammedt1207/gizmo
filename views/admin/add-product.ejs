@@ -7,18 +7,19 @@
                 <h1 class="mt-5">Add Product</h1>
                 <br>
                 <form action="/admin/addproduct" method="post" id="sample" enctype="multipart/form-data"
-                    onsubmit="return validateForm() " class="bg-white">
+                    onchange="return validateForm() " class="bg-white">
                     <div class="form-group">
                         <label for="productName">Product Name : </label>
                         <input type="text" name="ProductName" class="form-control bg-light" id="productName"
                             placeholder="Product name" required />
-                        <p class="" id=""></p>
+                        <p style="color: rgb(252, 56, 56);" id="productNameError"></p>
                     </div><br>
 
                     <div class="form-group">
                         <label for="productDescription">Product Description:</label>
                         <textarea class="form-control bg-light" name="Description" id="productDescription" rows="4"
                             placeholder="Enter product description" required></textarea>
+                            <p style="color: rgb(252, 56, 56);" id="productNameError"></p>
                     </div>
                     <br>
                     <div class="form-group">
@@ -46,7 +47,7 @@
                     <div class="col-md-3">
                         <div class="custom-file">
                             <label class="btn btn-rounded border rounded custom-file-label" for="imageInput1">
-                                <input type="file" class="custom-file-input" name="main" style="display: none;" id="imageInput1" accept="image/*">
+                                <input type="file" class="custom-file-input" name="main" style="display: none;" id="imageInput1" accept="image/*" required>
                                 Main Image
                             </label>
                         </div>
@@ -57,7 +58,7 @@
                     <div class="col-md-3">
                         <div class="custom-file">
                             <label class="btn btn-rounded border rounded custom-file-label" for="imageInput2">
-                                <input type="file" class="custom-file-input" name="image1" style="display: none;" id="imageInput2" accept="image/*">
+                                <input type="file" class="custom-file-input" required name="image1" style="display: none;" id="imageInput2" accept="image/*">
                                 Add Image
                             </label>
                         </div>
@@ -67,7 +68,7 @@
                     <div class="col-md-3">
                         <div class="custom-file">
                             <label class="btn btn-rounded border rounded custom-file-label" for="imageInput3">
-                                <input type="file" class="custom-file-input" name="image2" style="display: none;" id="imageInput3" accept="image/*">
+                                <input type="file" class="custom-file-input" required name="image2" style="display: none;" id="imageInput3" accept="image/*">
                                 Add Image
                             </label>
                         </div>
@@ -77,7 +78,7 @@
                     <div class="col-md-3">
                         <div class="custom-file">
                             <label class="btn btn-rounded border rounded custom-file-label" for="imageInput4">
-                                <input type="file" class="custom-file-input" name="image3" style="display: none;" id="imageInput4" accept="image/*">
+                                <input type="file" class="custom-file-input" required name="image3" style="display: none;" id="imageInput4" accept="image/*">
                                 Add Image
                             </label>
                         </div>
@@ -90,12 +91,14 @@
                             <label for="basePrice">Base Price:</label>
                             <input type="number" name="Price" class="form-control bg-light" id="basePrice"
                                 placeholder="Enter base price" required />
+                                <p style="color: rgb(252, 56, 56);" id="basePriceError"></p>
                         </div>
                         <br>
                         <div class="form-group">
                             <label for="discountAmount">Discount Amount:</label>
                             <input type="number" name="DiscountAmount" class="form-control bg-light" id="discountAmount"
                                 placeholder="Enter discount amount" required />
+                                <p style="color: rgb(252, 56, 56);" id="discountAmountError"></p>
                         </div>
                     </div>
                     <div class="border p-3 mb-3">
@@ -106,6 +109,7 @@
                             <label for="quantity">Quantity:</label>
                             <input type="number" name="AvailableQuantity" class="form-control bg-light" id="quantity"
                                 placeholder="Enter quantity" required />
+                                <p style="color: rgb(252, 56, 56);" id="quantityError"></p>
                         </div>
                     </div>
             </div>
@@ -145,66 +149,93 @@
                             required />
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary ms-3">Add Product</button>
+                <button type="submit" class="btn btn-primary ms-3" id="submitButton">Add Product</button>
             </div>
             </form>
         </div>
     </main>
+    <div id="customAlertModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Custom Alert</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="customAlertMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const form = document.getElementById("sample");
-    
-            form.addEventListener("submit", function (event) {
-                console.log("form submitted");
-    
-                const requiredFields = {
-                    ProductName: "Product Name is required.",
-                    Category: "Category is required.",
-                    Specification1: "Highlight-1 is required.",
-                    Specification2: "Highlight-2 is required.",
-                    Specification3: "Highlight-3 is required.",
-                    Specification4: "Highlight-4 is required.",
-                    Description: "Description is required.",
-                    Price: "Price must be a positive number.",
-                    AvailableQuantity: "Stock must be a non-negative integer.",
-                };
-    
-                for (const field in requiredFields) {
-                    const input = document.querySelector(`[name="${field}"]`);
-                    if (!input.value.trim()) {
-                        alert(requiredFields[field]);
-                        event.preventDefault();
-                        return;
-                    }
-                }
-    
-                const priceInput = document.querySelector('input[name="Price"]');
-                const stockInput = document.querySelector('input[name="AvailableQuantity"]');
-                const discountAmountInput = document.querySelector('input[name="DiscountAmount"]');
-    
-                if (isNaN(parseFloat(priceInput.value)) || parseFloat(priceInput.value) <= 0) {
-                    alert("Price must be a positive number.");
-                    event.preventDefault();
-                    return;
-                }
-    
-                if (isNaN(parseInt(stockInput.value)) || parseInt(stockInput.value) < 0) {
-                    alert("Stock must be a non-negative integer.");
-                    event.preventDefault();
-                    return;
-                }
-    
-                if (isNaN(parseFloat(discountAmountInput.value)) || parseFloat(discountAmountInput.value) < 0) {
-                    alert("Discount Amount must be a positive number.");
-                    event.preventDefault();
-                    return;
-                }
-            });
+        document.addEventListener("DOMContentLoaded", function() {
+          document.getElementById('productName').addEventListener('input', validateForm);
+          document.getElementById('basePrice').addEventListener('input', validateBasePrice);
+          document.getElementById('discountAmount').addEventListener('input', validateDiscountAmount);
+          document.getElementById('quantity').addEventListener('input', validateQuantity);
         });
-    </script>
-    
+      
+        function validateForm() {
+          var productName = document.getElementById('productName').value.trim();
+          var submitButton = document.getElementById('submitButton');
+      
+          if (productName === '') {
+            document.getElementById('productNameError').innerHTML = 'Product name is required.';
+            submitButton.disabled = true;
+          } else {
+            document.getElementById('productNameError').innerHTML = '';
+            submitButton.disabled = false;
+          }
+        }
+      
+        function validateBasePrice() {
+          var basePrice = parseFloat(document.getElementById('basePrice').value);
+          var discountAmount = parseFloat(document.getElementById('discountAmount').value);
+      
+          if (basePrice > 1 && !isNaN(basePrice)) {
+            document.getElementById('basePriceError').innerHTML = '';
+            document.getElementById('discountAmountError').innerHTML = '';
+            document.getElementById('submitButton').disabled = false;
+          } else {
+            document.getElementById('basePriceError').innerHTML = 'Base price must be greater than 1';
+            document.getElementById('discountAmountError').innerHTML = '';
+            document.getElementById('submitButton').disabled = true;
+          }
+        }
+      
+        function validateDiscountAmount() {
+          var basePrice = parseFloat(document.getElementById('basePrice').value);
+          var discountAmount = parseFloat(document.getElementById('discountAmount').value);
+      
+          if (discountAmount >= 1 && discountAmount <= basePrice) {
+            document.getElementById('discountAmountError').innerHTML = '';
+            document.getElementById('submitButton').disabled = false;
+          } else {
+            document.getElementById('discountAmountError').innerHTML = 'Discount amount must be greater than 1 and less than or equal to base price.';
+            document.getElementById('submitButton').disabled = true;
+          }
+        }
+      
+        function validateQuantity() {
+          var quantity = parseInt(document.getElementById('quantity').value);
+      
+          if (quantity > 1 && !isNaN(quantity)) {
+            document.getElementById('quantityError').innerHTML = '';
+            document.getElementById('submitButton').disabled = false;
+          } else {
+            document.getElementById('quantityError').innerHTML = 'Quantity must be greater than 1.';
+            document.getElementById('submitButton').disabled = true;
+          }
+        }
+      </script>
     <script>
-        // JavaScript to handle image preview and delete
         document.addEventListener("DOMContentLoaded", function () {
             const inputIds = ["1", "2", "3", "4"];
     
@@ -224,7 +255,6 @@
                         };
                         reader.readAsDataURL(file);
                     } else {
-                        // Clear preview if no image is selected
                         preview.src = '';
                         preview.alt= '';
                         deleteButton.style.display = 'none';
@@ -238,6 +268,56 @@
                 });
             });
         });
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const inputIds = ["1", "2", "3", "4"];
+    
+        inputIds.forEach((id) => {
+            const input = document.getElementById(`imageInput${id}`);
+            const preview = document.getElementById(`imagePreview${id}`);
+            const deleteButton = document.getElementById(`deleteButton${id}`);
+    
+            input.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+    
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        preview.src = event.target.result;
+                        deleteButton.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    
+                    preview.src = '';
+                    preview.alt= '';
+                    deleteButton.style.display = 'none';
+                }
+            });
+        });
+    
+n
+        document.getElementById('sample').addEventListener('submit', function(event) {
+            const imageInputs = inputIds.map(id => document.getElementById(`imageInput${id}`));
+            const hasEmptyImage = imageInputs.some(input => !input.files[0]);
+    
+            if (hasEmptyImage) {
+               
+                const customAlertMessage = document.getElementById('customAlertMessage');
+                customAlertMessage.textContent = 'Please select images for all fields.';
+                
+               
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please select images for all fields.',
+            });
+
+            event.preventDefault(); 
+            }
+        });
+    });
     </script>
     
     <%- include('./partial/footer') %>

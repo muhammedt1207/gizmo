@@ -47,7 +47,15 @@
       form.addEventListener('submit', async function (event) {
         event.preventDefault();
 
-        const categoryName = document.getElementById('CategoryName').value;
+        const categoryNameInput = document.getElementById('CategoryName');
+        const categoryName = categoryNameInput.value.trim();
+        if (!categoryName) {
+          errorElement.textContent = 'Category name cannot be empty.';
+          setTimeout(() => {
+            errorElement.textContent = '';
+          }, 1000);
+          return;
+        }
 
         try {
           const response = await fetch('/admin/add-category', {

@@ -1,5 +1,22 @@
 <%- include ('partial/dataheader') -%>
+<style>
+    .field {
+    position: relative;
+}
 
+.password-input {
+    padding-right: 40px; /* Adjust the padding to leave space for the eye icon */
+}
+
+.eye-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Adjust the right distance as needed */
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+</style>
 <div class="text-center center-div d-flex align-items-center boarder-2 justify-content-center" id="LoginPage">
     <div class="wrapper text-center center-div align-items-center justify-content-center">
         <div class="title-one">
@@ -23,6 +40,9 @@
             <p class="msg" id="emailError" style="color: rgb(255, 74, 74);"></p>
             <div class="field">
                 <input type="password" name="password" id="password" required onchange="validatePassword();">
+                <span class="eye-icon" onclick="togglePassword('password', 'eye-icon')">
+                    <i class="fas fa-eye" id="eye-icon"></i>
+                </span>
                 <label>Password</label>
             </div>
             <% if(reffer){ %>
@@ -81,8 +101,8 @@
         if (!username) {
             usernameError.textContent = "Full Name is required.";
             isValid = false;
-        } else if (!/^[a-zA-Z ]{6,}$/.test(username)) {
-            usernameError.textContent = "Full Name should contain only letters and spaces, and be at least 6 characters long.";
+        } else if (!/^[a-zA-Z ]{3,}$/.test(username)) {
+            usernameError.textContent = "Full Name should contain only letters and spaces, and be at least 3 characters long.";
             isValid = false;
         }
 

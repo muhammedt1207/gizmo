@@ -1,5 +1,13 @@
 <%- include('./partial/header') -%>
+<style>
+.carousel-inner .carousel-item {
+  position: relative;
+}
 
+.carousel-inner .carousel-item img {
+  z-index: 1; /* Set your desired z-index value */
+}
+</style>
 <!-- <nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded">
     <div class="container">
       <a class="navbar-brand" href="#"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;" alt="logo"></a>
@@ -51,6 +59,7 @@
     </div> -->
     <div class="carousel-inner">
       <div class="carousel-item active">
+        <!-- <img src="/image/A1R_opening (1).mp4" alt=""> -->
         <img src="/banner-image/cropped_images/<%=banner.image%>" class="d-block w-100" alt="...">
       </div>
       <!-- <div class="carousel-item">
@@ -72,7 +81,7 @@
   <br><br>
   <br>
   <br>
-  <h1 style="text-align:center "><b>NEW ARRIVALS</b></h1>
+  <h1 style="text-align:center;  font-family:Poppins;"><b>NEW ARRIVALS</b></h1>
   <div class="container">
     
     <div class="row row-cols-1 row-cols-md-4 g-3 justify-content-center ">
@@ -86,6 +95,9 @@
                 <div class="card-body text-center">
                     <h5 class="card-title"><%= x.ProductName %></h5>
                     <p>₹ <%= x.Price %></p>
+                    <% if (x.offer) { %>
+                      <span class="badge bg-success">Offer: <%= x.offer %></span>
+                  <% } %>
                 </div>
             </div>
         </div>
@@ -94,7 +106,7 @@
   </a>
 </div>
 <div class="text-center pt-3">
-  <a href="/user/toProduct-list"><button type="button" class="btn btn-primary btn-lg">Product View</button></a>
+  <a href="/user/toProduct-list"><button type="button" class="btn btn-primary btn-lg">Product View&nbsp;<i class="fa-solid fa-circle-arrow-right"></i></button></a>
 </div>
 <div class="benefit">
   <div class="container">
@@ -138,4 +150,33 @@
 </div>
 </div>
 </div>
+<% if (bestSeller && bestSeller.length > 0) { %>
+<h1 class="p-5" style="text-align:center; font-family:Poppins;"><b>BEST SELLING PRODUCTS</b></h1>
+<div class="container">
+  <div class="row row-cols-1 row-cols-md-4 g-3 justify-content-center">
+      <% bestSeller.filter(x => x.productDetails.status === true && x.productDetails.AvailableQuantity > 0).forEach((x) => { %>
+        <div class="col Newproduct">
+          <a id="special-link" href="/user/toProductView/<%= x._id %>">
+            <div class="card h-100 border-0">
+              <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                <img src="/product-image/<%= x.productDetails.images[0] %>" class="card-img-top" style="height: 85px; width: 40%;" alt="image">
+              </div>
+              <div class="card-body text-center">
+                <h5 class="card-title"><%= x.productDetails.ProductName %></h5>
+                <p>₹ <%= x.productDetails.Price %></p>
+                <% if (x.productDetails.offer) { %>
+                  <span class="badge bg-success">Offer: <%= x.productDetails.offer %></span>
+                <% } %>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+  <% } else { %>
+    <p>No best-selling products available.</p>
+  <% } %>
+
+
 <%- include('./partial/contentFooter')-%>

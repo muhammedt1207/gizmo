@@ -11,7 +11,7 @@ const Users = require("../models/users");
 const Banner=require("../models/banner")
 const Coupon=require("../models/coupon") 
 const jwt=require('jsonwebtoken')
-
+const Order=require('../models/orders')
 const tohome = async (req,res)=>{
     if(req.session.logged){
         res.redirect('/user/home');
@@ -19,34 +19,58 @@ const tohome = async (req,res)=>{
         const user=await Users.findOne({email:req.session.email})
         const data= await productUpload.find()
         const banner=await Banner.findOne({}, {}, { sort: { date: -1 } })
-        res.render("./user/index",{title:"Login",err:false, data,banner,user});
+        
+      const bestSeller = await Order.aggregate([
+        {
+          $unwind: "$Items",
+        },
+        {
+          $group: {
+            _id: "$Items.productId",
+            totalCount: { $sum: "$Items.quantity" },
+          },
+        },
+        {
+          $sort: {
+            totalCount: -1,
+          },
+        },
+        {
+          $limit: 5,
+        },
+        {
+          $lookup: {
+            from: "productuploads",
+            localField: "_id",
+            foreignField: "_id",
+            as: "productDetails",
+          },
+        },
+        {
+          $unwind: "$productDetails",
+        },
+      ]);
+        res.render("./user/index",{title:"Login",err:false, data,banner,user,bestSeller});
     }
 }
 
+const productSearch = async (req, res) => {
+  const { search } = req.body;
+console.log(search,"1231231231231231231223123213");
+  try {
+    // Use a case-insensitive regex for the search
+    const regex = new RegExp(search, 'i');
+    console.log(regex,'----------');
+    // Find products that match the search query
+    const suggestions = await productUpload.find({ ProductName: { $regex: regex } });
+    console.log(suggestions,'***********');
+    res.json({ suggestions });
+  } catch (error) {
+    console.error('Error fetching search suggestions:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
-const productSearch=async (req, res) => {
-    const searchTerm = req.query.q;
-  
-    try {
-      const count = await productUpload.find({ ProductName: { $regex: new RegExp(searchTerm, 'i') } }).count();
-      var i=0
-      const page = parseInt(req.query.page) || 1;
-      const pageSize = 1;
-      const totaldata = Math.ceil(count / pageSize);
-      const skip = (page - 1) * pageSize;
-      const data = await productUpload.find({ ProductName: { $regex: new RegExp(searchTerm, 'i') } }).skip(skip).limit(pageSize)
-      const user =await Users.findOne({email:req.session.email})
-      console.log("...............",data);
-      res.render('user/product-list', { title: 'Costomers', userData: data ,
-      Count:totaldata,
-      page: page,
-      user,
-      i})
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
   
 
 const tosignup = (req,res)=>{
@@ -164,6 +188,7 @@ const forgotPass = async (req, res) => {
             console.log("Email::: ",email);
             req.session.userdata=userdata;
             req.session.email=email
+           
             console.log("Sessiosiiii: ",req.session.email)
            res.redirect("/user/otp-senting") 
         }
@@ -190,13 +215,6 @@ const userLogin = async (req, res) => {
   
         if (isMatch) {
           if (check.status == true) {
-            const accessToken = jwt.sign(
-                { user: check._id },
-                process.env.ACCESS_TOKEN_SECRET,
-                { expiresIn: 60 * 60 }
-              );
-              res.cookie("userJwt", accessToken, { maxAge: 60 * 1000 * 60 });
-                console.log("jwt token created");
             req.session.user = check.userName;
             req.session.logged = true;
             req.session.email = req.body.email;
@@ -220,6 +238,7 @@ const userLogin = async (req, res) => {
 // otp verification
 const OtpConfirmation = async (req,res) => {
     if(req.session.forgot){
+      console.log("forget password otp confirming");
         console.log(req.body);
     try{
         const email=req.session.email
@@ -253,7 +272,7 @@ const OtpConfirmation = async (req,res) => {
             }
         }
     }catch(err){
-        console.log(err)
+        console.error(err)
         
         req.session.errmsg="Email not found";
     }
@@ -362,7 +381,38 @@ const userlog= async (req,res)=>{
         const data= await productUpload.find()
         const banner=await Banner.findOne({}, {}, { sort: { date: -1 } })
         console.log(banner,"banner images>>>>>>>>>>>");
-        res.render("user/user-home",{title:"Home", data,user,banner})
+        const bestSeller = await Order.aggregate([
+          {
+            $unwind: "$Items",
+          },
+          {
+            $group: {
+              _id: "$Items.productId",
+              totalCount: { $sum: "$Items.quantity" },
+            },
+          },
+          {
+            $sort: {
+              totalCount: -1,
+            },
+          },
+          {
+            $limit: 4,
+          },
+          {
+            $lookup: {
+              from: "productuploads",
+              localField: "_id",
+              foreignField: "_id",
+              as: "productDetails",
+            },
+          },
+          {
+            $unwind: "$productDetails",
+          },
+        ]);
+        console.log(...bestSeller,'-');
+        res.render("user/user-home",{title:"Home", data,user,banner,bestSeller})
     }
     else{
         console.log("login");
@@ -371,11 +421,18 @@ const userlog= async (req,res)=>{
 }
 
 const productView=async(req,res)=>{
+  try{
     console.log("dxfgg");
-    const id = req.params.id;
-    const data= await  productUpload.findOne({_id:id})
+    const productId = req.params.id;
+    const data= await  productUpload.findOne({_id:productId})
+    console.log(data,"----------------------");
+    const user=await Users.findOne({email:req.session.email})
     console.log("to product view");
-    res.render("user/product-view",{data})
+    res.render("user/product-view",{data ,title:"products",user})
+  }catch(error){
+    console.error("error  happened in product view",error)
+    res.render('user/404Page')
+  }
   }
 
 
@@ -616,10 +673,23 @@ const ToWalletHistory=async (req,res)=>{
         const email=req.session.email
         const userData=await Users.findOne({email:email})
         userData.wallet.transactions.sort((a, b) => b.timestamp - a.timestamp)
-        res.render("user/walletHistory",{title:"wallet",userData})
+        res.render("user/walletHistory",{title:"wallet",userData,user:userData})
     }catch(error){
         console.error("wallet history error",error);
     }
+}
+
+const ChangeUserName=async (req,res)=>{
+  try {
+    const NewName=req.body.newUsername
+    console.log("^^^^^^^^^^",NewName);
+    const changedName=await Users.findOneAndUpdate({email:req.session.email},{$set:{userName:NewName}})
+    console.log("8888888888",changedName);
+      res.json({success:true})
+  } catch (error) {
+    console.error(error)
+    res.render("user/404Page")
+  }
 }
 
 module.exports = {
@@ -650,5 +720,6 @@ module.exports = {
     newEditAddress,
     productSearch,
     toCoupons,
-    ToWalletHistory
+    ToWalletHistory,
+    ChangeUserName
 }

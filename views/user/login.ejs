@@ -1,5 +1,22 @@
 <%- include ('partial/dataheader') -%>
+<style>
+    .field {
+    position: relative;
+}
 
+.password-input {
+    padding-right: 40px; /* Adjust the padding to leave space for the eye icon */
+}
+
+.eye-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Adjust the right distance as needed */
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+</style>
 
 
 <div class="text-center center-div d-flex align-items-center justify-content-center shadow" id="LoginPage">
@@ -18,7 +35,10 @@
               <label>Email Address</label>
           </div>
           <div class="field">
-              <input type="password" name="password" id="password" value="12345"  required>
+              <input type="password" name="password" id="password" value="Mhdt@1207"  required>
+              <span class="eye-icon" onclick="togglePassword('password', 'eye-icon')">
+                <i class="fas fa-eye" id="eye-icon"></i>
+            </span>
               <label>Password</label>
           </div>    
           <div class="signup-link">
@@ -59,6 +79,20 @@
 
 
 <script>
+       function togglePassword(inputId, toggleId) {
+        var input = document.getElementById(inputId);
+        var inputType = input.getAttribute("type");
+        if (inputType === "password") {
+            input.setAttribute("type", "text");
+            document.getElementById(toggleId).classList.remove("fa-eye");
+            document.getElementById(toggleId).classList.add("fa-eye-slash");
+        } else {
+            input.setAttribute("type", "password");
+            document.getElementById(toggleId).classList.remove("fa-eye-slash");
+            document.getElementById(toggleId).classList.add("fa-eye");
+        }
+    }
+
     $(document).ready(function () {
   
   document.getElementById("loginForm").addEventListener("submit", function (event) {

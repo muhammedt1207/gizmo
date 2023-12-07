@@ -16,33 +16,45 @@ const bcrypt = require("bcrypt");
 
 
 const changePass = async (req, res) => {
-    try {
-      const check = await Users.findOne({ email: req.session.email});
-      console.log("User check:", check);
-
+  try {
+      const check = await Users.findOne({ email: req.session.email });
+    const oldPassword=req.body.oldPassword
       if (check) {
-        console.log(req.body.oldPassword,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        const isMatch = await bcrypt.compare(req.body.oldPassword, check.password);
-        console.log("Password Match:", isMatch);
+        console.log(oldPassword,';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;');
+          const isMatch = await bcrypt.compare(oldPassword, check.password);
 
-        if (isMatch) {
-            const pass = await bcrypt.hash(req.body.newPassword, 10);
-            const email = req.session.email;
-            console.log("New Password:", req.body.newPassword);
-            console.log("Email:", email);
-
-            const update = await Users.updateOne({ email: email }, { $set: { password: pass } });
-            console.log("Update Result:", update);
-
-            return res.json({ success: true });
+          if (isMatch) {
+              const pass = await bcrypt.hash(req.body.newPassword, 10);
+              const email = req.session.email;
+            console.log('=======',pass);
+              const update = await Users.updateOne({ email: email }, { $set: { password: pass } });
+            console.log("+++++++",updadte);
+              return res.json({
+                  success: true,
+                  message: "Password changed successfully!"
+              });
+          } else {
+              return res.json({
+                  success: false,
+                  error: "Invalid password",
+                  message: "Invalid password. Please check your old password."
+              });
           }
-        } else {
-          return res.json({ success:false, error: "Invalid password" });
-        }
-    } catch (error) {
+      } else {
+          return res.json({
+              success: false,
+              error: "Invalid email",
+              message: "Invalid email. User not found."
+          });
+      }
+  } catch (error) {
       console.error("Error:", error);
-      return res.json({ success: false, error: "Invalid password" });
-    }
+      return res.json({
+          success: false,
+          error: "Internal server error",
+          message: "An internal server error occurred. Please try again later."
+      });
+  }
 };
 
   

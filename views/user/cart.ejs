@@ -1,9 +1,12 @@
 <%- include('./partial/header') %>
-
+<% if (error) { %>
+  <div class="alert alert-danger" role="alert">
+    <%= decodeURIComponent(error) %>
+  </div>
+<% } %>
 <section class="bg-white my-5">
   <div class="container">
     <div class="row">
-      <!-- cart -->
       <div class="col-lg-9">
         <div class="card border rounded shadow">
           <div class="m-4 rounded shadow-5">
@@ -54,8 +57,7 @@
           </div>
         </div>
       </div>
-      <!-- cart -->
-      <!-- summary -->
+    
       <div class="col-lg-3">
         <div class="card shadow border">
           <div class="card-body">
@@ -96,7 +98,6 @@
           </div>
       </div>
         <% } %>
-      <!-- summary -->
     </div>
   </div>
 

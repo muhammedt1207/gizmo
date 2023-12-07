@@ -1,7 +1,7 @@
 <%-include('./partial/header')%>
     <h1>Category Offer</h1>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
-        data-bs-whatever="@getbootstrap">Add Coupon</button>
+        data-bs-whatever="@getbootstrap">Add Offer</button>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -70,9 +70,10 @@
                     </p>
                     <p class="card-text">End Date :<b><%= new Date(data.expireDate).toLocaleDateString() %></b>
                     </p>
-                    <a href="#" class="text-white" onclick="return window.confirm('Do you want to delete the Coupon?')">
+                    <a href="#" class="text-white" onclick="confirmDelete('<%= data._id %>')">
                         <i class="fa-solid fa-trash fa-xl" style="color: #000000;"></i>
                     </a>
+                    
                     <!-- <a href="">&nbsp;<i class="fa-solid fa-pen-to-square fa-lg" style="color: #000000;"></i></a> -->
                 </div>
             </div>
@@ -80,75 +81,144 @@
         <% }) %>
 
     </div>
-    <script>
-        function submitForm() {
-            const categorySelect = document.getElementById('categorySelect');
-            const percentage = document.getElementById('percentage');
-            const startDate = document.getElementById('startDate');
-            const endDate = document.getElementById('endDate');
+   <!-- Include SweetAlert in your HTML file -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            const currentDate = new Date().toISOString().split('T')[0];
+<script>
+    async function submitForm() {
+        const categorySelect = document.getElementById('categorySelect');
+        const percentage = document.getElementById('percentage');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
 
-            document.getElementById('categoryError').innerText = '';
-            document.getElementById('percentageError').innerText = '';
-            document.getElementById('startDateError').innerText = '';
-            document.getElementById('endDateError').innerText = '';
+        const currentDate = new Date().toISOString().split('T')[0];
 
-            let isValid = true;
+        document.getElementById('categoryError').innerText = '';
+        document.getElementById('percentageError').innerText = '';
+        document.getElementById('startDateError').innerText = '';
+        document.getElementById('endDateError').innerText = '';
 
-            if (!categorySelect.value) {
-                document.getElementById('categoryError').innerText = 'Category is required';
-                isValid = false;
+        let isValid = true;
+
+        if (!categorySelect.value) {
+            document.getElementById('categoryError').innerText = 'Category is required';
+            isValid = false;
+        }
+
+        if (isNaN(percentage.value) || percentage.value < 1 || percentage.value > 99) {
+            document.getElementById('percentageError').innerText = 'Percentage must be a number between 1 and 99';
+            isValid = false;
+        }
+
+        if (startDate.value < currentDate) {
+            document.getElementById('startDateError').innerText = 'Start date must be greater than the current date';
+            isValid = false;
+        }
+
+        if (endDate.value <= startDate.value) {
+            document.getElementById('endDateError').innerText = 'End date must be greater than the start date';
+            isValid = false;
+        }
+
+        if (isValid) {
+            try {
+                const data = {
+                    category: categorySelect.value,
+                    percentage: percentage.value,
+                    startDate: startDate.value,
+                    endDate: endDate.value
+                };
+
+                const response = await fetch('/admin/addOffer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            });
+
+            const responseData = await response.json();
+
+            if (responseData.success) {
+                console.log("Response from server:", responseData.message);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: responseData.message,
+                });
+                setTimeout=>{
+
+                }
+
+            } else {
+                console.error('Form submission error:', responseData.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: responseData.message,
+                });
             }
-
-            if (isNaN(percentage.value) || percentage.value < 1 || percentage.value > 99) {
-                document.getElementById('percentageError').innerText = 'Percentage must be a number between 1 and 99';
-                isValid = false;
-            }
-
-            if (startDate.value < currentDate) {
-                document.getElementById('startDateError').innerText = 'Start date must be greater than the current date';
-                isValid = false;
-            }
-
-            if (endDate.value <= startDate.value) {
-                document.getElementById('endDateError').innerText = 'End date must be greater than the start date';
-                isValid = false;
-            }
-
-            if (isValid) {
-            const data = {
-                category: categorySelect.value,
-                percentage: percentage.value,
-                startDate: startDate.value,
-                endDate: endDate.value
-            };
-            console.log(data)
-                fetch('/admin/addOffer', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data),
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            return response.json(); 
-                        } else {
-                            throw new Error('Failed to submit form');
-                        }
-                    })
-                    .then(data => {
-                        console.log("Response from server:", data);
-                        alert('Coupon added successfully');
-                    })
-                    .catch(error => {
-                        console.error('Form submission error:', error);
-                        // Handle error if needed
-                    });
+        } catch (error) {
+            console.error('Error:', error.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred. Please try again later.',
+            });
             }
         }
-    </script>
+    }
+    function confirmDelete(couponId) {
+        Swal.fire({
+            title: 'Delete Coupon?',
+            text: 'Are you sure you want to delete the coupon?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`/admin/deleteOffer/${couponId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+
+                    const responseData = await response.json();
+
+                    if (responseData.success) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your coupon has been deleted.',
+                            'success'
+                        );
+                        window.location.reload();
+                    } else {
+                        console.error('Delete error:', responseData.message);
+                        Swal.fire(
+                            'Error!',
+                            'Failed to delete the coupon.',
+                            'error'
+                        );
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error.message);
+                    Swal.fire(
+                        'Error!',
+                        'An error occurred while deleting the coupon.',
+                        'error'
+                    );
+                }
+            }
+        });
+      
+    }
+</script>
 
 
     <%-include('./partial/footer')%>

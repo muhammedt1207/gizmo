@@ -1,6 +1,8 @@
 const easyinvoice = require('easyinvoice');
 const fs = require('fs');
 const path = require('path');
+const sendEmail=require("../util/mail");
+
 
 module.exports = {
     generateInvoice: async (orderDetails) => {
@@ -25,15 +27,14 @@ module.exports = {
                     "country": "Kerala"
                 },
                 "client": {
-                    // "company": orderDetails.ShippedAddress.Name,
-                    // "address": orderDetails.ShippedAddress.Address,
-                    // "zip":orderDetails.ShippedAddress.Pincode ,
-                    // "zip": orderDetails.ShippedAddress.Pincode,
-                    // "city": orderDetails.ShippedAddress.City,
-                    // "state":orderDetails.ShippedAddress.State,
-                    // "Mob No":orderDetails.ShippedAddress.Mobaile,
-                    // "state": orderDetails.ShippedAddress.State,
-                    // "Mob No": orderDetails.ShippedAddress.Mobaile
+                    "company": orderDetails[0].Address.name,
+                    "address": orderDetails[0].Address.addressLine,
+                    "zip": orderDetails[0].Address.pincode,
+                    "city": orderDetails[0].Address.city,
+                    "state":orderDetails[0].Address.state,
+                    // "Mob No":orderDetails[0].Address.mobileNumber,
+                    // "state": orderDetails.Address.State,
+                    // "Mob No": orderDetails.Address.Mobaile
                 },
                 "information": {
                     "Order ID": orderDetails[0]._id,
@@ -62,8 +63,7 @@ module.exports = {
     
           
         }
-
-            const result = await easyinvoice.createInvoice(data);
+        const result = await easyinvoice.createInvoice(data);
 
             const filePath = path.join(__dirname, '..', 'pdf', `${orderDetails[0]._id}.pdf`);
             await fs.promises.writeFile(filePath, result.pdf, 'base64');

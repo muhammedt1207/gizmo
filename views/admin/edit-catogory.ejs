@@ -1,42 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Alert Example</title>
+    <style>
+        /* Styles for the custom alert */
+        .custom-alert {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #f44336;
+            color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<%-include('./partial/header')%>
+<!-- Your HTML content -->
 
-<%-include('./partial/header') %>
-
-
-<!-- <div class="text-center center-div d-flex align-items-center justify-content-center" id="LoginPage">
-    <div class="wrapper text-center center-div align-items-center justify-content-center">
-        <div class="title-one">
-            Edit Category
-        </div>
-        
-            <div class="field">
-                <input type="text" name="CategoryName" value="<%-catagory.CategoryName%>" place required>
-                <label>Edit Category</label>
-            </div>  
-            <div class="field">
-                <input type="submit" value="Add ">
-            </div> -->
-      
-
-        <section class="vh-100" style="background-color: #ffffff;">
-            <div class="container py-5 h-100">
-              <div class="row d-flex justify-content-center align-items-center h-100 w-75">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                  <div class="card shadow-2-strong" style="border-radius: 1rem;">
+<section class="vh-100" style="background-color: #ffffff;">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100 w-75">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card shadow-2-strong" style="border-radius: 1rem;">
                     <div class="card-body p-5 text-center">
-          
-                      <h3 class="mb-5">Edit Category</h3>
-                      <form action="/admin/DoneEdit-category/<%=catagory._id%>" method="POST">
-                      <div class="form-outline mb-4">
-                        <input type="text" name="CategoryName" value="<%-catagory.CategoryName%>" place style="height: 40px; width: 80%;" required>
-                        
-                      </div>
-                      <button class="btn btn-primary btn-lg btn-block" type="submit">Edit</button>
-                    </form>
+                        <h3 class="mb-5">Edit Category</h3>
+                        <form id="editCategoryForm" action="/admin/DoneEdit-category/<%=catagory._id%>">
+                            <div class="form-outline mb-4">
+                              <input type="text" name="catagoryname" value="<%-catagory.CategoryName%>" style="height: 40px; width: 80%;" required>
+                            </div>
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Edit</button>
+                        </form>
                     </div>
-                  </div>
                 </div>
-              </div>
             </div>
-          </section>
+        </div>
+    </div>
+</section>
 
-<%-include('./partial/footer') %>
+<!-- Custom Alert HTML -->
+<div id="customAlert" class="custom-alert">
+    <span id="alertMessage"></span>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editCategoryForm = document.getElementById('editCategoryForm');
+
+        editCategoryForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const categoryNameInput = document.getElementsByName('catagoryname')[0];
+            const categoryName = categoryNameInput.value.trim(); 
+            if (!categoryName) {
+                showAlert('Category name cannot be empty.');
+                return;
+            }
+            const formData = new FormData(this);
+            console.log(categoryName);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: JSON.stringify({ catagoryname: categoryName }), 
+                headers: {
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Category updated:', data.updatedCategory);
+                    window.location.href = "/admin/catogory"
+                } else {
+                    // Handle error, show a custom alert or update the UI accordingly
+                    showAlert('Failed to update category: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle network errors or other issues
+                showAlert('Failed to update category. Please try again later.');
+            });
+        });
+
+        function showAlert(message) {
+            const customAlert = document.getElementById('customAlert');
+            const alertMessage = document.getElementById('alertMessage');
+
+            // Set the message
+            alertMessage.textContent = message;
+
+            // Show the custom alert
+            customAlert.style.display = 'block';
+
+            // Hide the alert after a delay (e.g., 3 seconds)
+            setTimeout(() => {
+                customAlert.style.display = 'none';
+            }, 3000);
+        }
+    });
+</script>
+
+</body>
+</html>

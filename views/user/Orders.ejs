@@ -15,10 +15,13 @@
                       <ul>
                         <% x.Items.forEach((item)=> { %>
                           <li>
-                            <b>
-                              <%= item.productId ? item.productId.ProductName : 'Product Name Not Available' %>
-                            </b><br>
-                            Quantity: <%= item.quantity %>
+                            
+                             <p> <b> <%= item.productId ? item.productId.ProductName : 'Product Name Not Available' %></b></p>
+                              <% if(item.status=='return'){%>
+                                <p style="color: rgb(255, 58, 58);">product Return</p>
+                             <% }%>
+                      
+                           <p> Quantity: <%= item.quantity %></p>
                           </li>
                           <br>
                           <% }); %>

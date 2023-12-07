@@ -30,13 +30,13 @@ admin.post("/userSearch",adminController.userSearch);
 
 // product
 admin.get('/add-products',adminController.toAddProduct)  
-  admin.post("/addproduct", upload.fields(uploadFields),adminController.addProduct);
-  admin.get('/toproducts',adminController.toproducts)
-  admin.get('/products',adminController.productData)
-  admin.get('/delete-product/:id',adminController.deleteProduct)
-  admin.get('/edit-product/:id',adminController.toEditProduct)
-  admin.post('/postEdit-product/:id',upload.fields(uploadFields),adminController.EditProduct)
-  admin.delete('/delete-image/:id/:index', adminAuth.verifyAdmin, adminController.deleteImage);
+admin.post("/addproduct", upload.fields(uploadFields),adminController.addProduct);
+admin.get('/toproducts',adminController.toproducts)
+admin.get('/products',adminController.productData)
+admin.get('/delete-product/:id',adminController.deleteProduct)
+admin.get('/edit-product/:id',adminController.toEditProduct)
+admin.post('/postEdit-product/:id',upload.fields(uploadFields),adminController.EditProduct)
+admin.delete('/delete-image/:id/:index',adminController.deleteImage);
 admin.get('/products',adminAuth.verifyAdmin,adminController.toProduct)
 admin.post("/search",adminAuth.verifyAdmin,adminController.productSearch);
 
@@ -69,7 +69,7 @@ admin.get('/returnDetails/:id',adminAuth.verifyAdmin,adminController.returnView)
 admin.get('/coupens',adminAuth.verifyAdmin,couponControll.tocoupon)
 admin.post('/CreateCoupon',adminAuth.verifyAdmin,couponControll.createCoupon)
 admin.get('/delete-coupon/:id',couponControll.deleteCoupon)
-
+admin.post('/editCoupon/:id',couponControll.editCoupon)
 //dashBoard
 admin.get('/count-orders-by-day',adminAuth.verifyAdmin, DashController.salesReport)
 admin.get('/count-orders-by-month',adminAuth.verifyAdmin, DashController.salesReport)
@@ -80,7 +80,7 @@ admin.post('/download-sales-report',adminAuth.verifyAdmin, DashController.genere
 //offer
 admin.get('/category-offers',OfferController.toofferPage)
 admin.post('/addOffer',OfferController.addOffer)
-
+admin.delete('/deleteOffer/:id',OfferController.deleteOffer)
 
 module.exports=admin;
 

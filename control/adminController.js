@@ -181,8 +181,9 @@ const toEditProduct = async (req, res) => {
     const id = req.params.id;
     console.log("to edit product");
     const data = await productUpload.findOne({ _id: id });
+const catogory=await Category.find()
     console.log(data);
-    res.render("admin/edit-product", { data });
+    res.render("admin/edit-product", { data,catogory });
 }
 
 
@@ -277,6 +278,7 @@ const deleteProduct = async (req, res) => {
 
 const deleteImage = async (req, res) => {
     try {
+        console.log('product image deleting');
         const productId = req.params.id;
         console.log("product id", productId);
         const imageIndex = req.params.index;
@@ -363,28 +365,35 @@ const editCatagory = async (req, res) => {
     }
 }
 
-
 const afterEditCatagory = async (req, res) => {
     try {
         const id = req.params.id;
-        const catagory = req.body.CategoryName;
-        const uppercaseCategoryName = catagory.toUpperCase();
-        console.log(catagory);
-        await Category.findOneAndUpdate(
-            { _id: id },
+        const catagoryname = req.body.catagoryname;
+        console.log(catagoryname,'////',id);
+        const uppercaseCategoryName = catagoryname.toUpperCase();
+
+        const categoryExist=await Category.findOne({ CategoryName: uppercaseCategoryName})
+        if(categoryExist>0){
+            res.json({success:false,error: "This Category already exist"})
+        }
+        const updatedCategory = await Category.findByIdAndUpdate(
+            id,
             {
                 $set: {
                     CategoryName: uppercaseCategoryName,
                 },
-            }
+            },
+            { new: true } // This ensures that the returned value is the updated document
         );
-        console.log("Editing is done");
-        res.redirect("/admin/catogory");
-    } catch (error) {
-        console.log("error occured while uploading catagory");
 
+        console.log("Editing is done");
+        res.json({ success: true, updatedCategory });
+    } catch (error) {
+        console.log("Error occurred while updating category:", error);
+        res.status(500).json({ success: false, error: "Internal Server Error" });
     }
-}
+};
+
 
 //------------------------------------<<<<<<<<<<<<<<<<< ORDER MANEGEMENT   >>>>>>>>>>>>>>>>>>>>>>>-------------------
 
@@ -395,7 +404,13 @@ const toOrders = async (req, res) => {
     const pageSize = 10;
     const totaldata = Math.ceil(count / pageSize);
     const skip = (page - 1) * pageSize;
-    const data = await orders.find().sort({ OrderDate: -1 }).skip(skip).limit(pageSize)
+    const data = await orders.find({
+        paymentMethod: { $ne: "online" },
+        paymentStatus: { $ne: "pending" },
+      })
+      .sort({ OrderDate: -1 })
+      .skip(skip)
+      .limit(pageSize)
 
     res.render('./admin/orders', {
         title: 'Orders', orderData: data,

@@ -27,10 +27,8 @@
 
       <% } %>
     <div id="resendMessage"></div>
-    <!-- Countdown timer -->
     <div id="countdown" class="countdown"></div>
     <div class="email-otp-container">
-      <!-- Six input fields for OTP digits -->
       <input type="text" class="email-otp-input" pattern="\d" maxlength="1">
       <input type="text" class="email-otp-input" pattern="\d" maxlength="1" disabled>
       <input type="text" class= "email-otp-input" pattern="\d" maxlength="1" disabled>
@@ -43,11 +41,11 @@
     <button type="submit" id="verifyEmailOTP" class="btn btn-info">VERIFY</button>
   </form>
   <br>
-  <a href="/user/resend-otp" id="resendOTPButton">Resend OTP</a>
+  <a href="" id="resendOTPButton">Resend OTP</a>
 </div>
 
 <script>
-  const countdownTime = 180; // 3 minutes in seconds
+  const countdownTime = 180; 
   let countdown = countdownTime;
 
   function updateCountdown() {
@@ -66,9 +64,7 @@
   }
 
   updateCountdown();
-  // JavaScript code to send an AJAX request for OTP resending
 document.getElementById("resendOTPButton").addEventListener("click", function () {
-  // Send an AJAX request to the server
   fetch("/user/resend-otp", {
     method: "GET",
     headers: {
@@ -77,7 +73,6 @@ document.getElementById("resendOTPButton").addEventListener("click", function ()
   })
     .then((response) => response.json())
     .then((data) => {
-      // Handle the response from the server
       if (data.success) {
         alert("OTP resent successfully!");
       } else {

@@ -46,6 +46,7 @@ const sendOTP=async (email)=>{
         const createdOTPrecord=await newOTP.save()
         return createdOTPrecord
     }catch(err){
+        console.error(err);
         throw err;
     }
 }

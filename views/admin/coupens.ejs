@@ -1,180 +1,328 @@
 <%-include('./partial/header')%>
-  <h1>Coupens</h1>
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
-    data-bs-whatever="@getbootstrap">Add Coupon</button>
+<h1>Coupons</h1>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@getbootstrap">Add Coupon</button>
 
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="couponForm">
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Coupon Name:</label>
-              <input type="text" class="form-control" id="couponName" name="name" required>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="mb-3">
-              <label for="couponCode" class="col-form-label">Coupon Code:</label>
-              <input type="text" class="form-control" id="couponCode" name="couponCode"
-                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#])[A-Za-z\d#]+$"
-                title="Must contain at least one uppercase letter, one lowercase letter, one number, and #"
-                required>
-              <small id="couponWarning" class="form-text text-danger d-none">Invalid coupon code. Must contain at least one
-                uppercase letter, one lowercase letter, one number, and #</small>
-            </div>
-           
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Min Purchase Amount:</label>
-              <input type="number" class="form-control" id="recipient-name" name="maxAmount" required>
-            </div>
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Discount Amount:</label>
-              <input type="number" class="form-control" id="recipient-name" name="discountAmount" required>
-            </div>
-           
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Discount Type:</label>
-              <label class="form-check-label">
-                <input type="radio" name="couponType" value="public" required> Public
-              </label>
-              <label class="form-check-label ml-3">
-                <input type="radio" name="couponType" value="private" required> Private
-              </label>
-            </div>
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Start Date:</label>
-              <input type="date" class="form-control" id="recipient-name" name="startDate" required>
-            </div>
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">End Date:</label>
-              <input type="date" class="form-control" id="recipient-name" name="endDate" required>
-            </div>
+            <div class="modal-body">
+                <form id="couponForm">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Coupon Name:</label>
+                        <input type="text" class="form-control" id="couponName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="couponCode" class="col-form-label">Coupon Code:</label>
+                        <input type="text" class="form-control" id="couponCode" name="couponCode"
+                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#])[A-Za-z\d#]+$"
+                            title="Must contain at least one uppercase letter, one lowercase letter, one number, and #"
+                            required>
+                        <small id="couponWarning" class="form-text text-danger d-none">Invalid coupon code. Must contain at least one
+                            uppercase letter, one lowercase letter, one number, and #</small>
+                    </div>
 
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Min Purchase Amount:</label>
+                        <input type="number" class="form-control" id="minAmount" name="maxAmount" required
+                            onchange="validateAmountInput('minAmount')">
+                        <small id="minAmountWarning" class="form-text text-danger d-none">Amount cannot be negative.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Discount Amount:</label>
+                        <input type="number" class="form-control" id="discountAmount" name="discountAmount" required
+                            onchange="validateAmountInput('discountAmount')">
+                        <small id="discountAmountWarning" class="form-text text-danger d-none">Amount cannot be negative.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Discount Type:</label>
+                        <label class="form-check-label">
+                            <input type="radio" name="couponType" value="public" required> Public
+                        </label>
+                        <label class="form-check-label ml-3">
+                            <input type="radio" name="couponType" value="private" required> Private
+                        </label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Start Date:</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">End Date:</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate" required>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Add Coupon</button>
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="submitForm()">Send message</button>
-        </div>
-      </div>
-      </form>
+        </form>
     </div>
-  </div>
-  <br>
-  <div class="row p-3">
+</div>
+<br>
+<div class="row p-3">
     <% CouponData.forEach((couponData)=>{ %>
-      <div class="col-md-4">
+    <div class="col-md-4">
         <div class="card mb-4 shadow">
-          <div class="card-body text-center bg-light">
-            <h5 class="card-title">
-              <%=couponData.CoupenName%>
-            </h5>
-            <h6 class="card-subtitle mb-2 text-muted"><b>
-                <%=couponData.CoupenCode%>
-              </b></h6>
-            <p class="card-text">Min Amount : <%=couponData.MinAmount%>
-            </p>
-            <p class="card-text">Discount Amount: <%=couponData.DiscountAmount%>
-            </p>
-            <p class="card-text">Coupon Type : <%=couponData.couponType%>
-            </p>
-            <p class="card-text">End Date : <%=couponData.EndDate%>
-            </p>
-            <a href="/admin/delete-coupon/<%-couponData._id%>" class="text-white" onclick="return window.confirm('Do you want to delete the Coupon?')">
-              <i class="fa-solid fa-trash fa-xl" style="color: #000000;"></i>
-            </a>
-            <!-- <a href="">&nbsp;<i class="fa-solid fa-pen-to-square fa-lg" style="color: #000000;"></i></a> -->
-          </div>
+            <div class="card-body text-center bg-light">
+                <h5 class="card-title">
+                    <%=couponData.CoupenName%>
+                </h5>
+                <h6 class="card-subtitle mb-2 text-muted"><b>
+                        <%=couponData.CoupenCode%>
+                    </b></h6>
+                <p class="card-text">Min Amount : <%=couponData.MinAmount%>
+                </p>
+                <p class="card-text">Discount Amount: <%=couponData.DiscountAmount%>
+                </p>
+                <p class="card-text">Coupon Type : <%=couponData.couponType%>
+                </p>
+                <p class="card-text">End Date : <%=couponData.EndDate%>
+                </p>
+                <a href="/admin/delete-coupon/<%-couponData._id%>" class="text-white"
+                    onclick="return window.confirm('Do you want to delete the Coupon?')">
+                    <i class="fa-solid fa-trash fa-xl" style="color: #000000;"></i>
+                </a>
+                <button id="editCoupon<%= couponData._id %>" data-bs-target="#editModal<%= couponData._id %>" data-bs-toggle="modal"><i class="fa-solid fa-pen fa-xl" style="color: #000000;"></i></button>
+
+            </div>
         </div>
-      </div>
-      <% }) %>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </div>
+    <!-- Edit Coupon Modal -->
+    <div class="modal fade" id="editModal<%= couponData._id %>" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editModalLabel">Edit Coupon</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCouponForm">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Coupon Name:</label>
+                        <input type="text" class="form-control" value="<%=couponData.CoupenName%>" id="couponName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="couponCode" class="col-form-label">Coupon Code:</label>
+                        <input type="text" class="form-control" id="couponCode" value="<%=couponData.CoupenCode%>" name="couponCode"
+                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#])[A-Za-z\d#]+$"
+                            title="Must contain at least one uppercase letter, one lowercase letter, one number, and #"
+                            required>
+                        <small id="couponWarning" class="form-text text-danger d-none">Invalid coupon code. Must contain at least one
+                            uppercase letter, one lowercase letter, one number, and #</small>
+                    </div>
+                    <input type="hidden" id="couponId" name="couponId" value="<%= couponData._id %>">
 
-  <script>
-    function showAlert(message, type = 'info') {
-  const icon = type === 'success' ? 'success' : 'error';
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Min Purchase Amount:</label>
+                        <input type="number" class="form-control" id="minAmount" value="<%=couponData.MinAmount%>" name="maxAmount" 
+                            onchange="validateAmountInput('minAmount')">
+                        <small id="minAmountWarning" class="form-text text-danger d-none">Amount cannot be negative.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Discount Amount:</label>
+                        <input type="number" class="form-control" id="discountAmount" value="<%=couponData.DiscountAmount%>" name="discountAmount" 
+                            onchange="validateAmountInput('discountAmount')">
+                        <small id="discountAmountWarning" class="form-text text-danger d-none">Amount cannot be negative.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Start Date:</label>
+                        <input type="date" class="form-control" value="<%=couponData.StartDate%>" id="startDate" name="startDate">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">End Date:</label>
+                        <input type="date" class="form-control" value="<%=couponData.EndDate%>" id="endDate" name="endDate">
+                    </div>
+                   
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitEditForm()">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-  Swal.fire({
-    icon: icon,
-    title: message,
-    showConfirmButton: false,
-    timer: 2000, 
-  });
-}
-   function validateCouponCode() {
-  const couponCodeInput = document.getElementById('couponCode');
-  const couponWarning = document.getElementById('couponWarning');
+    <% }) %>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  const couponCode = couponCodeInput.value.trim();
-
-  if (!couponCode) {
-    couponWarning.textContent = 'Coupon code is required.';
-    couponWarning.classList.remove('d-none');
-    return false
-  } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#])[A-Za-z\d#]+$/.test(couponCode)) {
-    couponWarning.textContent = 'Invalid coupon code. Must contain at least one uppercase letter, one lowercase letter, one number, and #.';
-    couponWarning.classList.remove('d-none');
-    return false
-  } else {
-    couponWarning.classList.add('d-none');
-    console.log("code is valid");
-    return true
+<script>
+    function openEditModal(couponId) {
+    $('#editCoupon' + couponId).modal('show');
   }
-}
+    function showAlert(message, type = 'info') {
+        const icon = type === 'success' ? 'success' : 'error';
+
+        Swal.fire({
+            icon: icon,
+            title: message,
+            showConfirmButton: false,
+            timer: 2000,
+        });
+    }
+
+    function validateAmountInput(inputId) {
+        const input = document.getElementById(inputId);
+        const warning = document.getElementById(inputId + 'Warning');
+
+        const amount = parseFloat(input.value);
+
+        if (amount < 0) {
+            warning.textContent = 'Amount cannot be negative.';
+            warning.classList.remove('d-none');
+        } else {
+            warning.classList.add('d-none');
+        }
+    }
+
+    function validateCouponCode() {
+        const couponCodeInput = document.getElementById('couponCode');
+        const couponWarning = document.getElementById('couponWarning');
+
+        const couponCode = couponCodeInput.value.trim();
+
+        if (!couponCode) {
+            couponWarning.textContent = 'Coupon code is required.';
+            couponWarning.classList.remove('d-none');
+            return false
+        } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#])[A-Za-z\d#]+$/.test(couponCode)) {
+            couponWarning.textContent = 'Invalid coupon code. Must contain at least one uppercase letter, one lowercase letter, one number, and #.';
+            couponWarning.classList.remove('d-none');
+            return false
+        } else {
+            couponWarning.classList.add('d-none');
+            console.log("code is valid");
+            return true
+        }
+    }
+
     console.log("<<<<<<<<<<<<<<<");
     function submitForm() {
-      if(validateCouponCode()){
-      const form = document.getElementById('couponForm');
-      const formData = new FormData(form);
-      console.log("////////////////////////////", formData);
+        if (validateCouponCode()) {
+            const form = document.getElementById('couponForm');
+            const formData = new FormData(form);
+            console.log("////////////////////////////", formData);
 
-      const minAmount = parseFloat(formData.get('maxAmount'));
-    const discountAmount = parseFloat(formData.get('discountAmount'));
-    const startDate = new Date(formData.get('startDate'));
-    const endDate = new Date(formData.get('endDate'));
-    if (minAmount <= discountAmount) {
-      showAlert('Minimum amount must be greater than the discount amount.', 'error');
-      return;
+            const minAmount = parseFloat(formData.get('maxAmount'));
+            const discountAmount = parseFloat(formData.get('discountAmount'));
+            const startDate = new Date(formData.get('startDate'));
+            const endDate = new Date(formData.get('endDate'));
+
+            if (minAmount <= 0 || discountAmount <= 0) {
+                showAlert('Amount cannot be negative.', 'error');
+                return;
+            }
+
+            if (minAmount <= discountAmount) {
+                showAlert('Minimum amount must be greater than the discount amount.', 'error');
+                return;
+            }
+            if (startDate >= endDate) {
+                showAlert('Start date must be before the end date.', 'error');
+                return;
+            }
+            const couponId = document.getElementById('couponId').value;
+
+            const jsonObject = {};
+            formData.forEach((value, key) => {
+                jsonObject[key] = value;
+            });
+            const jsonData = JSON.stringify(jsonObject);
+            console.log("------------------", jsonData);
+
+            fetch(`/admin/CreateCoupon`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: jsonData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log("Coupon created..................");
+                        showAlert('Coupon created successfully!', 'success');
+                        window.location.reload()
+                    } else {
+                        console.log(".........");
+                        alert(`Error: ${data.message}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating coupon:', error);
+                    showAlert('An error occurred. Please try again.', 'error');
+                });
+        }
     }
-    if (startDate >= endDate) {
-      showAlert('Start date must be before the end date.', 'error');
-      return;
-    }
-      const jsonObject = {};
-      formData.forEach((value, key) => {
-        jsonObject[key] = value;
-      });
-      const jsonData = JSON.stringify(jsonObject);
-      console.log("------------------", jsonData);
-      fetch('/admin/CreateCoupon', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonData,
-      })
+
+//==============================================================================================
+    function submitEditForm() {
+        console.log('edit submit added.........');
+   
+        const form = document.getElementById('editCouponForm');
+        const formData = new FormData(form);
+
+        const minAmount = parseFloat(formData.get('maxAmount'));
+        const discountAmount = parseFloat(formData.get('discountAmount'));
+        const startDate = new Date(formData.get('startDate'));
+        const endDate = new Date(formData.get('endDate'));
+        
+        const couponId = formData.get('couponId'); 
+        if (minAmount <= 0 || discountAmount <= 0) {
+            showAlert('Amount cannot be negative.', 'error');
+            return;
+        }
+
+        if (minAmount <= discountAmount) {
+            showAlert('Minimum amount must be greater than the discount amount.', 'error');
+            return;
+        }
+        if (startDate >= endDate) {
+            showAlert('Start date must be before the end date.', 'error');
+            return;
+        }
+
+        const jsonObject = {};
+        formData.forEach((value, key) => {
+            jsonObject[key] = value;
+        });
+
+        const jsonData = JSON.stringify(jsonObject);
+
+        fetch(`/admin/editCoupon/${couponId}`, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: jsonData,
+        })
         .then(response => response.json())
         .then(data => {
-          if (data.success) {
-         
-            console.log("Coupon created..................");
-            showAlert('Coupon created successfully!', 'success');
-            window.location.reload()
-          } else {
-            console.log(".........");
-            alert(`Error: ${data.message}`);
-          }
+            if (data.success) {
+                showAlert('Coupon Edit successfully!', 'success');
+                setTimeout(()=>{
+                    window.location.reload();
+
+                },1500)
+            } else {
+                alert(`Error: ${data.message}`);
+            }
         })
         .catch(error => {
-          console.error('Error creating coupon:', error);
-          showAlert('An error occurred. Please try again.', 'error');
+            console.error('Error editing coupon:', error);
+            showAlert('An error occurred. Please try again.', 'error');
         });
-      }
-    }
+    
+}
 
-  </script>
+</script>
 
-  <%-include('./partial/footer')%>
+<%-include('./partial/footer')%>

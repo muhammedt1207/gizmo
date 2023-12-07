@@ -19,7 +19,7 @@ const { log } = require("util");
 const Coupons=require('../models/coupon')
 const rezorpay=require('../service/rezorpay')
 const crypto =require('crypto')
-
+const sendEmail=require("../util/mail");
 
 const toCheckout = async (req, res) => {
   console.log("to checkout page");
@@ -27,9 +27,22 @@ const toCheckout = async (req, res) => {
   const TotalPrice=req.session.totalPrice
   const grandTotal=req.session.grandTotal
   
+
+
   const userData = await Users.findOne({ email: email })
   const Cart=await cart.findOne({userId:userData._id})
   const coupon = req.session.coupon
+  if (Cart && Cart.products.length > 0) {
+    for (const cartProduct of Cart.products) {
+      const productData = await productUpload.findOne({ _id: cartProduct.productId });
+
+      if (productData && cartProduct.quantity <= productData.AvailableQuantity) {
+        console.log(`Product ${productData.ProductName} has a valid quantity in the cart.`);
+      }else {
+        console.log(`Invalid quantity for product ${productData.ProductName}.`);
+      }
+    }
+  }
   res.render("user/checkoutPage", { title: "checkout  page", userData, user: userData ,Cart,TotalPrice, coupon,grandTotal})
 }
 
@@ -138,7 +151,22 @@ const placeOrder = async (req, res) => {
     }
 
     const cartDetails = await cart.findOne({ userId: userId });
+    for (const cartProduct of cartDetails.products) {
+      const productData = await productUpload.findOne({ _id: cartProduct.productId });
 
+      if (productData && cartProduct.quantity <= productData.AvailableQuantity) {
+        console.log(`Product ${productData.ProductName} has a valid quantity in the cart.`);
+      }else {
+        console.log("product not avialable");
+        return res.json({
+          success: false,
+          productAvailability:true,
+          message: `product${productData.ProductName} have only ${productData.AvailableQuantity} left`
+        })      }
+    }
+    
+
+    const currentDate=new Date()
     const newOrder = new Orders({
       Status: 'Pending',
       Items: cartDetails.products,
@@ -152,9 +180,8 @@ const placeOrder = async (req, res) => {
         state: selectedAddress.state,
         mobileNumber: selectedAddress.mobileNumber,
       },
-      paymentMethod:"Pending",
-      TotalPrice: req.session.totalPrice,
-      OrderDate: new Date(),
+      TotalPrice: amount,
+      OrderDate: currentDate,
     });
     console.log("order saved");
     const savedOrder = await newOrder.save();
@@ -198,7 +225,7 @@ const placeOrder = async (req, res) => {
               });
   
             } else if(paymentMethod=="wallet"){
-              const TotalPrice=req.session.totalPrice
+              const TotalPrice=amount
               userData.wallet.amount -= TotalPrice;
               userData.wallet.transactions.push({
                 amount: TotalPrice,
@@ -207,10 +234,9 @@ const placeOrder = async (req, res) => {
                 description: 'Order payment', 
               });
               userData.save()
-              const newOrder = new Orders({
-                paymentStatus:"Paid"
-              })
-              newOrder.save()
+              newOrder.paymentStatus="Paid"
+            
+              await newOrder.save()
               console.log("payment is wallet");
               res.json({
                 codSuccess: true,
@@ -244,7 +270,6 @@ const verifyPayment = async (req, res) => {
     const orderId=order.createdOrder.receipt
     const updateOrderDocument = await Orders.findByIdAndUpdate(orderId, {
       paymentStatus: "Paid",
-      paymentMethod: "Online",
     });
     console.log(updateOrderDocument,'/\/\/\/\/\/\/\/\/\/\/\/\/\/');
         res.json({ success: true });
@@ -264,6 +289,7 @@ const verifyPayment = async (req, res) => {
       res.json({ failure: true });
     }
   } catch (error) {
+    console.log("-------verify payment");
     console.error("failed to verify the payment", error);
   }
 };
@@ -278,7 +304,11 @@ const toOrderPage = async (req, res) => {
     const userData = await Users.findOne({ email: req.session.email });
     const userId = userData._id;
     // console.log(userId, '.............');
-    const orderData = await Orders.find({ UserID: userId }).populate('Items.productId').sort({OrderDate:-1});
+    const orderData = await Orders.find({ UserID: userId,
+    paymentMethod: { $ne: "online" },
+    paymentStatus: { $ne: "pending" },})
+    .populate('Items.productId')
+    .sort({OrderDate:-1});
 
     // console.log(orderData, '..................................');
 
@@ -297,7 +327,7 @@ const orderDetails = async (req, res) => {
     const user = await Users.findOne({ email: req.session.email })
     const orderId = req.params.id;
     console.log(orderId);
-    const orderData = await order.find({ _id: orderId }).populate('Items.productId');
+    const orderData = await Orders.find({ _id: orderId }).populate('Items.productId');
     console.log(orderData, "*****************************");
 
 
@@ -318,7 +348,7 @@ const cancellOrder = async (req, res) => {
 
     if (orderData.Status !== 'Delivered') {
       orderData.Status = 'Cancelled';
-      if (orderData.paymentMethod === 'online' || orderData.paymentMethod === 'wallet') {
+      if (orderData.paymentMethod === 'Online' || orderData.paymentMethod === 'wallet') {
         const userData = await Users.findOne({email:req.session.email});
        
         userData.wallet.amount += orderData.TotalPrice;
@@ -463,23 +493,24 @@ const returnOrder = async (req, res) => {
       return res.status(404).json({ message: 'Item not found' });
     }
 
-    orderData.Items[itemIndex].status = 'return'
-    const returnQuantity=itemReturn.quantity
-    console.log(returnQuantity);
-    
-    await orderData.save();
-   
     const product = await productUpload.findById(itemReturn.productId);
     console.log(product,'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+    orderData.Items[itemIndex].status = 'return'
+    const returnQuantity=itemReturn.quantity
+    const price = product.DiscountAmount*returnQuantity; 
+
+    console.log(returnQuantity);
+    orderData.TotalPrice-=price
+    await orderData.save();
+   
     const user= await Users.findOne({email:req.session.email})
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',user);
     const userId = user._id; 
     console.log('!!!!!!!!!!!!!',userId);
     const productId = product._id; 
-    const price = product.DiscountAmount*returnQuantity; 
    
     const returnedDate = new Date();
     const orderDate = orderData.OrderDate;
@@ -524,7 +555,6 @@ const generateInvoices = async (req, res) => {
     const ordersId = orderDetails[0]._id;
 
     console.log(ordersId);
-
     if (orderDetails) {
       console.log("genarating...");
       const invoicePath = await generateInvoice(orderDetails);

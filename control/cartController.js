@@ -9,6 +9,7 @@ const cart = require('../models/cart');
 const Users = require("../models/users");
 const { ObjectId } = require("mongodb");
 const Coupons=require("../models/coupon")
+const Orders=require("../models/orders")
 // const =async (req,res)=>{
 //     console.log(";oaseht.........>>>>>>>>>>>>>>>>>>>");
 //     try {
@@ -61,15 +62,16 @@ const Coupons=require("../models/coupon")
 
 
 const addToCart = async (req, res) => {
-  // console.log("Adding to cart...");
+  console.log("Adding to cart...");
   try {
     const user = await Users.findOne({ email: req.session.email });
     // console.log("User adding to cart: ", user);
     const userId = user._id;
     console.log("User ID: ", userId);
     const { itemId } = req.body;
-    // console.log("Item ID:..............", itemId);
-    let productId = itemId;
+    console.log("Item ID:..............",itemId,'.......................');
+    let productId = req.body.itemId;
+    console.log("----------",productId);
     let cartData = await cart.findOne({ userId: userId });
 
     console.log("Cart Data: ", cartData);
@@ -158,14 +160,54 @@ const toCart = async (req, res) => {
   try {
     const email = req.session.email;
     const user = await Users.findOne({ email: email });
+    const error = req.query.error
     // console.log('user>>>>>>>>>>>>>>>>',user);
     if (!user) {
 
       return res.status(404).render('user/404Page');
     }
     const userId = user._id;
-
-    // console.log("**************",userId);
+    const order = await Orders.findOne({
+      UserID: userId,
+      paymentMethod: 'online',
+      paymentStatus: 'Pending'
+    });
+    
+    let orderId = order ? order._id : null;
+   
+if (orderId) {
+  try {
+      const orderData = await Orders.findById(orderId);
+          for (const orderItem of orderData.Items) {
+              const productId = orderItem.productId;
+              const quantity = orderItem.quantity;
+              let userCart = await cart.findOne({ userId: userId });
+              if (!userCart) {
+                  userCart = new cart({
+                      userId: userId,
+                      products: [],
+                      TotalAmount: 0,
+                  });
+              }
+              const existingProduct = userCart.products.find(
+                  (product) => product.productId.toString() === productId.toString()
+              );
+              if (existingProduct) {
+                  existingProduct.quantity += quantity;
+              } else {
+                  userCart.products.push({
+                      productId: productId,
+                      quantity: quantity,
+                  });
+              }
+              console.log("1233469893yijbiufqf");
+              await userCart.save();
+          }
+          await Orders.deleteOne({ _id: orderId });
+  } catch (error) {
+      console.error('Error processing order:', error);
+  }
+}
     const newcart = await cart.findOne({ userId: userId }).populate("products.productId");
 
 
@@ -181,6 +223,7 @@ const toCart = async (req, res) => {
         gstAmount: 0,
         totalQuantity: 0,
         user,
+        error
 
       });
     }
@@ -215,6 +258,7 @@ const toCart = async (req, res) => {
       totalQuantity: totalQuantity,
       total: total,
       user,
+      error
     });
 
   } catch (error) {

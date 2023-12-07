@@ -1,8 +1,8 @@
 // offerCron.js
 const cron = require("node-cron");
-const Category = require("../models/category"); // Adjust the path accordingly
-const Product = require("../models/model"); // Adjust the path accordingly
-const Offer = require("../models/CategoryOfferSchema"); // Adjust the path accordingly
+const Category = require("../models/category");
+const Product = require("../models/model");
+const Offer = require("../models/CategoryOfferSchema"); 
 
 const checkOffer = async () => {
   try {
@@ -20,11 +20,9 @@ console.log('.');
           const originalPrice = product.DiscountAmount;
           const discountedPrice = (discountedPrice * 100) / (100 - off.percentage)
 
-          // Update the product price in the database
-          await Product.findByIdAndUpdate(product._id, { DiscountAmount: discountedPrice });
+          await Product.findByIdAndUpdate(product._id, { DiscountAmount: discountedPrice ,$unset: { offer: 1 }});
         });
 
-        // Remove the expired offer
         await Offer.findByIdAndRemove(off._id);
       }
     }
@@ -33,12 +31,12 @@ console.log('.');
   }
 };
 
-cron.schedule("*/10 * * * * *", async () => {
-  try {
-    await checkOffer();
-  } catch (error) {
-    console.error("Error in cron job:", error);
-  }
-});
+// cron.schedule("*/10 * * * * *", async () => {
+//   try {
+//     await checkOffer();
+//   } catch (error) {
+//     console.error("Error in cron job:", error);
+//   }
+// });
 
 module.exports = checkOffer;

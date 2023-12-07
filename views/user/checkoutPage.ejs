@@ -13,39 +13,44 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/user/NewAddAddress" method="post">
+        <form action="/user/NewAddAddress" method="post" onchange="return validationAddAddrerss()">
           <div class="form-group">
           <label for="recipient-name" class="col-form-label">Name:</label>
-          <input type="text" name="name" class="form-control" id="recipient-name" required>
+          <input type="text" name="name" id="name" class="form-control"  required>
+          <div id="name-error" class="text-danger"></div>
         </div>
           <div class="form-group">
           
             <label for="recipient-name" class="col-form-label">Address:</label>
-            <input type="text" name="address" class="form-control" id="recipient-name" required>
+            <input type="text" name="address" id="address" class="form-control"  required>
+            <div id="address-error" class="text-danger"></div>
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">City:</label>
-            <input type="text" name="city" class="form-control" id="recipient-name" required>
+            <input type="text" name="city" class="form-control" id="city" required>
+            <div id="city-error" class="text-danger"></div>
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Pincode:</label>
-            <input type="text" name="pincode" class="form-control" id="recipient-name"
+            <input type="text" name="pincode" class="form-control" id="pincode"
               oninput="this.value = this.value.replace(/[^0-9]/g, '');" pattern="[0-9]*" maxlength="6"
               required>
-            <div id="pincode-validation-message" class="text-danger"></div>
+              <div id="pincode-error" class="text-danger"></div>
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">State:</label>
-            <input type="text" name="state" class="form-control" id="recipient-name" required>
+            <input type="text" name="state" class="form-control" id="state" required>
+            <div id="state-error" class="text-danger"></div>
           </div>
           <div class="form-group">
             <label for="recipient-name" class="col-form-label">Mobile Number:</label>
-            <input type="number" name="number" class="form-control" id="recipient-name" required>
+            <input type="number" name="number" class="form-control" id="number" required>
+            <div id="number-error" class="text-danger"></div>
           </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" id="submit-button" class="btn btn-primary">Add</button>
+        <button type="submit" id="add-submit-button" class="btn btn-primary">Add</button>
       </div>
       </form>
     </div>
@@ -98,7 +103,7 @@
             Add Address
           </a> -->
           <a href="#" class="btn btn-success w-100 shadow-0 mb-2" data-toggle="modal" data-target="#exampleModal"
-          data-whatever="@fat"> Add Address </a>
+          data-whatever="@fat"><i class="fa-solid fa-circle-plus" style="color: #ffffff;"></i> Add Address </a>
 
         
         
@@ -174,17 +179,17 @@
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="paymentMethod" id="wallet" value="wallet" />
                  <label class="form-check-label" data-walletAmount="<%=userData.wallet.amount%>" id="<%=TotalPrice%>" for="wallet">
-              Pay Using Wallet (Available Wallet Balance: <%=userData.wallet.amount%>)
+              Pay Using Wallet (Available Wallet Balance: <%=userData.wallet.amount.toFixed(2) %>)
           </label>
               </div>
 
               <!-- Add the "Pay Using Wallet" radio button here -->
 
               <div class="justify-content-center">
-                <button class="btn btn-success mt-4" id="pay-button" type="submit">
+                <button class="btn mt-4" style="color:#fff; background-color: rgb(0, 175, 0);" id="pay-button" type="submit">
                   Confirm Order
                 </button>
-                <a href="/home"><button class="btn btn-secondary mt-4" type="button">Back to Shop</button></a>
+                <a href="/home"><button class="btn mt-4" style="color: rgb(255, 255, 255); background-color: rgb(121, 121, 121);" type="button">Back to Shop</button></a>
               </div>
             </div>
           </div>
@@ -195,7 +200,7 @@
     </div>
   </form>
 
-  <!-- Add this div to your HTML body -->
+  <!-- ----------------------Alert------------------------------------------- -->
 <div class="modal" id="customAlertModal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content ">
@@ -206,7 +211,7 @@
         </button>
       </div>
       <div class="modal-body" id="customAlertBody">
-        <!-- Your alert message will be displayed here -->
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
@@ -214,26 +219,115 @@
     </div>
   </div>
 </div>
+<!------------------Alert------------------------------->
+<div id="customAlert" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ff6363; padding: 20px; border: 1px solid #ff0000; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center;">
+  <p id="customAlertMessage" style="color: #fff;"></p>
+  <button onclick="closeCustomAlert()" style="background-color: #ff0000; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; float: right;">OK</button>
+</div>
 
+
+<!------------------------------------------------------------------->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@clientIO/rave-js@3"></script>
 <script>
+
+function validationAddAddrerss(addressId) {
+    const name = document.getElementById(`name`).value.trim();
+    const address = document.getElementById(`address`).value.trim();
+    const city = document.getElementById(`city`).value.trim();
+    const pincode = document.getElementById(`pincode`).value.trim();
+    const state = document.getElementById(`state`).value.trim();
+    const number = document.getElementById(`number`).value.trim();
+
+    const nameValidationMessage = document.getElementById(`name-error`);
+    const addressValidationMessage = document.getElementById(`address-error`);
+    const cityValidationMessage = document.getElementById(`city-error`);
+    const pincodeValidationMessage = document.getElementById(`pincode-error`);
+    const stateValidationMessage = document.getElementById(`state-error`);
+    const numberValidationMessage = document.getElementById(`number-error`);
+    const submitButton = document.getElementById(`add-submit-button`);
+
+    let isValid = true;
+
+    if (!name) {
+        nameValidationMessage.textContent = 'Name is required';
+        isValid = false;
+    } else {
+        nameValidationMessage.textContent = '';
+    }
+
+    if (!address) {
+        addressValidationMessage.textContent = 'Address is required';
+        isValid = false;
+    } else {
+        addressValidationMessage.textContent = '';
+    }
+
+    if (!city) {
+        cityValidationMessage.textContent = 'City is required';
+        isValid = false;
+    } else {
+        cityValidationMessage.textContent = '';
+    }
+
+    if (!pincode) {
+        pincodeValidationMessage.textContent = 'Pincode is required';
+        isValid = false;
+    }else if(pincode.length < 6){
+      pincodeValidationMessage.textContent = 'Pincode is 6 digit required';
+        isValid = false;
+    } else {
+        pincodeValidationMessage.textContent = '';
+    }
+
+    if (!state) {
+        stateValidationMessage.textContent = 'State is required';
+        isValid = false;
+    } else {
+        stateValidationMessage.textContent = '';
+    }
+
+    if (!number) {
+        numberValidationMessage.textContent = 'Number is required';
+        isValid = false;
+        console.log('isValid:1', isValid)
+    }else if(number.length!==10){
+      numberValidationMessage.textContent = 'Number Must Be 10';
+      isValid = false;
+    }
+     else {
+        numberValidationMessage.textContent = '';
+        console.log('isValid:0', isValid)
+    }
+    console.log('isValid:-1', isValid);
+
+    submitButton.disabled = !isValid;
+
+    return isValid;
+}
+//------------------------------------------------------------------------------------------------------------------------
+  function showCustomAlert(msg) {
+  document.getElementById('customAlertMessage').innerText = msg;
+  document.getElementById('customAlert').style.display = 'block';
+}
+
+function closeCustomAlert() {
+  document.getElementById('customAlert').style.display = 'none';
+}
+//___________________________________________________________________________________________________________
   function showAlert(message, type) {
   const alertBody = document.getElementById('customAlertBody');
   
-  // Set the message and style based on the type
   alertBody.innerHTML = message;
   alertBody.className = `modal-body ${type}`;
 
-  // Show the modal
   $('#customAlertModal').modal('show');
 }
-
+//----------------------------------------------------------------------------------------------------------------------
  function applyCoupon() {
         const couponCode = document.getElementById('couponCode').value;
-
         fetch('/apply-coupon', {
                 method: 'POST',
                 headers: {
@@ -244,10 +338,8 @@
                 }),
             })
             .then(response => response.json())
-            .then(data => {
-              
-              if (data.success) {
-                 
+            .then(data => {    
+              if (data.success) {                
                   showAlert('Coupon applied successfully', 'success');
                  console.log('Coupon applied successfully');
                  $('#grandTotal').text(data.grandTotal);
@@ -263,11 +355,12 @@
             });
     }
 
+
+//------------------------------------------------------------------------------------------------------------------------
   document.getElementById('form-checkout').addEventListener('submit', async (e) => {
     e.preventDefault();
     const selectedAddress = document.querySelector('input[name="Address"]:checked');
     const selectedAddressValue = selectedAddress ? selectedAddress.value : null;
-
     if (!selectedAddress) {
       Swal.fire({
         icon: 'error',
@@ -276,7 +369,6 @@
       });
       return;
     }
-
     const walletAmount = $("input[name='paymentMethod']:checked").val()
       if(walletAmount === "wallet"){
         const labelElement = document.querySelector('label[for="wallet"]');
@@ -314,6 +406,11 @@
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const result = await response.json();
+      if(result.productAvailability){
+        const msg = result.message;
+        showCustomAlert(msg)
+        return
+      }
       if (result.codSuccess) {
         window.location = '/ordersuccess';
       } else if(result.online) {
@@ -324,7 +421,7 @@
       console.error('Error:', error);
     }
   });
-
+//------------------------------------------------------------------------------------------------------------
 
   function razorpayHandler(payment, order) {
     console.log("Inside handler", payment, order);
@@ -345,6 +442,7 @@
             console.log('Response received successfully');
             window.location.href = '/ordersuccess'; 
         } else {
+          
             console.log('Response not received');
             window.location.href = ''; 
         }
@@ -353,7 +451,7 @@
         console.error('Fetch error:', error);
     });
 }
-
+//-----------------------------------------------------------------------------------------------------------------
 function razOrPay(order) {
     var options = {
         "key": "rzp_test_0Qv1w8OcPzkkWY",

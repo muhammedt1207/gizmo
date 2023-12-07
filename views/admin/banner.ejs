@@ -27,14 +27,11 @@
     // Check if a file is selected
     if (fileInput.files.length > 0) {
       const reader = new FileReader();
-      console.log("reader,,,,,,");
       reader.onload = function (e) {
         selectedImage.src = e.target.result;
       };
-      console.log("adskfoawiehefoaweoifooieef");
       reader.readAsDataURL(fileInput.files[0]);
     } else {
-      console.log("123456789012345678912345678");
       selectedImage.src = "/banner-image/cropped_images/<%=latestBanner.image%>";
     }
   }

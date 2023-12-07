@@ -6,8 +6,12 @@ const salesReport=async(req,res)=>{
     try {
       const orders = await Order.find({
         Status: {
-          $nin:["returned","Cancelled","Rejected"]
+          $nin: ["returned", "Cancelled", "Rejected"]
         }
+      }).populate({
+        path: 'Items.productId',
+        model: 'productUpload',
+        select: 'Category',
       });
   
       const orderCountsByDay = {};
@@ -16,9 +20,11 @@ const salesReport=async(req,res)=>{
       const totalAmountByMonthYear = {};
       const orderCountsByYear = {};
       const totalAmountByYear = {};
+      const orderCountsByCategory = {};
       let labelsByCount;
       let labelsByAmount;
-     
+      let labelsByCategory;
+
       orders.forEach((order) => {
   
         const orderDate = moment(order.OrderDate, "M/D/YYYY, h:mm:ss A");
@@ -71,7 +77,15 @@ const salesReport=async(req,res)=>{
           dataByCount = ordersByDay.map((entry) => entry.count);
           dataByAmount = amountsByDay.map((entry) => entry.total);
   
-         
+          order.Items.forEach((product) => {
+          const category = product.productId.Category;
+
+          if (!orderCountsByCategory[category]) {
+            orderCountsByCategory[category] = 1;
+          } else {
+            orderCountsByCategory[category]++;
+          }
+        });
   
         } else if (req.url === "/count-orders-by-month") {
           if (!orderCountsByMonthYear[monthYear]) {
@@ -107,6 +121,15 @@ const salesReport=async(req,res)=>{
           );
           dataByCount = ordersByMonth.map((entry) => entry.count);
           dataByAmount = amountsByMonth.map((entry) => entry.total);
+          order.Items.forEach((product) => {
+            const category = product.productId.Category;
+  
+            if (!orderCountsByCategory[category]) {
+              orderCountsByCategory[category] = 1;
+            } else {
+              orderCountsByCategory[category]++;
+            }
+          });
         } else if (req.url === "/count-orders-by-year") {
           // Count orders by year
           if (!orderCountsByYear[year]) {
@@ -133,11 +156,29 @@ const salesReport=async(req,res)=>{
           labelsByAmount = amountsByYear.map((entry) => entry._id);
           dataByCount = ordersByYear.map((entry) => entry.count);
           dataByAmount = amountsByYear.map((entry) => entry.total);
+          order.Items.forEach((product) => {
+            const category = product.productId.Category;
+  
+            if (!orderCountsByCategory[category]) {
+              orderCountsByCategory[category] = 1;
+            } else {
+              orderCountsByCategory[category]++;
+            }
+          });
         }
       });
-  
-      
-      res.json({ labelsByCount,labelsByAmount, dataByCount, dataByAmount });
+      const ordersByCategory = Object.keys(orderCountsByCategory).map((category) => ({
+        _id: category,
+        count: orderCountsByCategory[category],
+      }));
+      ordersByCategory.sort((a, b) => (a.count < b.count ? 1 : -1));
+
+      // Set labels and data for category chart
+      labelsByCategory = ordersByCategory.map((entry) => entry._id);
+      const dataByCategory = ordersByCategory.map((entry) => entry.count);
+    
+      console.log(dataByCategory,'--------',labelsByCategory);
+      res.json({ labelsByCount,labelsByAmount, dataByCount, dataByAmount, dataByCategory,labelsByCategory  });
       
   
     } catch (error) {
@@ -146,12 +187,10 @@ const salesReport=async(req,res)=>{
   }
   
   
+
+
 const getOrdersAndSellers=async(req,res)=>{
     try {
-      
-    
-     
-    
       const bestSeller = await Order.aggregate([
         {
           $unwind: "$Items",
@@ -184,11 +223,7 @@ const getOrdersAndSellers=async(req,res)=>{
       ]);
       
       if (!bestSeller) throw new Error("No Data Found");
-      for(let i=0;i<5;i++){
-        console.log(bestSeller[i],"...............");
-        console.log(bestSeller.ProductName,";;;;;;;;;;;;;");
-      }
-      console.log(bestSeller,"====================");
+     
       res.json({  bestSeller });
     
     
@@ -207,6 +242,9 @@ const getOrdersAndSellers=async(req,res)=>{
         endDate.setHours(23, 59, 59, 999);
     
         const orders = await Order.find({
+          Status: {
+            $nin: ["returned", "Cancelled", "Rejected"]
+          },
           paymentStatus: { $in: ["Paid", "Pending"] },
           OrderDate: {
             $gte: startDate,

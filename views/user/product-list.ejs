@@ -82,30 +82,15 @@
           <!-- Product List -->
           <div class="col-lg-9 ">
               <div id="productList" class="z-n1">
-                  <!-- The products will be loaded here dynamically -->
+                 <!-------------------------------------------------------->
               </div>
+              <div id="paginationControls" class="d-flex justify-content-center mt-4"></div>
+
           </div>
       </div>
   </div>
   <hr />
   <!-- Pagination -->
-<nav aria-label="Page navigation example" class="d-flex justify-content-center mt-3" id="pagination-navbar">
-  <ul class="pagination">
-      <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
-          <a class="page-link" href="<%= page <= 1 ? '#' : '/user/toProduct-list?page=' + (page - 1) %>" style="color: black;" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-          </a>
-      </li>
-      <li class="page-item">
-          <a class="page-link" href="/user/toProduct-list?page=<%= page %>" style="color: black"><%= page %></a>
-      </li>
-      <li class="page-item <%= page >= Count ? 'disabled' : '' %>">
-          <a class="page-link" href="<%= page >= Count ? '#' : '/user/toProduct-list?page=' + (page + 1) %>" style="color: black;" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-          </a>
-      </li>
-  </ul>
-</nav>
 
 </section>
 <script>
@@ -154,23 +139,84 @@
       });
   };
 
-   const fetchAllProducts = () => {
+  const itemsPerPage = 3; // Adjust the number of items per page as needed
+  let currentPage = 1;
+
+  const productlist = document.getElementById('productList');
+  const paginationControls = document.getElementById('paginationControls');
+
+  const fetchAllProducts = () => {
     fetch('/all-products')
       .then((response) => response.json())
       .then((data) => {
-        productList.innerHTML = '';
-        data
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        const filteredData = data
           .filter((x) => x.status === true && x.AvailableQuantity > 0)
-          .forEach((x) => {
-            const productElement = document.createElement('div');
-            productElement.innerHTML = '<br><a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a>';
-            productList.appendChild(productElement);
-          });
+          .slice(startIndex, endIndex);
+
+        productList.innerHTML = '';
+
+        filteredData.forEach((x) => {
+          // Your existing code for creating product elements here
+          const productElement = document.createElement('div');
+          productElement.innerHTML = '<br><a id="special-link" href="/user/toProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a> ';
+          productList.appendChild(productElement);
+        });
+
+        // Create pagination controls
+        createPaginationControls(data.length);
       })
       .catch((error) => {
         console.error('Error fetching products:', error);
       });
   };
+
+  const createPaginationControls = (totalItems) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Clear previous pagination controls
+    paginationControls.innerHTML = '';
+
+    // Create previous button
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = 'Previous';
+    prevButton.className = 'btn btn-primary me-2';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        fetchAllProducts();
+      }
+    });
+
+    // Create next button
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = 'Next';
+    nextButton.className = 'btn btn-primary';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        fetchAllProducts();
+      }
+    });
+
+    // Append pagination controls to the DOM
+    paginationControls.appendChild(prevButton);
+    paginationControls.appendChild(document.createTextNode(` Page ${currentPage} of ${totalPages} `));
+    paginationControls.appendChild(nextButton);
+  };
+
+  // Initial fetch when the page loads
+  window.addEventListener('load', fetchAllProducts);
+
+  // Initial fetch when the page loads
+  fetchAllProducts();
+  if (!window.location.search.includes('q=')) {
+      window.addEventListener('load', fetchAllProducts);
+    }
 
   window.addEventListener('load', fetchAllProducts);
 </script>
