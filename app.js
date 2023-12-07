@@ -5,7 +5,6 @@ const app = express();
 const session = require('express-session');
 const morgan = require('morgan');
 const nocache = require('nocache');
-const passport = require('./auth/passport');
 const flash=require('connect-flash')
 const bodyParser = require('body-parser');
 const cronJob=require('./util/cronJob')
@@ -28,8 +27,7 @@ app.use(session({
 }));
 
 app.use(cookieParser())
-app.use(passport.initialize());
-app.use(passport.session());
+
 app.use(express.urlencoded({extended:true}))
 
 
