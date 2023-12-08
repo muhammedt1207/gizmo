@@ -13,8 +13,7 @@ const sendOTP=async (email)=>{
         
         //clear old otp
         await OTP.deleteOne({email})
-        console.log("delete OTP and new OTP sended");
-        //generate new otp
+        
         const generatedOTP=await generateOTP();
 
         //sending email to the user
@@ -25,13 +24,10 @@ const sendOTP=async (email)=>{
             html:`<p>Hello new user use the this otp to verify your email to continue </p><p style="color:tomato;font-size:25px;letter-spacing:2px;">
             <b>${generatedOTP}</b></p><p>OTP will expire in<b> 10 minute(s)</b>.</p>`
         }
-        console.log("email is sending");
-        await sendEmail(mailOptions);
-         console.log("email send successfull");
-        //save otp record
         
-        // const hashedData=await bcrypt.hash(generatedOTP,10);
-        // console.log('hashed data'+hashedData);
+        await sendEmail(mailOptions);
+      
+      
         function addMinutesToDate(date, minutes) {
             return new Date(date.getTime() + minutes * 60000); // 60000 milliseconds in a minute
           }

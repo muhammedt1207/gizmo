@@ -318,8 +318,9 @@
                     },
                     body: JSON.stringify(data),
                 })
+                .then((response) => response.json())
                 .then((response) => {
-                    if (response.ok) {
+                    if (response.success) {
                         Swal.fire({
             icon: 'success',
             title: 'Password Changed Successfully!',
@@ -328,6 +329,14 @@
         });
                         $('#exampleModal').modal('hide');
                         console.log('Password changed successfully');
+    }else if(response.success==false){
+        Swal.fire({
+            icon: 'error',
+            title: response.error,
+            showConfirmButton: false,
+            timer: 1500
+        });
+    
                     } else {
                         // Password change failed, display an error message
                         passwordWarning.textContent = 'Password change failed.';

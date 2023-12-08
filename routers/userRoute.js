@@ -28,6 +28,9 @@ user.get('/user/indexToLogin',userAuth.userExist,userControl.IndexToLogin)
 user.post("/user/log",userAuth.userExist,userControl.userLogin);
 user.get('/',userAuth.userExist,userControl.tohome)  
 
+//index
+user.get('/user/guestProductView/:id',userAuth.userExist,userControl.GuestRpoductView)
+user.get('/user/guestShop',userAuth.userExist,userControl.GuestShop)
 //signup 
 user.get("/user/tologin",userAuth.userExist,userControl.signupToLog)
 // user.get('/logout',userAuth.userExist,userControl.logout)
@@ -84,7 +87,7 @@ user.get('/user/toAccountSettings',userAuth.verifyUser,userControl.toAccountSett
 user.post('/user/change-password',userAuth.verifyUser, passwordController.changePass);
 
 //------------------------------------------------------------------------------
-user.get('/filter-products',userAuth.verifyUser,filterController.filter)
+user.get('/filter-products',filterController.filter)
 user.get('/all-products',filterController.allproduct)
 
 

@@ -23,11 +23,9 @@ const loginadmin = async (req, res) => {
     const Email = req.body.email;
     const Password = req.body.password;
     if (Email === credential.email && Password === credential.password) {
-        console.log('Admin logged');
         req.session.adminlogged = true;
         res.render('./admin/dashboard', { title: 'dashboard', err: false });
     } else {
-        console.log('Admin logging failed');
         res.render('./admin/login', { err: 'Invalid password or email' });
     }
 };
@@ -50,7 +48,6 @@ const toProduct = (req, res) => {
 }
 
 const signout = async (req, res) => {
-    console.log('Signout');
     req.session.adminlogged = false;
     res.redirect('/');
 };
@@ -63,9 +60,7 @@ const signout = async (req, res) => {
 
 //------------------------------------------<<<<<<<<<<<USER MANEGEMENT>>>>>>>>>>>>>>>>>-----------------------------------
 const UserStatus = async (req, res) => {
-    console.log('This is userstatus');
     const id = req.params.id;
-    console.log('Receive request ' + id);
 
     const user = await users.findOne({ _id: id });
 
@@ -77,8 +72,6 @@ const UserStatus = async (req, res) => {
         { _id: id },
         { $set: { status: newStatus } }
     );
-
-    console.log(`User ${user.userName} is ${newStatus ? 'unblocked' : 'blocked'}`);
     res.redirect('/admin/costomers');
 };
 
@@ -100,7 +93,6 @@ const userDataSharing = async (req, res) => {
 
 const categoryData = async (req, res) => {
     const data = await Category.find();
-    console.log("this is catogory data");
     res.render('./admin/catogory', { title: 'category', categoryData: data });
 };
 
@@ -126,7 +118,7 @@ const toproducts = async (req, res) => {
             page: page
         });
     } catch (error) {
-        console.log('An error occurred', error);
+        console.error('An error occurred', error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -141,7 +133,7 @@ const productData = async (req, res) => {
         const data = await productUpload.find();
         res.render('admin/products', { title: 'category', data });
     } catch (error) {
-        console.log('An error occurred', error);
+        console.error('An error occurred', error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -166,11 +158,9 @@ const addProduct = async (req, res) => {
         });
 
         if (uploaded) {
-            console.log('Product added');
             res.redirect('/admin/toproducts');
         }
     } catch (error) {
-        console.log('An error happened');
         throw error;
     }
 };
@@ -179,10 +169,9 @@ const addProduct = async (req, res) => {
 
 const toEditProduct = async (req, res) => {
     const id = req.params.id;
-    console.log("to edit product");
+
     const data = await productUpload.findOne({ _id: id });
 const catogory=await Category.find()
-    console.log(data);
     res.render("admin/edit-product", { data,catogory });
 }
 
@@ -192,14 +181,10 @@ const EditProduct = async (req, res) => {
     try {
         let id = req.params.id;
         const productDetails = req.body;
-        console.log("asss", productDetails);
-        console.log(req.files, '>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
         const files = req.files;
 
-        console.log("...........", files);
         const ProductData = await productUpload.findById(id);
         if (!ProductData) {
-            console.log("ProductData not found");
             return res.render('errorView/404admin')
         }
 
@@ -230,32 +215,32 @@ const EditProduct = async (req, res) => {
             const imageName = `image${i}`;
             if (files && files[imageName]) {
                 updateData.images[i] = files[imageName][0].filename;
-                console.log("product image changing");
+       
             } else {
                 updateData.images[i] = ProductData.images[i]
-                console.log("product image not changing");; // Use the existing image if not updated
+        
             }
         }
 
         const uploaded = await productUpload.updateOne({ _id: id }, { $set: updateData });
-        console.log("........", uploaded);
+      
         if (uploaded) {
-            console.log('Product updated');
+      
             res.redirect('/admin/toproducts');
         } else {
-            console.log('Failed to update product');
+           
         }
     } catch (error) {
-        console.log('An error happened');
+      
         throw error;
     }
 };
 
 
 const deleteProduct = async (req, res) => {
-    console.log('This is delete Product');
+    
     const id = req.params.id;
-    console.log('Receive request ' + id);
+
 
     const data = await productUpload.findOne({ _id: id });
 
@@ -268,7 +253,7 @@ const deleteProduct = async (req, res) => {
         { $set: { status: newStatus } }
     );
 
-    console.log(`product ${data.ProductName} is ${newStatus ? 'unBanned' : 'Banned'}`);
+
     res.redirect('/admin/toproducts');
 };
 
@@ -278,19 +263,19 @@ const deleteProduct = async (req, res) => {
 
 const deleteImage = async (req, res) => {
     try {
-        console.log('product image deleting');
+        
         const productId = req.params.id;
-        console.log("product id", productId);
+
         const imageIndex = req.params.index;
-        console.log("image index", imageIndex);
+      
 
         const product = await productUpload.findById(productId);
-        console.log("Product", product);
+       
         if (!product) {
             res.status(404).send('Product not found');
             return;
         }
-        console.log("..............", product);
+        
         product.images.splice(imageIndex, 1);
 
         await product.save();
@@ -323,7 +308,7 @@ const addCategory = async (req, res) => {
         if (check.length === 0) {
             const insert = await Category.create(data);
 
-            console.log('Category added');
+           
             res.status(201).json({ message: 'Category Added' });
         } else {
             res.status(409).json({ err: 'Category Already Exists' });
@@ -344,7 +329,7 @@ const deleteCatagory = async (req, res) => {
         res.redirect('/admin/catogory');
     } catch (error) {
         req.render('admin/404')
-        console.log('Error occurred while deleting category');
+     
     }
 };
 
@@ -354,14 +339,14 @@ const deleteCatagory = async (req, res) => {
 const editCatagory = async (req, res) => {
     try {
         const id = req.params.id;
-        console.log(id);
+      
 
         const catagory = await Category.findOne({ _id: id });
-        console.log("this Edit catogory");
+      
         res.render("admin/edit-catogory", { catagory });
     } catch (error) {
         res.render('admin/404')
-        console.log("an error occured while editing the catagory");
+       
     }
 }
 
@@ -369,7 +354,7 @@ const afterEditCatagory = async (req, res) => {
     try {
         const id = req.params.id;
         const catagoryname = req.body.catagoryname;
-        console.log(catagoryname,'////',id);
+
         const uppercaseCategoryName = catagoryname.toUpperCase();
 
         const categoryExist=await Category.findOne({ CategoryName: uppercaseCategoryName})
@@ -386,10 +371,10 @@ const afterEditCatagory = async (req, res) => {
             { new: true } // This ensures that the returned value is the updated document
         );
 
-        console.log("Editing is done");
+
         res.json({ success: true, updatedCategory });
     } catch (error) {
-        console.log("Error occurred while updating category:", error);
+    
         res.status(500).json({ success: false, error: "Internal Server Error" });
     }
 };
@@ -423,19 +408,16 @@ const toOrders = async (req, res) => {
 const orderStatus = async (req, res) => {
     try {
         const orderId = req.params.orderId;
-        //   console.log('mmmmmmmmm',orderId);
-        const newStatus = req.body.status;
-        //   console.log('>>>>>>>>>>>>>',newStatus);  
+       
+        const newStatus = req.body.status;  
         const order = await orders.findByIdAndUpdate(orderId, { Status: newStatus });
-
-        // console.log('...............',order);
         if (order) {
             res.json({ success: true });
         } else {
             res.json({ success: false });
         }
     } catch (error) {
-        console.log("Updating status error");
+        
         res.render('admin/404')
         res.status(500).json({ success: false, error: "Internal Server Error" });
     }
@@ -445,25 +427,8 @@ const orderStatus = async (req, res) => {
 const orderview = async (req, res) => {
     try {
         const orderId = req.params.id;
-        // if (!mongoose.Types.ObjectId.isValid(orderId)) {
-        //     // Handle invalid ObjectId here (e.g., return an error response)
-        //     return res.status(400).send('Invalid ObjectId');
-        // }
-        console.log(orderId);
+     
         const orderData = await orders.findOne({ _id: orderId }).populate('Items.productId');
-        console.log(">>>>>>>>>>>>>", orderData);
-        // const addressId = new mongoose.Types.ObjectId(orderData.Address);
-        // console.log("@@@@@@@@@@",orderData.UserID);
-        // const userData = await users.findOne({ _id: orderData.UserID });
-
-        // if (!userData) {
-        //     console.error('User not found');
-        //     return res.render('admin/404');
-        // }
-        // console.log("^^^^^^",userData);
-        // const Address = userData.address.find((address) => address._id.equals(addressId));
-        // console.log("************",Address);
-
         res.render('admin/OrderDetialsView', { orderData })
 
     } catch (error) {
@@ -475,62 +440,13 @@ const orderview = async (req, res) => {
 
 
 
-const Addbanner = async (req, res) => {
-    const productDetails = req.body;
-    console.log("this add banner", productDetails);
-    try {
-        const uploadedImage = req.file;
-        console.log("hi  >>>>>>>", uploadedImage);
-
-        if (!uploadedImage) {
-            console.log('No image uploaded');
-
-        }
-        const supportedFormats = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'image/tiff', 'image/avif'];
-
-        if (!supportedFormats.includes(uploadedImage.mimetype)) {
-            console.log('Unsupported image format');
-            return res.redirect('/banner');
-        }
-
-
-        const currentDate = new Date();
-
-        const newBanner = new banner({
-            image: uploadedImage.filename,
-            date: currentDate,
-        });
-
-        const savedBanner = await newBanner.save();
-        const latestBanner = await banner.findOne({}, {}, { sort: { date: -1 } });
-        if (savedBanner) {
-            console.log('Banner added');
-            res.render('admin/banner', { latestBanner })
-        } else {
-            console.log('Error saving the banner');
-            res.render('admin/404');
-        }
-    } catch (error) {
-        console.log('An error happened');
-        res.render('admin/404')
-        throw error;
-    }
-}
-
 const changeBanner = async (req, res) => {
 
     try {
         const uploadedImage = req.file;
-        console.log("hi  >>>>>>>", uploadedImage);
-
-        if (!uploadedImage) {
-            console.log('No image uploaded');
-        }
-
         const supportedFormats = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml', 'image/tiff', 'image/avif'];
 
         if (!supportedFormats.includes(uploadedImage.mimetype)) {
-            console.log('Unsupported image format');
             return res.redirect('/banner');
         }
         const imageBuffer = fs.readFileSync(uploadedImage.path);
@@ -538,10 +454,10 @@ const changeBanner = async (req, res) => {
         const croppedImageBuffer = await sharp(imageBuffer)
             .resize({ width: 750, height: 279, fit: sharp.fit.cover })
             .toBuffer();
-        console.log(croppedImageBuffer, "image cropp image success................................");
+   
         const savePath = path.join(__dirname, '../public/banner-image/cropped_images');
         const fileName = uploadedImage.originalname;
-        console.log(savePath, "!!!!!!!!!!!!!!!!!");
+    
         fs.writeFileSync(path.join(savePath, fileName), croppedImageBuffer);
         const currentDate = new Date();
         const newBanner = new banner({
@@ -552,13 +468,13 @@ const changeBanner = async (req, res) => {
 
         const savedBanner = await newBanner.save();
         const latestBanner = await banner.findOne({}, {}, { sort: { date: -1 } });
-        console.log('latestBanner.image:', latestBanner.image);
+
 
         if (savedBanner) {
-            console.log('Banner added');
+         
             res.render('admin/banner', { latestBanner });
         } else {
-            console.log('Error saving the banner');
+       
             res.render('admin/404');
         }
     } catch (error) {
@@ -572,20 +488,20 @@ const changeBanner = async (req, res) => {
 
 
 const toReturnPage = async (req, res) => {
-    console.log("return page");
+
     const returns = await Returns.find().sort({returnedDate:-1})
     res.render('admin/return', { returns })
 }
 
 const verifyReturn = async (req, res) => {
     try {
-        console.log("_________------------_____________");
+       
         const orderId = req.params.id
         const returnOrder = await Returns.findOne({ _id: orderId })
-        console.log(returnOrder);
+     
         returnOrder.Status = "Verified"
         returnOrder.save()
-        console.log("return status shanged.....", returnOrder);
+ 
         const updatedUser = await Users.findByIdAndUpdate(
             { _id: returnOrder.userId },
             {
@@ -601,7 +517,7 @@ const verifyReturn = async (req, res) => {
             },
             { new: true }
           );
-        console.log("user wallet updated...........", updatedUser);
+
         if (!returnOrder) {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
@@ -619,9 +535,9 @@ const returnView = async (req, res) => {
      
         const returnData=await Returns.findById(returnId)
         const orderId=returnData.orderId
-        console.log(orderId);
+       
         const orderData = await orders.findOne({ _id: orderId }).populate('Items.productId').sort({returnedDate:-1});
-        console.log(">>>>>>>>>>>>>", orderData);
+        
 
 
         res.render('admin/OrderDetialsView', { orderData,returnData })
@@ -643,7 +559,7 @@ const toCoupens = async (req, res) => {
 const userSearch = async (req, res) => {
     var i = 0;
     const getdata = req.body;
-    console.log(getdata);
+   
     let userData = await users.find({
         userName: { $regex: "^" + getdata.search, $options: "i" },
     });
@@ -661,11 +577,11 @@ const productSearch = async (req, res) => {
     const totalOrder = Math.ceil(count / pageSize);
     const skip = (page - 1) * pageSize;
     const getdata = req.body;
-    console.log(getdata);
+
     let data = await productUpload.find({
         ProductName: { $regex: "^" + getdata.search, $options: "i" },
     }).skip(skip).limit(pageSize)
-    console.log(`Search Data ${data} `);
+   
     res.render("./admin/products", {
         title: "Home", data, i, productDataCount: totalOrder,
         page: page
@@ -697,7 +613,7 @@ module.exports = {
     orderStatus,
     orderview,
     deleteImage,
-    // Addbanner,
+  
     toReturnPage,
     verifyReturn,
     toCoupens,

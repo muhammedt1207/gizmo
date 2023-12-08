@@ -1,0 +1,186 @@
+<%- include('./partial/dataheader') -%>
+
+    <style>
+        /* Custom CSS to adjust the size of small images */
+        .small-image {
+            max-width: 100px;
+            /* Adjust the max-width as needed */
+        }
+        .add-item-class {
+    background-color: #7bff00; /* Replace with your desired background color */
+}.remove-item-class {
+    background-color: #ff8800; /* Replace with your desired background color */
+}
+.icon-hover:hover {
+  border-color: #3b71ca !important;
+  background-color: white !important;
+  color: #3b71ca !important;
+}
+
+.icon-hover:hover i {
+  color: #3b71ca !important;
+}
+    </style>
+
+  
+<nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded">
+    <div class="container">
+      <a class="navbar-brand" href="/"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;" alt="logo"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      
+      <!-- Centered search bar -->
+      <form class="d-flex mx-auto">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #4f4f4f;"></i></button>
+      </form>
+      <!-- Right-aligned list items -->
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
+        </li>
+        <a href="/user/indexToLogin" style="color: rgb(34, 34, 34);"> <button class="btn btn-outline-dark">login</button></a>
+      </ul>
+    </div>
+  </div>
+</nav>
+<br>
+<br>
+<section class="py-5">
+    <div class="container">
+      <div class="row gx-5">
+        <aside class="col-lg-6">
+            <div class="rounded-4 mb-3 d-flex justify-content-center" id="img-show">
+                  <img style="max-width: 100%; max-height: 100vh; margin: auto;" id="mainImg" class="boarder-0 fit" src="/product-image/<%=data.images[0]%>" />
+                </a>
+              </div>
+              
+              <div class="d-flex justify-content-center align-items mb-3 p-4">
+                <a data-fslightbox="mygalley" id="img1" class="border mx-1 rounded-2 item-thumb">
+                    <img width="80" height="60" class="rounded-2" style="object-fit: fill;" src="/product-image/<%=data.images[0]%>" />
+                </a>
+                <a data-fslightbox="mygalley" id="img2" class="border mx-1 rounded-2 item-thumb">
+                    <img width="60" height="60" class="rounded-2" src="/product-image/<%=data.images[1]%>" />
+                </a>
+                <a data-fslightbox="mygalley" id="img3" class="border mx-1 rounded-2 item-thumb">
+                    <img width="60" height="60" class="rounded-2" src="/product-image/<%=data.images[2]%>" />
+                </a>
+                <a data-fslightbox="mygalley" id="img4" class="border mx-1 rounded-2 item-thumb">
+                    <img width="60" height="60" class="rounded-2" src="/product-image/<%=data.images[3]%>" />
+                </a>
+                
+              </div>
+        </aside>
+        <main class="col-lg-6">
+          <div class="ps-lg-3">
+            <h4 class="title text-dark">
+                <%=data.ProductName%>
+            </h4>
+            <div class="price">
+                <span class="text-muted">Original price: <del>₹<%=data.Price%></del></span>
+                <h4 class="text" style="color: #52aa00;">Price: ₹<%=data.DiscountAmount%>
+                </h4>
+            </div>
+            <p>Specifications:</p>
+                <ul>
+                    <li>
+                        <%=data.Specification1%>
+                    </li>
+                    <li>
+                        <%=data.Specification2%>
+                    </li>
+                    <li>
+                        <%=data.Specification3%>
+                    </li>
+                    <li>
+                        <%=data.Specification4%>
+                    </li>
+                </ul>
+                <p class="font-weight-bold">Description:</p>
+                <p>
+                    <%=data.Description%>
+                </p> 
+            <hr /> 
+            <a href="/user/indexToLogin"><button class="btn" style="background-color: #ffd000; color: #ffffff;" id="addToCartButton"
+             ><i class="fa-solid fa-cart-arrow-down" style="color: #ffffff;"></i>  Add to Cart</button></a>
+        <a href="/user/indexToLogin"><button class="btn"   style="background-color: #ff7b22; color: #ffffff;" id="addToWishlist"><i class="fa-solid fa-heart" style="color: #ffffff;"></i>  Add to Wishlist</button></a>
+    </div>
+        </main>
+      </div>
+    </div>
+  </section>
+  <!-- content -->
+  
+
+<!------------------------------------------------->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script>
+       document.addEventListener("DOMContentLoaded", function () {
+    var options = {
+        width: 400,
+        zoomWidth: 150,
+        offset: { vertical: 30, horizontal: 50 }
+    };
+
+    // Initialize ImageZoom
+    var imgShow = document.getElementById("img-show");
+    var imageZoom = new ImageZoom(imgShow, options);
+
+    // Function to update main image and reinitialize image zoom
+    function updateMainImage(imageSrc) {
+        mainImg.src = imageSrc;
+
+        // Destroy the existing image zoom instance
+        imageZoom.destroy();
+
+        // Reinitialize image zoom for the updated main image
+        imageZoom = new ImageZoom(imgShow, options);
+    }
+
+    // Get references to the thumbnail images and mainImg
+    var img1 = document.getElementById("img1");
+    var img2 = document.getElementById("img2");
+    var img3 = document.getElementById("img3");
+    var img4 = document.getElementById("img4");
+    var mainImg = document.getElementById("mainImg");
+
+    // Add click event listeners to each thumbnail image
+    img1.addEventListener("click", function (event) {
+        event.preventDefault();
+        updateMainImage("/product-image/<%=data.images[0]%>");
+    });
+
+    img2.addEventListener("click", function (event) {
+        event.preventDefault();
+        updateMainImage("/product-image/<%=data.images[1]%>");
+    });
+
+    img3.addEventListener("click", function (event) {
+        event.preventDefault();
+        updateMainImage("/product-image/<%=data.images[2]%>");
+    });
+
+    img4.addEventListener("click", function (event) {
+        event.preventDefault();
+        updateMainImage("/product-image/<%=data.images[3]%>");
+    });
+});
+
+    </script>
+    <script src="/script/js-ImageZoom.js"></script>
+
+<%-include("./partial/footer")%>
+
+

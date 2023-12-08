@@ -1,12 +1,9 @@
 
-const sendOTP = require("./otpController");
-const { use } = require("../routers/adminRoute");
+
 require("../util/otpindex")
-const OTP = require("../models/otpModel");
-const productUpload = require('../models/model');
-const cart=require('../models/cart');
+
 const Users = require("../models/users");
-const order = require ('../models/orders');
+
 const { ObjectId } = require("mongodb");
 const { model } = require("mongoose");
 const moment=require('moment');
@@ -20,7 +17,7 @@ const changePass = async (req, res) => {
       const check = await Users.findOne({ email: req.session.email });
     const oldPassword=req.body.oldPassword
       if (check) {
-        console.log(oldPassword,';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;');
+    
           const isMatch = await bcrypt.compare(oldPassword, check.password);
 
           if (isMatch) {
@@ -28,15 +25,16 @@ const changePass = async (req, res) => {
               const email = req.session.email;
             console.log('=======',pass);
               const update = await Users.updateOne({ email: email }, { $set: { password: pass } });
-            console.log("+++++++",updadte);
+            console.log("+++++++",update);
               return res.json({
                   success: true,
                   message: "Password changed successfully!"
               });
           } else {
+            console.log("else lesleknlselkelkke");
               return res.json({
                   success: false,
-                  error: "Invalid password",
+                  error: "Invalid Old password",
                   message: "Invalid password. Please check your old password."
               });
           }

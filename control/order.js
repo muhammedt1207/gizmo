@@ -20,9 +20,9 @@ const Coupons=require('../models/coupon')
 const rezorpay=require('../service/rezorpay')
 const crypto =require('crypto')
 const sendEmail=require("../util/mail");
+const path = require('path');
 
 const toCheckout = async (req, res) => {
-  console.log("to checkout page");
   const email = req.session.email
   const TotalPrice=req.session.totalPrice
   const grandTotal=req.session.grandTotal
@@ -37,9 +37,7 @@ const toCheckout = async (req, res) => {
       const productData = await productUpload.findOne({ _id: cartProduct.productId });
 
       if (productData && cartProduct.quantity <= productData.AvailableQuantity) {
-        console.log(`Product ${productData.ProductName} has a valid quantity in the cart.`);
       }else {
-        console.log(`Invalid quantity for product ${productData.ProductName}.`);
       }
     }
   }
@@ -55,23 +53,17 @@ const toCheckout = async (req, res) => {
 
 const useCoupon= async (req,res)=>{
   try {
-    console.log("coupon added");
     const {couponCode} = req.body; 
-    console.log(couponCode);
     const userData=await Users.findOne({email:req.session.email})
 
   const cartData=await cart.findOne({userId:userData._id})
-  console.log(".................",cartData);
     const purchaseAmount=req.session.totalPrice
-    console.log(purchaseAmount);
     const coupon = await Coupons.findOne({ CoupenCode: couponCode });
-    console.log(",,,,,,",coupon)
     if (!coupon) {
       return res.json({ success: false, message: 'Coupon not found' });
     }
 
     const isCouponUsed = userData.usedCoupons.some(usedCoupon => usedCoupon.couponCode === couponCode);
-    console.log(isCouponUsed);
     if (isCouponUsed) {
       return res.json({ success: false, message: 'Coupon already used' });
     }
@@ -79,7 +71,6 @@ const useCoupon= async (req,res)=>{
     if (purchaseAmount < coupon.MinAmount) {
       return res.json({ success: false, message: 'Purchase amount does not meet the minimum requirement for the coupon' });
     }
-    console.log("--------",purchaseAmount,coupon.MinAmount);
     if (purchaseAmount < coupon.DiscountAmount) {
       return res.json({ success: false, message: 'Purchase Amount must Greater Than Discount amount' });
     }
@@ -89,19 +80,16 @@ const useCoupon= async (req,res)=>{
     if (currentDate > endDate) {
       return res.json({ success: false, message: 'Coupon has expired' });
     }
-console.log(currentDate,endDate);
   
     const discountedAmount = Math.min(purchaseAmount, coupon.DiscountAmount);
     const totalAfterDiscount = purchaseAmount - discountedAmount;
     req.session.grandTotal=totalAfterDiscount
-    console.log(totalAfterDiscount,"***********");
     userData.usedCoupons.push({
       couponCode: couponCode,
       discountedAmount: discountedAmount,
       usedDate: new Date(),
     });
     await userData.save();
-console.log(userData,"/////////");
   
 return res.json({
   success: true,
@@ -126,26 +114,20 @@ const placeOrder = async (req, res) => {
     const userId = userData._id;
     const selectedAddressId = req.body.selectedAddress;
     const paymentMethod=req.body.selectedPaymentMethod
-    console.log("d>>>>>>>>>>>>>>>>>>>>>>>>>", selectedAddressId,"payment method is",paymentMethod);
     const grandTotal=req.session.grandTotal
     let amount=null
     if(grandTotal==null){
       amount=req.session.totalPrice
 
-      console.log('grand total is null -----',amount);
     }else{
       amount=req.session.grandTotal
       
-      console.log('grand total is not null -----',amount);
     }
-    console.log(grandTotal,'coupon not applied......');
     
     const amountInRupees=Math.floor(amount)
 
     const amountInPaisa = Math.round(amountInRupees * 100);
-    console.log(amountInPaisa,'...........',amountInRupees);
     const selectedAddress = userData.address.find((address) => address._id == selectedAddressId);
-    console.log("..................", selectedAddress);
     if (!selectedAddress) {
       return res.status(400).json({ success: false, message: 'Selected address not found' });
     }
@@ -155,9 +137,7 @@ const placeOrder = async (req, res) => {
       const productData = await productUpload.findOne({ _id: cartProduct.productId });
 
       if (productData && cartProduct.quantity <= productData.AvailableQuantity) {
-        console.log(`Product ${productData.ProductName} has a valid quantity in the cart.`);
       }else {
-        console.log("product not avialable");
         return res.json({
           success: false,
           productAvailability:true,
@@ -183,7 +163,6 @@ const placeOrder = async (req, res) => {
       TotalPrice: amount,
       OrderDate: currentDate,
     });
-    console.log("order saved");
     const savedOrder = await newOrder.save();
 
     if (savedOrder) {
@@ -199,29 +178,23 @@ const placeOrder = async (req, res) => {
         );
       }
     }
-    console.log("product minused");
      if(paymentMethod=="cod"){
-      console.log("payment is cod");
       res.json({
         codSuccess: true,
         message: "oreder Success"
       })
     }else if(paymentMethod=="online"){
-      console.log("payment online");
       const order = {
         amount: amount*100,
         currency: "INR",
         receipt: savedOrder._id,
       };
-      console.log("/|?\?|",order);
       await rezorpay
               .createRazorpayOrder(order)
               .then((createdOrder) => {
-                console.log("payment response", createdOrder,order);
                 res.json({ online:true,createdOrder, order });
               })
               .catch((err) => {
-                console.log(err,"error happened in the rezorpay");
               });
   
             } else if(paymentMethod=="wallet"){
@@ -237,7 +210,7 @@ const placeOrder = async (req, res) => {
               newOrder.paymentStatus="Paid"
             
               await newOrder.save()
-              console.log("payment is wallet");
+              
               res.json({
                 codSuccess: true,
                 message: "oreder Success"
@@ -259,19 +232,13 @@ const placeOrder = async (req, res) => {
 const verifyPayment = async (req, res) => {
   try {
     let hmac = crypto.createHmac("sha256", process.env.KEY_SECRET);
-    console.log("verify Payment");
+   
     const {payment,order}=req.body
-    console.log(payment,",,,,,,,,,,,,,,,",order,"//////////////////////////")
-    console.log(
-      req.body.order.createdOrder.receipt +
-        "|" +
-        req.body.payment.razorpay_payment_id
-    );
+
     const orderId=order.createdOrder.receipt
     const updateOrderDocument = await Orders.findByIdAndUpdate(orderId, {
       paymentStatus: "Paid",
     });
-    console.log(updateOrderDocument,'/\/\/\/\/\/\/\/\/\/\/\/\/\/');
         res.json({ success: true });
     hmac.update(
       req.body.payment.razorpay_order_id +
@@ -285,11 +252,11 @@ const verifyPayment = async (req, res) => {
         req.body.order.createdOrder.receipt
       );
     } else {
-      // console.log("hmac failed");
+      
       res.json({ failure: true });
     }
   } catch (error) {
-    console.log("-------verify payment");
+
     console.error("failed to verify the payment", error);
   }
 };
@@ -303,14 +270,14 @@ const toOrderPage = async (req, res) => {
   try {
     const userData = await Users.findOne({ email: req.session.email });
     const userId = userData._id;
-    // console.log(userId, '.............');
+
     const orderData = await Orders.find({ UserID: userId,
     paymentMethod: { $ne: "online" },
     paymentStatus: { $ne: "pending" },})
     .populate('Items.productId')
     .sort({OrderDate:-1});
 
-    // console.log(orderData, '..................................');
+
 
 
 
@@ -326,9 +293,9 @@ const orderDetails = async (req, res) => {
   try {
     const user = await Users.findOne({ email: req.session.email })
     const orderId = req.params.id;
-    console.log(orderId);
+
     const orderData = await Orders.find({ _id: orderId }).populate('Items.productId');
-    console.log(orderData, "*****************************");
+
 
 
     res.render('user/orderDetails', { orderData, user })
@@ -359,7 +326,7 @@ const cancellOrder = async (req, res) => {
           description: 'Order cancellation refund', 
         });
         await userData.save();
-        console.log(userData);
+        
       }
       await orderData.save();
 
@@ -389,26 +356,15 @@ const cancellOrder = async (req, res) => {
 const oneItemcancel = async (req, res) => {
   try {
     const { orderId, itemId } = req.body;
-    console.log(orderId, "Order ID");
-    console.log(itemId, "Item ID");
+    
     const newitemId=itemId.trim()
     const orderData = await Orders.findById(orderId);
-    console.log(orderData, "Order Data");
+    
 
     if (!orderData) {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-
-
-
-    // const itemToCancel = await orderData.findOne({
-    //   Items: {
-    //     $elemMatch: { _id: itemId.trim() }
-    //   }
-    // });
-
-    console.log("oiqhpgigtqgp99494y");
 
 
   
@@ -418,18 +374,16 @@ const oneItemcancel = async (req, res) => {
       if ( itemID == newitemId ) {
         itemToCancel = item;
        
-        // console.log('................90234909',item);
+        
       }
     });
-    console.log("splice is worked");
-    console.log('iuggqreiutg', itemToCancel, "Item to Cancel-------------------------------");
+   
 
     if (!itemToCancel) {
       return res.status(404).json({ message: 'Item not found in the order' });
     }
 
     const product = await productUpload.findById(itemToCancel.productId);
-    console.log(product, "Product Data");
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -458,12 +412,10 @@ const oneItemcancel = async (req, res) => {
 const returnOrder = async (req, res) => {
   try{
   const { orderId, itemId, returnReason, returnDescription } = req.body;
-    console.log(orderId, "Order ID");
-    console.log(returnReason);
-    console.log(returnDescription);
+
     const newitemId=itemId.trim()
     const orderData = await Orders.findById(orderId);
-    console.log(orderData,"))))))))))))))))))))))))))))))))))");
+  
     
     
     if (!orderData) {
@@ -473,18 +425,15 @@ const returnOrder = async (req, res) => {
     let itemReturn = null;
     let itemIndex =-1
 
-    console.log(itemId,"Item ID");
-    console.log(newitemId,'>>>>>>>>>>');
+    
 
     orderData.Items.forEach((item,index) => {
       const itemID = item._id.toString()
       if ( itemID == newitemId ) {
         itemReturn = item;
         itemIndex = index
-        console.log('................90234909',item);
       }
     });
-    console.log(',,,,,,,,,,', itemReturn);
 
     if (!itemReturn) {
       return res.status(404).json({ message: 'Item not found' });
@@ -494,7 +443,6 @@ const returnOrder = async (req, res) => {
     }
 
     const product = await productUpload.findById(itemReturn.productId);
-    console.log(product,'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -502,14 +450,11 @@ const returnOrder = async (req, res) => {
     const returnQuantity=itemReturn.quantity
     const price = product.DiscountAmount*returnQuantity; 
 
-    console.log(returnQuantity);
     orderData.TotalPrice-=price
     await orderData.save();
    
     const user= await Users.findOne({email:req.session.email})
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^',user);
     const userId = user._id; 
-    console.log('!!!!!!!!!!!!!',userId);
     const productId = product._id; 
    
     const returnedDate = new Date();
@@ -550,15 +495,11 @@ const generateInvoices = async (req, res) => {
 
     const orderDetails = await Orders.find({ _id: orderId }).populate("Items.productId");
 
-    console.log(orderDetails, '>>>>>>>>>>>>>>');
 
     const ordersId = orderDetails[0]._id;
 
-    console.log(ordersId);
     if (orderDetails) {
-      console.log("genarating...");
       const invoicePath = await generateInvoice(orderDetails);
-      console.log("genarated.............");
       res.json({ success: true, message: 'Invoice generated successfully', invoicePath });
     } else {
       res.status(500).json({ success: false, message: 'Failed to generate the invoice' });
@@ -577,10 +518,9 @@ const generateInvoices = async (req, res) => {
 const downloadInvoice = async (req, res) => {
   try {
     const id = req.params.orderId
-    console.log(id, '!!#########');
 
-    const filePath = `C:/Users/dell/Desktop/gizmo/pdf/${id}.pdf`;
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', filePath);
+    const filePath = path.join(__dirname, '../pdf', `${id}.pdf`);
+
     res.download(filePath, `invoice.pdf`)
   } catch (error) {
     console.error('Error in downloading the invoice:', error);

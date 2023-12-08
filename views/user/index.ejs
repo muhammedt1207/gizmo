@@ -26,7 +26,7 @@
         <li class="nav-item">
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
         </li>
-        <a href="/user/indexToLogin" style="color: rgb(34, 34, 34);">login</a>
+        <a href="/user/indexToLogin" style="color: rgb(34, 34, 34);"> <button class="btn btn-outline-dark">login</button></a>
       </ul>
     </div>
   </div>
@@ -65,7 +65,7 @@
   
   <div class="row row-cols-1 row-cols-md-4 g-3 justify-content-center ">
       <% data.filter(x => x.status === true && x.AvailableQuantity > 0).forEach((x) => { %>
-        <a id="special-link" href="/user/toProductView/<%= x._id %>">
+        <a id="special-link" href="/user/guestProductView/<%= x._id %>">
       <div class="col Newproduct">
           <div class="card h-100 border-0 ">
             <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
@@ -76,13 +76,13 @@
                   <p>₹ <%= x.Price %></p>
               </div>
           </div>
-      </div>
+        </div>
+      </a>
       <% }) %>
   </div>
-</a>
 </div>
 <div class="text-center pt-3">
-<a href="/user/toProduct-list"><button type="button" class="btn btn-primary btn-lg">Product View</button></a>
+<a href="/user/guestShop"><button type="button" class="btn btn-primary btn-lg">Product View</button></a>
 </div>
 <div class="benefit">
 <div class="container">

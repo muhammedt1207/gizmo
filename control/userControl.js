@@ -56,14 +56,14 @@ const tohome = async (req,res)=>{
 
 const productSearch = async (req, res) => {
   const { search } = req.body;
-console.log(search,"1231231231231231231223123213");
+
   try {
     // Use a case-insensitive regex for the search
     const regex = new RegExp(search, 'i');
-    console.log(regex,'----------');
+
     // Find products that match the search query
     const suggestions = await productUpload.find({ ProductName: { $regex: regex } });
-    console.log(suggestions,'***********');
+    
     res.json({ suggestions });
   } catch (error) {
     console.error('Error fetching search suggestions:', error);
@@ -75,7 +75,7 @@ console.log(search,"1231231231231231231223123213");
 
 const tosignup = (req,res)=>{
     const reffer = req.query.ref;
-    console.log('Your referral code:', reffer);
+    
     res.render("user/signup",{title:"Signup",err:req.flash("err") ,reffer})
     
 }
@@ -94,13 +94,10 @@ const toOtp=(req,res)=>{
 }
 
 const userSignup = async (req,res) => {
-    console.log("user sign up");
-    console.log(req.body+"hi");
-    console.log('Referral Code from Frontend:', req.body.referralId);
-
+   
     try {
         const check = await Users.find({ email: req.body.email })
-        console.log(typeof (check));
+
         if (check.length == 0) {
             const pass = await bcrypt.hash(req.body.password, 10);
             const data = {
@@ -117,15 +114,14 @@ const userSignup = async (req,res) => {
             req.flash("err","*User with this email Already exist")
             req.session.err = "user already exist"
             res.render('./user/signup',{ title:"signup" ,err:"User with this email already exist"})
-            console.log("user already exist");
+        
         }
     } catch (e) {
-        console.log(e);
-        console.log("signup error");
+       
         req.flash("err","Sorry!!Something went wrong please try again after some times!!")
         req.session.err = "something went wrong"
         res.render('/user/signup',{err: "Sorry.. Something went wrong please try again after some times"})
-        console.log("user already exist");
+       
     }
 }
 
@@ -133,18 +129,17 @@ const userSignup = async (req,res) => {
 const otpSender = async(req,res)=>{
     if(req.session.signotp || req.session.forgot){
         try{
-            console.log(req.session.email);
-            console.log("otp route");
+           
             const email=req.session.email;
-            console.log(email);
+         
             const createdOTP=await sendOTP(email)
             req.session.email=email;
-            console.log("session before verifiying otp :",req.session.email);
+  
             res.status(200).redirect("/user/otp")
         }catch(err){
-            console.log(err);
+
             req.session.err="Sorry at this momment we can't sent otp";
-            console.log(req.session.errmsg);
+    
 
             if(req.session.forgot){
                 res.redirect("/user/forget-pass")
@@ -163,7 +158,7 @@ const resendOTP = async (req, res) => {
         req.session.email = email;
         res.status(200).json({ success: true })
       } catch (err) {
-        console.log(err);
+       
         req.session.err = "Sorry, at this moment we can't send OTP";
         res.status(500).json({ success: false });
       }
@@ -173,32 +168,32 @@ const resendOTP = async (req, res) => {
 }
 const forgotPass = async (req, res) => {
     try{
-        console.log(req.body);
+   
         const check=await Users.findOne({email:req.body.email})
         req.session.email=check.email
         
         if(check){
-            console.log("good to go:",check);
+         
             const userdata={
                 email:check.email,
                 userName:check.userName,
                 _id:check._id,
             }
             const email=req.body.email
-            console.log("Email::: ",email);
+    
             req.session.userdata=userdata;
             req.session.email=email
            
-            console.log("Sessiosiiii: ",req.session.email)
+         
            res.redirect("/user/otp-senting") 
         }
         else{
-            console.log(check);
+          
             req.session.err="no email found"
             res.redirect("/user/forget-pass");
         }
     }catch(err){
-        console.log(err);
+   
         req.session.err="no email found"
         res.redirect("/user/forget-pass")
     }
@@ -238,11 +233,10 @@ const userLogin = async (req, res) => {
 // otp verification
 const OtpConfirmation = async (req,res) => {
     if(req.session.forgot){
-      console.log("forget password otp confirming");
-        console.log(req.body);
+
     try{
         const email=req.session.email
-        console.log("forgot confirmation :",email);
+        
         const Otp= await OTP.findOne({email:email})
 
         if(Date.now()>Otp.expireAt){
@@ -251,11 +245,9 @@ const OtpConfirmation = async (req,res) => {
         }else{
             const hashed=Otp.otp
             
-            console.log("hashed......"+hashed);
-            console.log("body"+req.body)
+           
             const { code, email} = req.body
-            console.log("code otp ....."+code);
-            // console.log('match'+match);
+            
             if(hashed==code){
               
                 req.session.forgot=false;
@@ -264,10 +256,10 @@ const OtpConfirmation = async (req,res) => {
                 res.render("user/new-password",{title:"Password Reset"});
             }
             else{
-                console.log("no match");
+                
                 req.session.userdata="";
                 req.session.err="Invalid OTP"
-                console.log("error 3");
+              
                 res.render("user/otpPage",{err:"Invalid OTP"})
             }
         }
@@ -278,22 +270,22 @@ const OtpConfirmation = async (req,res) => {
     }
     }
     else if(req.session.signotp){
-        console.log(req.body)
+
         try{
             const data =req.session.data;
-            console.log(req.session.data);
+           
             const Otp= await OTP.findOne({email:data.email})
-            console.log(Otp.expireAt);
+          
             if(Date.now()>Otp.expiredAt){
                 await OTP.deleteOne({email});
             }else{
                 const hashed=Otp.otp
                 const { code, email} = req.body              
                 req.session.email=data.email;
-                console.log(req.session.email)
+           
                 if(hashed==code){
                     const result=await user.insertMany([data])
-                    console.log(data.reffer,'^^^^^^^^^^^^^^');
+                    
                     const updatedUserData = await user.findByIdAndUpdate(
                         data.reffer,
                         {
@@ -325,15 +317,14 @@ const OtpConfirmation = async (req,res) => {
                 }
                 else{
                     req.session.err="Invalid OTP"
-                    console.log("erro 1");
+                  
                     res.render("./user/otpPage",{err:"invalid OTP"})
                 }
             }
             
             
         }catch(err){
-            console.log(err);
-            console.log("error 2"+err);
+           
             res.render("./user/otpPage",{title: "OTP ", err:false });
         }
     }
@@ -347,26 +338,24 @@ const OtpConfirmation = async (req,res) => {
 
 const passwordReset = async (req, res) => {
     try {
-        console.log("this is forget pass reset");
-        console.log(req.body);
-        console.log("session........",req.session.email);
+
         const pass = await bcrypt.hash(req.body.password, 10);
         const email = req.session.email
-        console.log(email);
+       
         const update = await Users.updateOne({ email: email }, { $set: { password: pass } })
         req.session.logged = true;
         // req.session.pass_reset = false
         res.redirect("/user/indexToLogin")
     } catch (err) {
         req.flash("errmsg", "something went wrong")
-        console.log(err);
+       
     }
 }
 
 const logout = (req,res) => {
     req.session.destroy((err)=>{
         if(err){
-            console.log(err);
+            
             res.send('Error');
         }else{
             res.redirect('/');
@@ -376,11 +365,9 @@ const logout = (req,res) => {
 const userlog= async (req,res)=>{
     if(req.session.logged||req.user){
         const user=req.session.user
-        console.log(user);
-        console.log(req.session.logged);
+
         const data= await productUpload.find()
         const banner=await Banner.findOne({}, {}, { sort: { date: -1 } })
-        console.log(banner,"banner images>>>>>>>>>>>");
         const bestSeller = await Order.aggregate([
           {
             $unwind: "$Items",
@@ -411,23 +398,18 @@ const userlog= async (req,res)=>{
             $unwind: "$productDetails",
           },
         ]);
-        console.log(...bestSeller,'-');
         res.render("user/user-home",{title:"Home", data,user,banner,bestSeller})
     }
     else{
-        console.log("login");
         res.redirect("/")
     }
 }
 
 const productView=async(req,res)=>{
   try{
-    console.log("dxfgg");
     const productId = req.params.id;
     const data= await  productUpload.findOne({_id:productId})
-    console.log(data,"----------------------");
     const user=await Users.findOne({email:req.session.email})
-    console.log("to product view");
     res.render("user/product-view",{data ,title:"products",user})
   }catch(error){
     console.error("error  happened in product view",error)
@@ -445,7 +427,7 @@ const toProductList=async (req,res)=>{
         const skip = (page - 1) * pageSize;
         const data = await productUpload.find().skip(skip).limit(pageSize)
         const user =await Users.findOne({email:req.session.email})
-        res.render('user/product-list', { title: 'Costomers', userData: data ,
+        res.render('user/product-list', { title: 'shop', userData: data ,
         Count:totaldata,
         page: page,
         user,
@@ -469,14 +451,13 @@ const addAddress=async (req,res)=>{
             state:req.body.state,
             mobileNumber:req.body.number
         }
-        console.log(newaddress);
+       
         const user=await Users.findOne({email:email})
         user.address.push(newaddress)
         await  user.save()
             res.redirect('/user/toManageAddress')
     }catch(error){
-        console.log("can't add Address");
-
+      res.render('user/404Page')
     }
 }
 
@@ -491,14 +472,13 @@ const NewAddAddress=async (req,res)=>{
             state:req.body.state,
             mobileNumber:req.body.number
         }
-        console.log(newaddress);
+       
         const user=await Users.findOne({email:email})
         user.address.push(newaddress)
         await  user.save()
             res.redirect('/user/toCheckout')
     }catch(error){
-        console.log("can't add Address");
-
+      res.render('user/404Page')
     }
 }
 
@@ -506,7 +486,6 @@ const NewAddAddress=async (req,res)=>{
 // Add a route for deleting an address
 const deleteAddress = async (req, res) => {
     try {
-        console.log("this is delete address");
         const email = req.session.email;
         const addressId = req.params.id;  
         const user = await Users.findOne({ email: email })   
@@ -533,7 +512,6 @@ const deleteAddress = async (req, res) => {
 
 const toManageAddress=async (req,res)=>{
     try {
-        console.log("to Address Manage");
         const email= req.session.email
         const userData= await Users.findOne({email:email})
         res.render("user/addressManage",{title:"Address  page",userData,user:userData})
@@ -546,7 +524,6 @@ const editAddress=async (req, res) => {
     try {
 
       const addressId = req.params.id;
-      console.log("this user edit address form");
 
       const updatedAddress = {
         name: req.body.name,
@@ -577,7 +554,6 @@ const editAddress=async (req, res) => {
   const newEditAddress = async (req, res) => {
     try {
       const addressId = req.params.id;
-        console.log("check point 1");
       const updatedAddress = {
         name: req.body.name,
         addressLine: req.body.address,
@@ -586,17 +562,14 @@ const editAddress=async (req, res) => {
         state: req.body.state,
         mobileNumber: req.body.number,
       };
-      console.log("check point 2");
       const user = await Users.findOneAndUpdate(
         { 'address._id': addressId },
         { $set: { 'address.$': updatedAddress } },
         { new: true }
       );
-        console.log("check point 3");
       if (!user) {
         return res.status(404).json({ success: false, message: 'Address not found' });
       }
-  console.log("console checck 4");
       res.json({ success: true, message: 'Address edited successfully', updatedAddress });
     } catch (error) {
       console.error('Error updating address:', error);
@@ -605,26 +578,12 @@ const editAddress=async (req, res) => {
   };
   
 
-  const profilePhoto=  async (req, res) => {
-    try {
-      const name = req.file.originalname;
-      const data = req.file.buffer;
-      const contentType = req.file.mimetype;
-  
-      const image = new Image({ name, data, c});
-      await image.save();
-  
-      res.status(201).json({ message: 'Image uploaded and saved.' });
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
+ 
   
  
   const userProfile= async (req, res) => {
     try{
-        console.log("user Profile section");
+      
         if (req.file) {
             const updatedUser = await Users.findOneAndUpdate(
                 { email: req.session.email },
@@ -633,7 +592,7 @@ const editAddress=async (req, res) => {
             );
 
             if (updatedUser) {
-                console.log("updated");
+                
                 res.status(200).json({ message: 'Profile photo updated successfully' });
             } else {
                 res.status(404).json({ error: 'User not found' });
@@ -676,19 +635,39 @@ const ToWalletHistory=async (req,res)=>{
         res.render("user/walletHistory",{title:"wallet",userData,user:userData})
     }catch(error){
         console.error("wallet history error",error);
+        res.render('user/404Page')
     }
 }
 
 const ChangeUserName=async (req,res)=>{
   try {
     const NewName=req.body.newUsername
-    console.log("^^^^^^^^^^",NewName);
+
     const changedName=await Users.findOneAndUpdate({email:req.session.email},{$set:{userName:NewName}})
-    console.log("8888888888",changedName);
+  
       res.json({success:true})
   } catch (error) {
     console.error(error)
     res.render("user/404Page")
+  }
+}
+
+const GuestRpoductView=async (req,res)=>{
+  try {
+    const productId=req.params.id
+    const product=await productUpload.findOne({_id:productId})
+    res.render('user/guestproductView',{data:product})
+  } catch (error) {
+    res.render("uesr/404Page")
+  }
+}
+
+const GuestShop=async (req,res)=>{
+  try {
+    const data = await productUpload.find()
+    res.render('user/guestShop',{data})
+  } catch (error) {
+    res.render('user/404Page')
   }
 }
 
@@ -721,5 +700,7 @@ module.exports = {
     productSearch,
     toCoupons,
     ToWalletHistory,
-    ChangeUserName
+    ChangeUserName,
+    GuestRpoductView,
+    GuestShop
 }

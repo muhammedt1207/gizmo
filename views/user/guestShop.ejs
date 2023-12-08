@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style1.css">
+  <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
+
+  <!-- Toastr CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+   
+  
+<nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded">
+    <div class="container">
+      <a class="navbar-brand" href="/"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;" alt="logo"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      
+      <!-- Centered search bar -->
+      <form class="d-flex mx-auto">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #4f4f4f;"></i></button>
+      </form>
+      <!-- Right-aligned list items -->
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
+        </li>
+        <a href="/user/indexToLogin" style="color: rgb(34, 34, 34);"> <button class="btn btn-outline-dark">login</button></a>
+      </ul>
+    </div>
+  </div>
+</nav>
+<section class="p-3">
+  <div class="container">
+      <div class="row">
+          <!-- sidebar -->
+          <div class="col-lg-3">
+              <!-- Toggle button -->
+              <button class="btn btn-outline-secondary mb-3 w-100 d-lg-none" type="button" data-mdb-toggle="collapse"
+                  data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                  aria-label="Toggle navigation">
+                  <span>Show filter</span>
+              </button>
+              <!-- Collapsible wrapper -->
+              <div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
+                  <div class="accordion" id="accordionPanelsStayOpenExample">
+                      <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingOne">
+                          </h2>
+                          <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                              aria-labelledby="headingOne">
+                          </div>
+                      </div>
+                      <div class="accordion-item">
+                          <h2 class="accordion-header" id="headingTwo">
+                              <button class="accordion-button text-dark bg-light" type="button" data-mdb-toggle="collapse"
+                                  data-mdb-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
+                                  aria-controls="panelsStayOpen-collapseTwo">
+                                  Brands
+                              </button>
+                          </h2>
+                          <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show"
+                              aria-labelledby="headingTwo">
+                              <div class="accordion-body">
+                                  <div>
+                                      <label for="brandSelect" class="form-label">Select a Brand:</label>
+                                      <form id="productFilters">
+                                          <select class="form-select" id="brandSelect">
+                                            <option value="ALL">All Brands</option>
+                                            <option value="APPLE">APPLE</option>
+                                            <option value="SAMSUNG">Samsung</option>
+                                            <option value="HP">HP</option>
+                                            <option value="ASUS">Asus</option>
+                                            <option value="ACER">Acer</option>
+                                            <option value="XIOMI">Xiomi</option>
+                                            <option value="LENOVO">LENOVO</option>
+                                            <option value="MSI">MSI</option>
+                                            <option value="DELL">Dell</option>
+                                          </select>
+                                          <br>
+                                          <br>
+
+                                          <label for="priceRangeSelect" class="form-label">Select Price Range:</label>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="0-25000" id="priceRange1">
+                                            <label class="form-check-label" for="priceRange1">Below ₹25,000</label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="25000-50000" id="priceRange2">
+                                            <label class="form-check-label" for="priceRange2">₹25,000 - ₹50,000</label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="50000-75000" id="priceRange3">
+                                            <label class="form-check-label" for="priceRange3">₹50,000 - ₹75,000</label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="75000-100000" id="priceRange4">
+                                            <label class="form-check-label" for="priceRange4">₹75,000 - ₹100,000</label>
+                                          </div>
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="priceRange" value="100000-0" id="priceRange5">
+                                            <label class="form-check-label" for="priceRange5">₹100,000 above</label>
+                                          </div>
+                                          <button type="submit" class="btn btn-primary w-100">Apply Brand Filter</button>
+                                        </form>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- Product List -->
+          <div class="col-lg-9 ">
+              <div id="productList" class="z-n1">
+                 <!-------------------------------------------------------->
+              </div>
+              <div id="paginationControls" class="d-flex justify-content-center mt-4"></div>
+
+          </div>
+      </div>
+  </div>
+  <hr />
+  <!-- Pagination -->
+
+</section>
+<script>
+   const brandSelect = document.getElementById('brandSelect');
+  const priceRangeCheckboxes = document.querySelectorAll('[id^="priceRange"]');
+  const productList = document.getElementById('productList');
+  const productFiltersForm = document.getElementById('productFilters');
+
+  console.log(".......",brandSelect,priceRangeCheckboxes,productList,productFiltersForm);
+
+  productFiltersForm.addEventListener('submit', (event) => {
+    console.log(",,,,,,,,,,,,,,,,,");
+    event.preventDefault();
+    const selectedBrand = brandSelect.value;
+    const selectedPriceRanges = Array.from(priceRangeCheckboxes)
+      .filter((checkbox) => checkbox.checked)
+      .map((checkbox) => checkbox.value);
+    console.log('-------------------------');
+    if (selectedBrand === 'ALL' && selectedPriceRanges.length === 0) {
+      console.log("=======================");
+      fetchAllProducts();
+    } else {
+      console.log("+++++++++++++++++++++++++++++++");
+      fetchProducts(selectedBrand, selectedPriceRanges);
+    }
+  });
+
+  const fetchProducts = (selectedBrand, selectedPriceRanges) => {
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    const queryString = `brand=${selectedBrand}&priceRanges=${selectedPriceRanges.join(',')}`;
+
+    fetch(`/filter-products?${queryString}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data,'=============');
+        productList.innerHTML = '';
+        data
+          .filter((x) => x.status === true && x.AvailableQuantity > 0)
+          .forEach((x) => {
+            const productElement = document.createElement('div');
+            productElement.innerHTML = '<a id="special-link" href="/user/guestProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a>';
+            productList.appendChild(productElement);
+          });
+      })
+      .catch((error) => {
+        console.error('Error fetching filtered products:', error);
+      });
+  };
+
+  const itemsPerPage = 3; // Adjust the number of items per page as needed
+  let currentPage = 1;
+
+  const productlist = document.getElementById('productList');
+  const paginationControls = document.getElementById('paginationControls');
+
+  const fetchAllProducts = () => {
+    fetch('/all-products')
+      .then((response) => response.json())
+      .then((data) => {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        const filteredData = data
+          .filter((x) => x.status === true && x.AvailableQuantity > 0)
+          .slice(startIndex, endIndex);
+
+        productList.innerHTML = '';
+
+        filteredData.forEach((x) => {
+          // Your existing code for creating product elements here
+          const productElement = document.createElement('div');
+          productElement.innerHTML = '<br><a id="special-link" href="/user/guestProductView/' + x._id + '"> <div class="col-md-12"> <div class="card shadow-10 border rounded-3"> <div class="card-body"> <div class="row g-0"> <div class="col-xl-3 col-md-4 d-flex justify-content-center"> <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0"> <img src="/product-image/' + x.images[0] + '" class="" style="width: 180px;" /> <a href="/user/toProductView/' + x._id + '"> <div class="hover-overlay"> <div class="mask" style="background-color: rgba(245, 1, 1, 0.15);"></div> </div> </a> </div> </div> <div class="col-xl-6 col-md-5 col-sm-7"> <h5>' + x.ProductName + '</h5> <ul> <li>' + x.Specification1 + '</li> <li>' + x.Specification2 + '</li> <li>' + x.Specification3 + '</li> <li>' + x.Specification4 + '</li> </ul> </div> <div class="col-xl-3 col-md-3 col-sm-5"> <div class="mt-4"> <div class="d-flex flex-row align-items-center mb-1"> <h4 class="mb-1 me-1"> ₹ ' + x.DiscountAmount + '</h4> <span class="text-danger"><s>₹ ' + x.Price + '</s></span> </div> </div> </div> </div> </div> </div> </a> ';
+          productList.appendChild(productElement);
+        });
+
+        // Create pagination controls
+        createPaginationControls(data.length);
+      })
+      .catch((error) => {
+        console.error('Error fetching products:', error);
+      });
+  };
+
+  const createPaginationControls = (totalItems) => {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+    // Clear previous pagination controls
+    paginationControls.innerHTML = '';
+
+    // Create previous button
+    const prevButton = document.createElement('button');
+    prevButton.innerHTML = 'Previous';
+    prevButton.className = 'btn btn-primary me-2';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        fetchAllProducts();
+      }
+    });
+
+    // Create next button
+    const nextButton = document.createElement('button');
+    nextButton.innerHTML = 'Next';
+    nextButton.className = 'btn btn-primary';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        fetchAllProducts();
+      }
+    });
+
+    // Append pagination controls to the DOM
+    paginationControls.appendChild(prevButton);
+    paginationControls.appendChild(document.createTextNode(` Page ${currentPage} of ${totalPages} `));
+    paginationControls.appendChild(nextButton);
+  };
+
+  // Initial fetch when the page loads
+  window.addEventListener('load', fetchAllProducts);
+
+  // Initial fetch when the page loads
+  fetchAllProducts();
+  if (!window.location.search.includes('q=')) {
+      window.addEventListener('load', fetchAllProducts);
+    }
+
+  window.addEventListener('load', fetchAllProducts);
+</script>
+<%- include('./partial/contentFooter') %>

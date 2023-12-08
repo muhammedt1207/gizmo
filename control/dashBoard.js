@@ -177,7 +177,7 @@ const salesReport=async(req,res)=>{
       labelsByCategory = ordersByCategory.map((entry) => entry._id);
       const dataByCategory = ordersByCategory.map((entry) => entry.count);
     
-      console.log(dataByCategory,'--------',labelsByCategory);
+     
       res.json({ labelsByCount,labelsByAmount, dataByCount, dataByAmount, dataByCategory,labelsByCategory  });
       
   
@@ -229,13 +229,13 @@ const getOrdersAndSellers=async(req,res)=>{
     
      
     } catch (error) {
-      console.log("error while fetching the order details in the dashboard",error);
+      
     }
     }
     
     const genereatesalesReport = async (req, res) => {
       try {
-        console.log(req.body);
+
         const startDate = req.body.startDate;
         const format = req.body.downloadFormat;
         const endDate = new Date(req.body.endDate);
@@ -270,7 +270,7 @@ const getOrdersAndSellers=async(req,res)=>{
           format
         );
       } catch (error) {
-        console.log("Error while generating sales report pdf:", error);
+
         res.status(500).send("Internal Server Error");
       }
     };

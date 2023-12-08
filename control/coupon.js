@@ -24,16 +24,16 @@ const tocoupon=async (req,res)=>{
 const createCoupon= async (req,res)=>{
     try {
         const { name, couponCode, maxAmount, discountAmount, couponType, startDate, endDate} = req.body;
-        console.log(".........",name,couponCode,maxAmount,discountAmount,couponType,startDate,endDate);
+
 
         const existingCoupon = await Coupons.findOne({ CoupenCode: couponCode });
         if (existingCoupon) {
-            console.log("coupon already exist");
+
           return res.status(400).json({ success: false, message: 'Coupon with this code already exists.' });
         }
         
         if (!name || !couponCode || isNaN(maxAmount) || isNaN(discountAmount) || !couponType || !startDate || !endDate ) {
-            console.log("invalid input....in coupon");
+  
             return res.status(400).json({ success: false, message: 'Invalid input. Please provide all required fields with valid values.' });
           }
       
@@ -48,8 +48,7 @@ const createCoupon= async (req,res)=>{
           
           });
           await coupon.save();
-      console.log("coupen saving.....");
-          console.log("coupon saved..................")
+
           res.json({ success: true, message: 'Coupon created successfully' });
 
     } catch (error) {
@@ -68,14 +67,12 @@ const deleteCoupon = async (req, res) => {
         res.redirect('/admin/coupens');
     } catch (error) {
         req.render('admin/404')
-        console.log('Error occurred while deleting category');
     }
 };
 
 
 const editCoupon=async (req,res)=>{
     try {
-        console.log("edit coupon on proccess");
         const couponId=req.params.id
         const {endDate,startDate,discountAmount,maxAmount,couponCode,couponName}=req.body
         const changedCoupon = await Coupons.findByIdAndUpdate(
@@ -91,10 +88,8 @@ const editCoupon=async (req,res)=>{
                 }
             }
         );
-        console.log(changedCoupon,'!!!!!!!!!!!!!!!!!!!!!');
         res.json({success:true,messsage:"coupon edit success"})
     } catch (error) {
-        console.log(error,'error happened in copon edit');
         res.render('admin/404')
     }
 }
