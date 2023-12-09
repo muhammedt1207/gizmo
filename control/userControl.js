@@ -113,14 +113,16 @@ const userSignup = async (req,res) => {
         } else {
             req.flash("err","*User with this email Already exist")
             req.session.err = "user already exist"
-            res.render('./user/signup',{ title:"signup" ,err:"User with this email already exist"})
+            const reffer = req.query.ref;
+            res.render('./user/signup',{ title:"signup" ,err:"User with this email already exist",reffer})
         
         }
     } catch (e) {
        
         req.flash("err","Sorry!!Something went wrong please try again after some times!!")
         req.session.err = "something went wrong"
-        res.render('/user/signup',{err: "Sorry.. Something went wrong please try again after some times"})
+        const reffer = req.query.ref;
+        res.render('/user/signup',{err: "Sorry.. Something went wrong please try again after some times",reffer})
        
     }
 }
