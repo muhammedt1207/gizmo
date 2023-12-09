@@ -182,6 +182,7 @@ const salesReport=async(req,res)=>{
       
   
     } catch (error) {
+      res.render('admin/404')
       console.error("error while chart loading :",error)
     }
   }
@@ -270,7 +271,7 @@ const getOrdersAndSellers=async(req,res)=>{
           format
         );
       } catch (error) {
-
+        res.render('admin/404')
         res.status(500).send("Internal Server Error");
       }
     };

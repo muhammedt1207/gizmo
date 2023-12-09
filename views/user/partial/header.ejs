@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-  <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qDkfsY+nRL5GRINrHwZCiF0bW8ESKWblQnfdRiFFG9T/rWPUqNj/5Bwe1ftbalxj" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
 
   <!-- Toastr CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
@@ -58,6 +58,11 @@
         color: rgb(0, 0, 0);
         z-index: 4647;
     }
+    @media (min-width: 992px) {
+      #links {
+        display: none;
+      }
+    }
 </style>
 
   
@@ -69,10 +74,11 @@
     <div class="container">
       <a class="navbar-brand" href="/user/home"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;"
           alt="logo"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+          
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
         <!-- Centered search bar -->
@@ -208,12 +214,10 @@
                     <a class="dropdown-item" href="/user/logout">Logout</a>
                   </li>
                 </ul>
+                
               </li>
             </ul>
           </div>
         </div>
       </div>
   </nav>
-</body>
-
-</html>
