@@ -82,26 +82,36 @@
   <br>
   <br>
   <h1 style="text-align:center;  font-family:Poppins;"><b>NEW ARRIVALS</b></h1>
-  <div class="container">
+  <div>
     
     <div class="row row-cols-1 row-cols-md-4 g-3 justify-content-center ">
-        <% data.filter(x => x.status === true && x.AvailableQuantity > 0).forEach((x) => { %>
-          <a id="special-link" href="/user/toProductView/<%= x._id %>">
+      <% 
+      let breakLoop = false;
+      data.filter(x => x.status === true && x.AvailableQuantity > 0).some((x) => {
+        if (breakLoop || data.length === 6) {
+          return breakLoop = true; // Terminating the loop
+        }
+    %>
+      <a id="special-link" href="/user/toProductView/<%= x._id %>">
         <div class="col Newproduct">
-            <div class="card h-100 border-0 ">
-              <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
-                <img src="/product-image/<%= x.images[0] %>" class="card-img-top" style="height: 85px; width: 40%;" alt="image">
-              </div>
-                <div class="card-body text-center">
-                    <h5 class="card-title"><%= x.ProductName %></h5>
-                    <p>₹ <%= x.Price %></p>
-                    <% if (x.offer) { %>
-                      <span class="badge bg-success">Offer: <%= x.offer %></span>
-                  <% } %>
-                </div>
+          <div class="card h-100 border-0 ">
+            <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+              <img src="/product-image/<%= x.images[0] %>" class="card-img-top" style="height: 85px; width: 120px;" alt="image">
             </div>
+            <div class="card-body text-center">
+              <h5 class="card-title"><%= x.ProductName %></h5>
+              <p>₹ <%= x.Price %></p>
+              <% if (x.offer) { %>
+                <span class="badge bg-success">Offer: <%= x.offer %></span>
+              <% } %>
+            </div>
+          </div>
         </div>
-        <% }) %>
+      </a>
+    <%
+        });
+    %>
+    
     </div>
   </a>
 </div>
