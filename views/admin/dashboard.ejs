@@ -181,9 +181,14 @@
             const parsedStartDate = new Date(startDateInput.value);
             const parsedEndDate = new Date(endDateInput.value);
             console.log(currentDate,parsedEndDate,parsedStartDate,'======================');
-            if (parsedStartDate.getTime() >= currentDate.getTime() || parsedEndDate.getTime() >= currentDate.getTime()) {
+            if (parsedStartDate.getTime() > currentDate.getTime() || parsedEndDate.getTime() > currentDate.getTime()) {
         submitButton.disabled = true;
         alertArea.innerHTML = '<div class="alert alert-danger mt-2" role="alert">Please select a date less than or equal to the current date.</div>';
+    }else if(parsedStartDate.getTime() > parsedEndDate.getTime()){
+        submitButton.disabled = true;
+
+        alertArea.innerHTML = '<div class="alert alert-danger mt-2" role="alert">Please select a Start date less than or equal to the End date.</div>';
+
     } else {
         submitButton.disabled = false;
         alertArea.innerHTML = '';
