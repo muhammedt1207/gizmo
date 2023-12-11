@@ -10,11 +10,6 @@ module.exports = {
       const formattedStartDate = dateFormat(new Date(startDate), 'yyyy-MM-dd');
       const formattedEndDate = dateFormat(new Date(endDate), 'yyyy-MM-dd');
       try {
-        const totalAmount = parseInt(totalSales)
-        console.log('Total Sales:', totalAmount);
-        const template = fs.readFileSync('util/template.ejs', 'utf-8');
-        const html = ejs.render(template, { orders, startDate, endDate, totalAmount });
-        console.log(typeof(totalAmount));
         if (format === 'pdf') {
          
           const pdfGenarate=await  salesPdf(orders,startDate,endDate)
