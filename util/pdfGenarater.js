@@ -13,12 +13,13 @@ module.exports = {
         if (format === 'pdf') {
          
           const pdfGenarate=await  salesPdf(orders,startDate,endDate)
+          console.log("pdf generated success fully");
           res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
         "attachment; filename=sales Report.pdf"
       );
-
+        console.log('pdf....');
       res.status(200).end(pdfGenarate);
 
         } else if (format === 'excel') {
