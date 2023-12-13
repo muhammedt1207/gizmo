@@ -52,11 +52,11 @@ user.post('/user/pass-change',userAuth.userExist,userControl.passwordReset)
 //user logged home page
 user.get("/user/home",userAuth.verifyUser,userBlock,userControl.userlog)
 //to product view
-user.get('/user/toProductView/:id',userAuth.verifyUser,userControl.productView)
+user.get('/user/toProductView/:id',userAuth.verifyUser,userBlock,userControl.productView)
 //to product list
-user.get('/user/toProduct-list',userAuth.verifyUser,userControl.toProductList)
+user.get('/user/toProduct-list',userAuth.verifyUser,userBlock,userControl.toProductList)
 // to cart
-user.get("/user/toCart",userAuth.verifyUser,cartController.toCart)
+user.get("/user/toCart",userAuth.verifyUser,userBlock,cartController.toCart)
 //to profile
 user.get("/user/profile",userAuth.verifyUser,async(req,res)=>{
 
@@ -77,14 +77,14 @@ user.post('/user/change-username',userControl.ChangeUserName)
 
 
 //item add to cart---------------------------------------------------------------------
-user.post('/user/addToCart',userAuth.verifyUser,cartController.addToCart)
-user.post('/user/removeFromCart/:id',userAuth.verifyUser,cartController.removeCart)
-user.post('/updatequantity',userAuth.verifyUser,cartController.updateQuantity)
-user.get('/user/AddToCart/:id',cartController.addlistToCart)
+user.post('/user/addToCart',userAuth.verifyUser,userBlock,cartController.addToCart)
+user.post('/user/removeFromCart/:id',userAuth.verifyUser,userBlock,cartController.removeCart)
+user.post('/updatequantity',userAuth.verifyUser,userBlock,cartController.updateQuantity)
+user.get('/user/AddToCart/:id',userBlock,cartController.addlistToCart)
 
 //---------------------------------------------------------------------------------
-user.get('/user/toAccountSettings',userAuth.verifyUser,userControl.toAccountSettings)
-user.post('/user/change-password',userAuth.verifyUser, passwordController.changePass);
+user.get('/user/toAccountSettings',userAuth.verifyUser,userBlock,userControl.toAccountSettings)
+user.post('/user/change-password',userAuth.verifyUser,userBlock, passwordController.changePass);
 
 //------------------------------------------------------------------------------
 user.get('/filter-products',filterController.filter)

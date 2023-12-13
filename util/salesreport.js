@@ -106,7 +106,7 @@ const generateSalesPDF = async (order, startDate, endDate) => {
       const paidToDatePosition = subtotalPosition + 30;
 
       const duePosition = paidToDatePosition + 30;
-      generateTableRowNoLine(doc, duePosition, "", "", "Total", "   ", sum);
+      generateTableRowNoLine(doc, duePosition, "", " ", "Total", "",  sum.toFixed(2));
 
       // End the document
       doc.end();
