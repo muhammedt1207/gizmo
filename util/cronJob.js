@@ -18,7 +18,7 @@ console.log('.');
         console.log("offer checking....");
         productsToUpdate.forEach(async (product) => {
           const originalPrice = product.DiscountAmount;
-          const discountedPrice = (discountedPrice * 100) / (100 - off.percentage)
+          const discountedPrice = (originalPrice * 100) / (100 - off.percentage)
 
           await Product.findByIdAndUpdate(product._id, { DiscountAmount: discountedPrice ,$unset: { offer: 1 }});
         });
