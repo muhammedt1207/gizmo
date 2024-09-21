@@ -3,10 +3,10 @@
 <nav class="home-pagin navbar navbar-expand-lg  position-sticky shadow-lg bg-body rounded">
     <div class="container">
       <a class="navbar-brand" href="#"><img src="/image/logo-no-background-balck.png" style="height: 2; width:100px;" alt="logo"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      </button> -->
+      <div class=" navbar-collapse" id="navbarSupportedContent">
       
       <!-- Centered search bar -->
       <form class="d-flex mx-auto">
@@ -14,20 +14,27 @@
         <button class="btn btn-outline-dark" type="submit"><i class="fa-solid fa-magnifying-glass" style="color: #4f4f4f;"></i></button>
       </form>
       <!-- Right-aligned list items -->
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
-        </li>
-      </ul>
-      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i></a>
-        </li>
-        <a href="/user/indexToLogin" style="color: rgb(34, 34, 34);"> <button class="btn btn-outline-dark">login</button></a>
-      </ul>
+      <div class="d-flex justify-content-between align-items-center">
+        <ul class="navbar-nav flex-row justify-content-between w-100 w-sm-auto">
+          <li class="nav-item m-2">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          
+          <li class="nav-item m-2">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">
+              <i class="fa-solid fa-cart-shopping fa-lg" style="color: #545454;"></i>Cart
+            </a>
+          </li>
+          
+          <li class="nav-item m-2">
+            <a href="/user/indexToLogin" style="color: rgb(34, 34, 34);">
+              <button class="btn btn-outline-dark">Login</button>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      
     </div>
   </div>
 </nav>
